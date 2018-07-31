@@ -18,6 +18,7 @@
         <module>JavaEE</module>
         <module>Kafka</module>
         <module>Spark</module>
+        <module>DeepLearning</module>
     </modules>
 
     <dependencyManagement>
