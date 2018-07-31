@@ -1,0 +1,7 @@
+target/
+.idea/
+*.iml
+Hadoop/target/
+Hadoop/*.iml
+Hive/target/
+Hive/*.iml
