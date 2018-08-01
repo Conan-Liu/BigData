@@ -9,7 +9,6 @@ import org.apache.hadoop.hive.ql.io.orc.RecordReader;
 import org.apache.hadoop.hive.serde2.objectinspector.StructObjectInspector;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
 
 /**
