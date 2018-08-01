@@ -60,7 +60,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.conan.log4j.Log4JToFlume</mainClass>
+                                    <mainClass>com.conan.bigdata.flume.log4j.Log4JToFlume</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

@@ -10,15 +10,15 @@
     <name>bigdata-all</name>
 
     <modules>
-        <module>Hive</module>
-        <module>Hadoop</module>
+        <module>Common</module>
+        <module>DeepLearning</module>
         <module>ElasticSearch</module>
         <module>Flume</module>
+        <module>Hadoop</module>
         <module>Hbase</module>
-        <module>JavaEE</module>
+        <module>Hive</module>
         <module>Kafka</module>
         <module>Spark</module>
-        <module>DeepLearning</module>
     </modules>
 
     <dependencyManagement>
