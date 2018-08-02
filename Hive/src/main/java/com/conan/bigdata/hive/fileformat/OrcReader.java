@@ -1,5 +1,6 @@
 package com.conan.bigdata.hive.fileformat;
 
+import com.conan.bigdata.hive.util.HadoopConfiguration;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -16,14 +17,9 @@ import java.util.List;
  */
 public class OrcReader {
     public static void main(String[] args) throws IOException {
-        String path = "hdfs://ns1/user/hive/warehouse/ods.db/resta_citytable";
-        Configuration conf = new Configuration();
-        conf.set("dfs.nameservices", "ns1");
-        conf.set("dfs.ha.namenodes.ns1", "nn1,nn2");
-        conf.set("dfs.namenode.rpc-address.ns1.nn1", "m01.dpbu.mwee.prd:8020");
-        conf.set("dfs.namenode.rpc-address.ns1.nn2", "m02.dpbu.mwee.prd:8020");
-        conf.set("dfs.client.failover.proxy.provider.ns1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
-        conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
+        // conf中指定了 FS 的schema ， 所以这里不需要指定
+        String path = "/user/hive/warehouse/ods.db/resta_citytable/000__c2928301_53c9_4415_a790_a6c37ddfe4fe";
+        Configuration conf = HadoopConfiguration.getInstance();
         Path filePath = new Path(path);
 
         FileSystem fs = FileSystem.get(conf);
