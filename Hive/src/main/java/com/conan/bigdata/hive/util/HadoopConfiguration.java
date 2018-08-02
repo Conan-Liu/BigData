@@ -11,6 +11,7 @@ public class HadoopConfiguration {
 
     private static void init() {
         conf = new Configuration();
+        // 必须指定， 否则会报 schema 不一致
         conf.set("fs.defaultFS","hdfs://ns1/");
         conf.set("dfs.nameservices", "ns1");
         conf.set("dfs.ha.namenodes.ns1", "nn1,nn2");
