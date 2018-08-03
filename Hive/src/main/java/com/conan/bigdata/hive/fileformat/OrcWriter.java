@@ -1,12 +1,33 @@
 package com.conan.bigdata.hive.fileformat;
 
-import org.apache.hadoop.hive.ql.io.orc.OrcFile;
-import org.apache.hive.service.cli.TypeDescriptor;
+import com.conan.bigdata.hive.util.SupportHiveDataType;
+import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2018/8/2.
  */
 public class OrcWriter {
     public static void main(String[] args) {
+        Map<String, String> columns = new HashMap<String, String>();
+        columns.put("id", "int");
+        columns.put("name", "string");
+        columns.put("height", "float");
+
+
+    }
+
+    public List<ObjectInspector> getColumnTypeInspectors(Map<String, String> map) {
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            SupportHiveDataType columnType = SupportHiveDataType.valueOf(entry.getValue());
+            ObjectInspector objectInspector=null;
+            switch (columnType){
+
+            }
+        }
     }
 }
