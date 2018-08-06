@@ -7,7 +7,8 @@ public class AAA {
 
     public static int[] a = new int[1 + 10 / 32];
 
-    public static void main(String[] args) {
-        System.out.println(AAA.class.getClass().getResource("/").getPath());
+    public static void main(String[] args) throws InterruptedException {
+        System.out.println("下面开始暂停1000s：");
+        Thread.sleep(1000000);
     }
 }

@@ -21,13 +21,13 @@ public class OrcWriter {
 
     }
 
-    public List<ObjectInspector> getColumnTypeInspectors(Map<String, String> map) {
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            SupportHiveDataType columnType = SupportHiveDataType.valueOf(entry.getValue());
-            ObjectInspector objectInspector=null;
-            switch (columnType){
-
-            }
-        }
-    }
+//    public List<ObjectInspector> getColumnTypeInspectors(Map<String, String> map) {
+//        for (Map.Entry<String, String> entry : map.entrySet()) {
+//            SupportHiveDataType columnType = SupportHiveDataType.valueOf(entry.getValue());
+//            ObjectInspector objectInspector=null;
+//            switch (columnType){
+//
+//            }
+//        }
+//    }
 }
