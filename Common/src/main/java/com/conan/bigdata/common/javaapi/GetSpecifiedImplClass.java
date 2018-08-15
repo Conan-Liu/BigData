@@ -9,12 +9,24 @@ import java.util.List;
  */
 public class GetSpecifiedImplClass {
 
-    public static void main(String[] args) {
-        List<String> lisi=new ArrayList<>();
+    public GetSpecifiedImplClass() {
+        System.out.println("无参构造函数");
+    }
 
-        Class clz=lisi.getClass();
+    public GetSpecifiedImplClass(String name) {
+        System.out.println("有参构造函数， 参数为:" + name);
+    }
+
+    public static void main(String[] args) {
+        List<String> lisi = new ArrayList<>();
+
+        Class clz = lisi.getClass();
 
         System.out.println(clz.getName());
+    }
+
+    public void show() {
+        System.out.println("这是JavaReflect类反射调用的方法");
     }
 
 }
