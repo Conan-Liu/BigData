@@ -25,6 +25,12 @@
     <dependencies>
 
         <dependency>
+            <groupId>com.conan.bigdata</groupId>
+            <artifactId>hadoop</artifactId>
+            <version>${bigdata-project-version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>
         </dependency>

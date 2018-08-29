@@ -1,6 +1,6 @@
 package com.conan.bigdata.hive.fileformat;
 
-import com.conan.bigdata.hive.util.HadoopConfiguration;
+import com.conan.bigdata.hadoop.util.HadoopConf;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -24,7 +24,7 @@ public class OrcReader {
     public static void orcFile_Reader() throws IOException {
         // conf中指定了 FS 的schema ， 所以这里不需要指定
         String path = "/user/hive/warehouse/ods.db/resta_citytable/000__c2928301_53c9_4415_a790_a6c37ddfe4fe";
-        Configuration conf = HadoopConfiguration.getInstance();
+        Configuration conf = HadoopConf.getInstance();
         Path filePath = new Path(path);
 
         FileSystem fs = FileSystem.get(conf);
