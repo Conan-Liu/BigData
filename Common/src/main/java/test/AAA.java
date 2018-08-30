@@ -10,5 +10,6 @@ public class AAA {
     public static int[] a = new int[1 + 10 / 32];
 
     public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException {
+        System.out.println("abc".substring(1));
     }
 }

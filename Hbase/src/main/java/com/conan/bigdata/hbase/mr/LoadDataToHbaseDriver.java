@@ -3,6 +3,8 @@ package com.conan.bigdata.hbase.mr;
 import com.conan.bigdata.hbase.util.HBaseUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FsShell;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.TableName;
@@ -17,11 +19,13 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+import org.apache.hadoop.util.GenericOptionsParser;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.parquet.hadoop.ParquetInputFormat;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 
 /**
@@ -31,6 +35,7 @@ public class LoadDataToHbaseDriver extends Configured implements Tool {
 
     public static void main(String[] args) {
         try {
+            System.out.println("参数列表: "+ Arrays.toString(args));
             int isSuccess = ToolRunner.run(HBaseUtils.getHBaseConf(), new LoadDataToHbaseDriver(), args);
             if (isSuccess == 0) {
                 System.out.println(CONSTANT.JOB_NAME + " is successfully completed...");
@@ -45,9 +50,16 @@ public class LoadDataToHbaseDriver extends Configured implements Tool {
     public int run(String[] args) throws Exception {
         Configuration conf = getConf();
 
+
         Job job = Job.getInstance(conf, CONSTANT.JOB_NAME);
         job.setJarByClass(LoadDataToHbaseDriver.class);
+        // 下面这个命令是把第三方jar包添加到hadoop的任务中，避免ClassNotFoundException, 这个jar包是在hdfs上, 而且必须是指定到某个jar包， 不能文件夹
+        //job.addArchiveToClassPath(new Path("/user/hadoop/libs/parquet-hadoop.jar"));
+//        job.addArchiveToClassPath(new Path(CONSTANT.EXT_LIBS));
+//        createHadoopClassPath(job);
+        System.out.println("temp jars is : " + conf.get("tmpjars"));
 
+        HBaseUtils.deleteDir(CONSTANT.OUTPUT_PATH);
         job.setMapperClass(TestParquetMapper.class);
         job.setMapOutputKeyClass(LongWritable.class);
         job.setMapOutputValueClass(Text.class);
@@ -66,7 +78,7 @@ public class LoadDataToHbaseDriver extends Configured implements Tool {
         //output path
         Path outPath = new Path(CONSTANT.OUTPUT_PATH);
         FileOutputFormat.setOutputPath(job, outPath);
-        if(job.waitForCompletion(true))
+        if (job.waitForCompletion(true))
             return 0;
         else
             return 1;
@@ -93,6 +105,16 @@ public class LoadDataToHbaseDriver extends Configured implements Tool {
 //            return 1;
 //        }
 
+    }
+
+
+    public static void createHadoopClassPath(Job job) throws IOException {
+        FileSystem fs = FileSystem.get(HBaseUtils.getHBaseConf());
+        FileStatus[] listFiles = fs.listStatus(new Path(CONSTANT.EXT_LIBS));
+        StringBuilder sb = new StringBuilder();
+        for (FileStatus file : listFiles) {
+            job.addArchiveToClassPath(file.getPath());
+        }
     }
 
 }

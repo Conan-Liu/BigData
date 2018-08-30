@@ -3,6 +3,7 @@ package com.conan.bigdata.hbase.util;
 import com.conan.bigdata.hadoop.util.HadoopConf;
 import com.conan.bigdata.hbase.mr.CONSTANT;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -34,7 +35,6 @@ public class HBaseUtils {
     public static Configuration getHBaseConf() {
         if (hbaseConf == null) {
             hbaseConf = HBaseConfiguration.create();
-            hbaseConf = new Configuration();
             // 必须指定， 否则会报 schema 不一致
             hbaseConf.set("fs.defaultFS", "hdfs://nameservice1/");
             hbaseConf.set("dfs.nameservices", "nameservice1");
@@ -61,13 +61,17 @@ public class HBaseUtils {
         return hbaseAdmin;
     }
 
-    public static boolean deleteDir() throws IOException {
-        FileSystem fs=FileSystem.get(getHBaseConf());
-        Path out=new Path(CONSTANT.OUTPUT_PATH);
-        if(fs.exists(out)){
-            fs.delete(out,true);
+    public static boolean deleteDir(String dir) throws IOException {
+        FileSystem fs = FileSystem.get(getHBaseConf());
+        Path out = new Path(dir);
+        if (fs.exists(out)) {
+            fs.delete(out, true);
             return true;
         }
         return false;
+    }
+
+    public static void main(String[] args) throws IOException {
+        System.out.println(getHbaseAdmin().isAborted());
     }
 }

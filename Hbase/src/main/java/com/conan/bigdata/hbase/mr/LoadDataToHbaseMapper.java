@@ -74,4 +74,10 @@ public class LoadDataToHbaseMapper extends Mapper<LongWritable, Text, Text, Text
         return null;
     }
 
+    public static void main(String[] args) {
+        String randomStr = UUID.randomUUID().toString();
+        String MD5Str = toMD5(randomStr);
+        System.out.println(MD5Str);
+    }
+
 }
