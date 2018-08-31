@@ -10,7 +10,7 @@ public class CONSTANT {
     public static final String TABLE_NAME = "user_action";
     public static final String FAMILY_NAME = "info";
 
-    public static final String IN_PATH="/user/hive/warehouse/dmd.db/user_tag_detail/statis_month=2018-08/action_id=5";
+    public static final String IN_PATH="/user/hive/warehouse/dmd.db/user_tag_detail/action_id=4";
     public static final String OUTPUT_PATH="/user/hadoop/hbase/user_action";
 
     public static final String EXT_LIBS="/user/hadoop/libs";

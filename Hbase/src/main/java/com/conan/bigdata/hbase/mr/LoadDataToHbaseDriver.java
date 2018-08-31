@@ -12,8 +12,10 @@ import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.mapreduce.HFileOutputFormat2;
 import org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles;
+import org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
@@ -23,6 +25,7 @@ import org.apache.hadoop.util.GenericOptionsParser;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.parquet.hadoop.ParquetInputFormat;
+import org.apache.parquet.hadoop.api.ReadSupport;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -35,7 +38,6 @@ public class LoadDataToHbaseDriver extends Configured implements Tool {
 
     public static void main(String[] args) {
         try {
-            System.out.println("参数列表: "+ Arrays.toString(args));
             int isSuccess = ToolRunner.run(HBaseUtils.getHBaseConf(), new LoadDataToHbaseDriver(), args);
             if (isSuccess == 0) {
                 System.out.println(CONSTANT.JOB_NAME + " is successfully completed...");
@@ -49,14 +51,18 @@ public class LoadDataToHbaseDriver extends Configured implements Tool {
 
     public int run(String[] args) throws Exception {
         Configuration conf = getConf();
-
+        String readSchema = "message example {\n" +
+                "required binary id;\n" +
+                "required binary mw_id\n" +
+                "}";
+        conf.set(ReadSupport.PARQUET_READ_SCHEMA, readSchema);
 
         Job job = Job.getInstance(conf, CONSTANT.JOB_NAME);
         job.setJarByClass(LoadDataToHbaseDriver.class);
         // 下面这个命令是把第三方jar包添加到hadoop的任务中，避免ClassNotFoundException, 这个jar包是在hdfs上, 而且必须是指定到某个jar包， 不能文件夹
         //job.addArchiveToClassPath(new Path("/user/hadoop/libs/parquet-hadoop.jar"));
 //        job.addArchiveToClassPath(new Path(CONSTANT.EXT_LIBS));
-//        createHadoopClassPath(job);
+        createHadoopClassPath(job);
         System.out.println("temp jars is : " + conf.get("tmpjars"));
 
         HBaseUtils.deleteDir(CONSTANT.OUTPUT_PATH);
@@ -68,13 +74,16 @@ public class LoadDataToHbaseDriver extends Configured implements Tool {
 
         //in/out format
         job.setInputFormatClass(ParquetInputFormat.class);
+        ParquetInputFormat.setReadSupportClass(job, TestReadSupport.class);
+        //input path
+        Path inPath = new Path(CONSTANT.IN_PATH);
+//        FileInputFormat.addInputPath(job, inPath);
+        ParquetInputFormat.addInputPath(job, inPath);
+
 //        job.setOutputFormatClass(HFileOutputFormat2.class);
         job.setOutputFormatClass(TextOutputFormat.class);
 
 
-        //input path
-        Path inPath = new Path(CONSTANT.IN_PATH);
-        FileInputFormat.addInputPath(job, inPath);
         //output path
         Path outPath = new Path(CONSTANT.OUTPUT_PATH);
         FileOutputFormat.setOutputPath(job, outPath);

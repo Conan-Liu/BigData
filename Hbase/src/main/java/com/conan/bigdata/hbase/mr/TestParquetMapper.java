@@ -11,6 +11,7 @@ import java.io.IOException;
  * Created by Administrator on 2018/8/28.
  */
 public class TestParquetMapper extends Mapper<Void, Group, LongWritable, Text> {
+
     @Override
     protected void map(Void key, Group value, Context context) throws IOException, InterruptedException {
         String mw_id = value.getString("mw_id", 1);
