@@ -27,6 +27,6 @@ public class SimpleAPI {
     }
 
     public static void main(String[] args) throws IOException {
-        getResult(TableName.valueOf(CONSTANT.TABLE_NAME),"48972075101501072577e969");
+        getResult(TableName.valueOf(CONSTANT.TABLE_NAME),"99872392002017010217502328aed579");
     }
 }

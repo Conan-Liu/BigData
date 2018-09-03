@@ -6,13 +6,13 @@ import java.util.UUID
 import org.apache.commons.lang3.time.FastDateFormat
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, FsShell, Path}
-import org.apache.hadoop.hbase.client.{ConnectionFactory, HBaseAdmin, HTable}
+import org.apache.hadoop.hbase.client.{ConnectionFactory, HTable}
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.mapreduce.{HFileOutputFormat2, LoadIncrementalHFiles}
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.hadoop.hbase.{HBaseConfiguration, KeyValue, TableName}
 import org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
-import org.apache.hadoop.io.ArrayWritable
+import org.apache.hadoop.io.{ArrayWritable, Writable}
 import org.apache.hadoop.mapreduce.Job
 import org.apache.spark.{SparkConf, SparkContext}
 
@@ -24,8 +24,8 @@ object UserTagDetailHBase {
     val JOB_NAME: String = "USER_ACTION_TO_HBASE"
     val TABLE_NAME: String = "user_action"
     val FAMILY_NAME: String = "info"
-    //    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail/{action_id=1,action_id=2,action_id=3,action_id=4,action_id=5,action_id=6,action_id=7,action_id=8}"
-    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail/action_id=4"
+    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail/{action_id=1,action_id=2,action_id=3,action_id=4,action_id=5,action_id=6,action_id=7,action_id=8}"
+    //    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail/action_id=4"
     val OUTPUT_PATH: String = "/user/hadoop/hbase/user_action"
     val EXT_LIBS: String = "/user/hadoop/libs"
     val fromDateFormat: FastDateFormat = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss")
@@ -80,8 +80,8 @@ object UserTagDetailHBase {
 
         val hbaseRdd = userTagDetail.map(x => {
             val v = x._2.get()
-            val rowkey = createRowKey(String.valueOf(v(1)), fromDateFormat.parse(String.valueOf(v(5))).getTime)
-            val userAction = String.valueOf(v(16))
+            val rowkey = createRowKey(String.valueOf(v(1)), String.valueOf(v(5)))
+            val userAction = createValue(v)
             (new ImmutableBytesWritable(Bytes.toBytes(rowkey)), new KeyValue(Bytes.toBytes(rowkey), Bytes.toBytes(FAMILY_NAME), Bytes.toBytes("user_action"), Bytes.toBytes(userAction)))
         }).sortBy(kv => kv._1, true)
 
@@ -112,7 +112,7 @@ object UserTagDetailHBase {
         }
     }
 
-    def createRowKey(mwId: String, unixTime: Long): String = {
+    def createRowKey(mwId: String, busiTime: String): String = {
         val fullMwId = new StringBuffer(lpad(mwId)).reverse().toString
         var toMD5 = ""
         try {
@@ -134,7 +134,7 @@ object UserTagDetailHBase {
                     offset - 1
                 }
             }
-            toMD5 = buf.toString.substring(0, 2) + buf.toString.substring(30, 32)
+            toMD5 = buf.toString.substring(0, 4) + buf.toString.substring(28, 32)
 
         } catch {
             case e: Exception => {
@@ -142,7 +142,15 @@ object UserTagDetailHBase {
             }
         }
 
-        fullMwId + String.valueOf(unixTime).substring(0, 10) + toMD5
+        fullMwId + toDateFormat.format(fromDateFormat.parse(busiTime)) + toMD5
+    }
+
+    def createValue(writable: Array[Writable]): String = {
+        val sb = new StringBuffer()
+        for (w <- writable) {
+            sb.append("|").append(String.valueOf(w))
+        }
+        sb.toString.substring(1)
     }
 
     def lpad(str: String): String = {

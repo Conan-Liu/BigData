@@ -61,7 +61,6 @@
     <build>
         <plugins>
             <!-- 执行jar包的命令：  java -Djava.ext.dirs=./lib -jar hive-1.0-SNAPSHOT.jar -->
-            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -70,7 +69,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.conan.bigdata.hbase.mr.LoadDataToHbaseDriver</mainClass>
+                            <mainClass>com.conan.bigdata.hbase.api.GetConfiguration</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -93,7 +92,6 @@
                     </execution>
                 </executions>
             </plugin>
-            -->
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>3.0.0</version>

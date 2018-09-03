@@ -44,6 +44,6 @@ public class AAA {
         }
 
 
-        System.out.println("abcdefghigklmn".substring(0,10));
+        System.out.println("abcdefghigklmn".substring(1));
     }
 }
