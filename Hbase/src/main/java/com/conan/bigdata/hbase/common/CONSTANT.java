@@ -1,4 +1,4 @@
-package com.conan.bigdata.hbase.mr;
+package com.conan.bigdata.hbase.common;
 
 /**
  * Created by admin on 2017/1/5.

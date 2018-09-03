@@ -1,9 +1,6 @@
 package com.conan.bigdata.hbase.util;
 
-import com.conan.bigdata.hadoop.util.HadoopConf;
-import com.conan.bigdata.hbase.mr.CONSTANT;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -20,6 +17,7 @@ import java.io.IOException;
 public class HBaseUtils {
 
     private static Configuration hbaseConf = null;
+    private static Connection connection = null;
     private static Admin hbaseAdmin = null;
 
     public static byte[][] getSplitKey(String key, String separator) {
@@ -53,10 +51,16 @@ public class HBaseUtils {
         return hbaseConf;
     }
 
+    public static Connection getConnection() throws IOException {
+        if (connection == null) {
+            connection = ConnectionFactory.createConnection(getHBaseConf());
+        }
+        return connection;
+    }
+
     public static Admin getHbaseAdmin() throws IOException {
         if (hbaseAdmin == null) {
-            Connection conn = ConnectionFactory.createConnection(HBaseUtils.getHBaseConf());
-            hbaseAdmin = conn.getAdmin();
+            hbaseAdmin = getConnection().getAdmin();
         }
         return hbaseAdmin;
     }
