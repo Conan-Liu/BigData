@@ -80,7 +80,7 @@ object UserTagDetailHBase {
 
         val hbaseRdd = userTagDetail.map(x => {
             val v = x._2.get()
-            val rowkey = createRowKey(String.valueOf(v(1)), String.valueOf(v(5)))
+            val rowkey = createRowKey(String.valueOf(v(2)), String.valueOf(v(6)))
             val userAction = createValue(v)
             (new ImmutableBytesWritable(Bytes.toBytes(rowkey)), new KeyValue(Bytes.toBytes(rowkey), Bytes.toBytes(FAMILY_NAME), Bytes.toBytes("user_action"), Bytes.toBytes(userAction)))
         }).sortBy(kv => kv._1, true)

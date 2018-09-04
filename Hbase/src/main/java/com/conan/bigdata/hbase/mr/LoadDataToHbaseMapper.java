@@ -31,7 +31,6 @@ public class LoadDataToHbaseMapper extends Mapper<LongWritable, Text, Text, Text
 //            context.write(hkey,put);
 
         context.write(value, value);
-
     }
 
     //create rowkey
