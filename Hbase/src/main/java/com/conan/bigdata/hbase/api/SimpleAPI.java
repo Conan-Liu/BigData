@@ -28,12 +28,15 @@ public class SimpleAPI {
     public static void getResult(TableName tableName, String rowKey) throws IOException {
         Get get = new Get(Bytes.toBytes(rowKey));
         Table table = HBaseUtils.getConnection().getTable(tableName);
+        long start = System.currentTimeMillis();
         Result result = table.get(get);
 
         System.out.println("返回记录数: " + result.size());
         for (Cell cell : result.listCells()) {
             System.out.println(Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength()));
         }
+        long end = System.currentTimeMillis();
+        System.out.println(end - start);
     }
 
     public static void getResultScan(TableName tableName, String rowKey) {
@@ -53,15 +56,18 @@ public class SimpleAPI {
         ResultScanner rs = null;
         try {
             Table table = HBaseUtils.getConnection().getTable(tableName);
+            long start = System.currentTimeMillis();
             rs = table.getScanner(scan);
             for (Result r : rs) {
                 for (Cell cell : r.listCells()) {
+                    String rowKey1 = Bytes.toString(cell.getRowArray(), cell.getRowOffset(), cell.getRowLength());
                     String value = Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength());
 //                    System.out.println(value);
                     String[] values = value.split("\\|");
-                    if (!"点菜".equals(values[3]))
-                        break;
+//                    if (!"点菜".equals(values[3]))
+//                        break;
                     JSONObject json = JSON.parseObject(values[17]);
+                    map.put("rowkey", rowKey1);
                     map.put("id", values[1]);
                     map.put("mw_id", values[2]);
                     map.put("action", values[3]);
@@ -84,6 +90,8 @@ public class SimpleAPI {
                     FileUtils.write(f, json.toJSONString() + "\n", Charset.defaultCharset(), true);
                 }
             }
+            long end = System.currentTimeMillis();
+            System.out.println("真实数据查询时间: " + (end - start));
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -110,8 +118,8 @@ public class SimpleAPI {
 
     public static void main(String[] args) throws IOException {
         long start = System.currentTimeMillis();
-//        getResultScan(TableName.valueOf("user_tag_detail4"), "2480909613242");
-        getResultScan(TableName.valueOf(CONSTANT.TABLE_NAME), new StringBuilder("162175342").reverse().toString());
+        getResult(TableName.valueOf(CONSTANT.TABLE_NAME), "24357126102017020504455067f95331");
+//        getResultScan(TableName.valueOf(CONSTANT.TABLE_NAME), new StringBuilder("162175342").reverse().toString());
         long end = System.currentTimeMillis();
         System.out.println(end - start);
     }
