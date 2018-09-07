@@ -38,9 +38,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.parquet</groupId>
+            <groupId>com.twitter</groupId>
             <artifactId>parquet-hadoop</artifactId>
         </dependency>
+
     </dependencies>
 
     <build>

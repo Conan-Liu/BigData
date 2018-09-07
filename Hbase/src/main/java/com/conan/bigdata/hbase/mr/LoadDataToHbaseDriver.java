@@ -14,8 +14,8 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-import org.apache.parquet.hadoop.ParquetInputFormat;
-import org.apache.parquet.hadoop.api.ReadSupport;
+import parquet.hadoop.ParquetInputFormat;
+import parquet.hadoop.api.ReadSupport;
 
 import java.io.IOException;
 
@@ -63,7 +63,7 @@ public class LoadDataToHbaseDriver extends Configured implements Tool {
 
         //in/out format
         job.setInputFormatClass(ParquetInputFormat.class);
-        ParquetInputFormat.setReadSupportClass(job, TestReadSupport.class);
+//        ParquetInputFormat.setReadSupportClass(job, TestReadSupport.class);
         //input path
         Path inPath = new Path(CONSTANT.IN_PATH);
 //        FileInputFormat.addInputPath(job, inPath);

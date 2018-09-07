@@ -14,10 +14,10 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-import org.apache.parquet.example.data.Group;
-import org.apache.parquet.example.data.simple.SimpleGroupFactory;
-import org.apache.parquet.hadoop.ParquetOutputFormat;
-import org.apache.parquet.hadoop.example.GroupWriteSupport;
+import parquet.example.data.Group;
+import parquet.example.data.simple.SimpleGroupFactory;
+import parquet.hadoop.ParquetOutputFormat;
+import parquet.hadoop.example.GroupWriteSupport;
 
 import java.io.IOException;
 import java.util.StringTokenizer;
@@ -81,7 +81,7 @@ public class ParquetReaderDriver extends Configured implements Tool {
         job.setMapOutputValueClass(IntWritable.class);
 
         job.setNumReduceTasks(1);
-        
+
         job.setOutputKeyClass(Void.class);
         job.setOutputValueClass(Group.class);
 
