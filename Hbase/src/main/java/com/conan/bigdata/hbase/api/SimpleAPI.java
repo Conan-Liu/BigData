@@ -70,13 +70,14 @@ public class SimpleAPI {
                     String rowKey1 = Bytes.toString(cell.getRowArray(), cell.getRowOffset(), cell.getRowLength());
                     String value = Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength());
 //                    System.out.println(value);
-                    String[] values = value.split("\\|");
+                    String[] values = value.split("\001");
 //                    if (!"点菜".equals(values[3]))
 //                        break;
                     JSONObject json = JSON.parseObject(values[17]);
                     map.put("rowkey", rowKey1);
-                    map.put("id", values[1]);
-                    map.put("mw_id", values[2]);
+                    map.put("id", values[0]);
+                    map.put("mw_id", values[1]);
+                    map.put("action_id", values[2]);
                     map.put("action", values[3]);
                     map.put("state_id", values[4]);
                     map.put("state_name", values[5]);
@@ -169,8 +170,8 @@ public class SimpleAPI {
         scan.setStartRow(Bytes.toBytes(startKey));
         scan.setStopRow(Bytes.toBytes(stopKey));
 
-        scan.setBatch(100);
-        scan.setCaching(100);
+        scan.setBatch(1);
+        scan.setCaching(1000);
         scan.setCacheBlocks(true);
 
         String action = getAction(actionId);
@@ -193,16 +194,18 @@ public class SimpleAPI {
                     continue;
                 }
                 for (Cell cell : r.listCells()) {
-//                    String rowKey1 = Bytes.toString(cell.getRowArray(), cell.getRowOffset(), cell.getRowLength());
+                    String rowKey1 = Bytes.toString(cell.getRowArray(), cell.getRowOffset(), cell.getRowLength());
                     String value = Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength());
-                    String[] values = value.split("\\|");
+                    String[] values = value.split("\001");
+//                    System.out.println(values.length);
                     if (actionId != 9999 && !action.equals(values[3]))
                         break;
 
                     JSONObject json = JSON.parseObject(values[17]);
-//                    map.put("rowkey", rowKey1);
-                    map.put("id", values[1]);
-                    map.put("mw_id", values[2]);
+                    map.put("rowkey", rowKey1);
+                    map.put("id", values[0]);
+                    map.put("mw_id", values[1]);
+                    map.put("action_id", values[2]);
                     map.put("action", values[3]);
                     map.put("state_id", values[4]);
                     map.put("state_name", values[5]);
@@ -246,12 +249,49 @@ public class SimpleAPI {
         }
     }
 
+    private static String lpadMwid(String str) {
+        String fullStr;
+        switch (str.length()) {
+            case 1:
+                fullStr = "00000000" + str;
+                break;
+            case 2:
+                fullStr = "0000000" + str;
+                break;
+            case 3:
+                fullStr = "000000" + str;
+                break;
+            case 4:
+                fullStr = "00000" + str;
+                break;
+            case 5:
+                fullStr = "0000" + str;
+                break;
+            case 6:
+                fullStr = "000" + str;
+                break;
+            case 7:
+                fullStr = "00" + str;
+                break;
+            case 8:
+                fullStr = "0" + str;
+                break;
+            case 9:
+                fullStr = str;
+                break;
+            default:
+                fullStr = "999999999";
+                break;
+        }
+        return fullStr;
+    }
 
     public static void main(String[] args) throws IOException {
         long start = System.currentTimeMillis();
 //        getResultScan(TableName.valueOf("user_tag_detail4"), "13382094");
 //        getResultScan(TableName.valueOf(CONSTANT.TABLE_NAME), new StringBuilder("9453162").reverse().toString());
-        getDataByPageSize(TableName.valueOf(CONSTANT.TABLE_NAME), new StringBuilder("162175342").reverse().toString(), 9999, 2, 10);
+        // 162175342
+        getDataByPageSize(TableName.valueOf(CONSTANT.TABLE_NAME), new StringBuilder(lpadMwid("1")).reverse().toString(), 9999, 1, 10);
 //        getRegionInfo(TableName.valueOf(CONSTANT.TABLE_NAME));
         long end = System.currentTimeMillis();
         System.out.println(end - start);

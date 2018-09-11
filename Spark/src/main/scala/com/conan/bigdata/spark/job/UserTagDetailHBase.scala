@@ -24,7 +24,7 @@ object UserTagDetailHBase {
     val JOB_NAME: String = "USER_ACTION_TO_HBASE"
     val TABLE_NAME: String = "user_action"
     val FAMILY_NAME: String = "info"
-    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail/{action_id=1,action_id=2,action_id=3,action_id=4,action_id=5,action_id=6,action_id=7,action_id=8}"
+    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail_new/{action_code=1,action_code=2,action_code=3,action_code=4,action_code=5,action_code=6,action_code=7,action_code=8}"
     //    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail/action_id=4"
     val OUTPUT_PATH: String = "/user/hadoop/hbase/user_action"
     val EXT_LIBS: String = "/user/hadoop/libs"
@@ -80,7 +80,7 @@ object UserTagDetailHBase {
 
         val hbaseRdd = userTagDetail.map(x => {
             val v = x._2.get()
-            val rowkey = createRowKey(String.valueOf(v(2)), String.valueOf(v(6)))
+            val rowkey = createRowKey(String.valueOf(v(1)), String.valueOf(v(2)), String.valueOf(v(6)), String.valueOf(v(7)))
             val userAction = createValue(v)
             (new ImmutableBytesWritable(Bytes.toBytes(rowkey)), new KeyValue(Bytes.toBytes(rowkey), Bytes.toBytes(FAMILY_NAME), Bytes.toBytes("user_action"), Bytes.toBytes(userAction)))
         }).sortBy(kv => kv._1, true)
@@ -112,8 +112,9 @@ object UserTagDetailHBase {
         }
     }
 
-    def createRowKey(mwId: String, busiTime: String): String = {
-        val fullMwId = new StringBuffer(lpad(mwId)).reverse().toString
+    def createRowKey(mwId: String, actionId: String, busiTime: String, brandId: String): String = {
+        val fullMwId = new StringBuffer(lpadMwid(mwId)).reverse().toString
+        val fullBrandId = lpadBrandId(brandId)
         var toMD5 = ""
         try {
             val md: MessageDigest = MessageDigest.getInstance("MD5")
@@ -134,7 +135,7 @@ object UserTagDetailHBase {
                     offset - 1
                 }
             }
-            toMD5 = buf.toString.substring(0, 4) + buf.toString.substring(28, 32)
+            toMD5 = buf.toString.substring(0, 5) + buf.toString.substring(27, 32)
 
         } catch {
             case e: Exception => {
@@ -142,31 +143,44 @@ object UserTagDetailHBase {
             }
         }
 
-        fullMwId + toDateFormat.format(fromDateFormat.parse(busiTime)) + toMD5
+        fullMwId + fullBrandId + actionId + toDateFormat.format(fromDateFormat.parse(busiTime)) + toMD5
     }
 
     def createValue(writable: Array[Writable]): String = {
         val sb = new StringBuffer()
         for (w <- writable) {
-            sb.append("|").append(String.valueOf(w))
+            sb.append("\001").append(String.valueOf(w))
         }
         sb.toString.substring(1)
     }
 
-    def lpad(str: String): String = {
+    def lpadMwid(str: String): String = {
         var fullStr = ""
         str.length match {
-            case 1 => fullStr = "000000000" + str
-            case 2 => fullStr = "00000000" + str
-            case 3 => fullStr = "0000000" + str
-            case 4 => fullStr = "000000" + str
-            case 5 => fullStr = "00000" + str
-            case 6 => fullStr = "0000" + str
-            case 7 => fullStr = "000" + str
-            case 8 => fullStr = "00" + str
-            case 9 => fullStr = "0" + str
-            case 10 => fullStr = str
-            case _ => fullStr = "9999999999"
+            case 1 => fullStr = "00000000" + str
+            case 2 => fullStr = "0000000" + str
+            case 3 => fullStr = "000000" + str
+            case 4 => fullStr = "00000" + str
+            case 5 => fullStr = "0000" + str
+            case 6 => fullStr = "000" + str
+            case 7 => fullStr = "00" + str
+            case 8 => fullStr = "0" + str
+            case 9 => fullStr = str
+            case _ => fullStr = "999999999"
+        }
+        fullStr
+    }
+
+    def lpadBrandId(str: String): String = {
+        var fullStr = ""
+        str.length match {
+            case 1 => fullStr = "00000" + str
+            case 2 => fullStr = "0000" + str
+            case 3 => fullStr = "000" + str
+            case 4 => fullStr = "00" + str
+            case 5 => fullStr = "0" + str
+            case 6 => fullStr = str
+            case _ => fullStr = "999999"
         }
         fullStr
     }

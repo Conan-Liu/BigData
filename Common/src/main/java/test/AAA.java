@@ -18,6 +18,7 @@ public class AAA {
         FastDateFormat format=FastDateFormat.getInstance("yyyyMMddHHmmss");
         FastDateFormat format1=FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
         System.out.println(format1.parse("2018-09-21 17:08:29").getTime());
+        System.out.println(String.valueOf(format1.parse("2018-09-21 17:08:29").getTime()).substring(6,10));
 
 
         System.out.println(String.format("%010d", 102));
