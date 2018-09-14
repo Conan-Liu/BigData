@@ -48,12 +48,13 @@ public class SimpleAPI {
         scan.setStartRow(Bytes.toBytes(startKey));
         scan.setStopRow(Bytes.toBytes(stopKey));
 
-        PageFilter page = new PageFilter(2);
+//        PageFilter page = new PageFilter(2);
 //        page.setReversed(true);
-        System.out.println(page.isReversed());
-        scan.setFilter(page);
+//        System.out.println(page.isReversed());
+//        scan.setFilter(page);
 
-//        scan.setBatch(1000);
+//        scan.setReversed(true);
+        scan.setBatch(1);
         scan.setCaching(1000);
         scan.setCacheBlocks(true);
 
@@ -61,70 +62,71 @@ public class SimpleAPI {
         List<String> jsonList = new ArrayList<>();
         File f = new File(OUT_PATH);
         ResultScanner rs = null;
-        try {
-            Table table = HBaseUtils.getConnection().getTable(tableName);
-            long start = System.currentTimeMillis();
-            rs = table.getScanner(scan);
-            for (Result r : rs) {
-                for (Cell cell : r.listCells()) {
-                    String rowKey1 = Bytes.toString(cell.getRowArray(), cell.getRowOffset(), cell.getRowLength());
-                    String value = Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength());
-//                    System.out.println(value);
-                    String[] values = value.split("\001");
-//                    if (!"点菜".equals(values[3]))
-//                        break;
-                    JSONObject json = JSON.parseObject(values[17]);
-                    map.put("rowkey", rowKey1);
-                    map.put("id", values[0]);
-                    map.put("mw_id", values[1]);
-                    map.put("action_id", values[2]);
-                    map.put("action", values[3]);
-                    map.put("state_id", values[4]);
-                    map.put("state_name", values[5]);
-                    map.put("business_time", values[6]);
-                    map.put("brand_id", values[7]);
-                    map.put("brand_name", values[8]);
-                    map.put("shop_id", values[9]);
-                    map.put("shop_name", values[10]);
-                    map.put("category_name", values[11]);
-                    map.put("city_id", values[12]);
-                    map.put("city_name", values[13]);
-                    map.put("province_id", values[14]);
-                    map.put("province_name", values[15]);
-                    map.put("bc_name", values[16]);
-                    json.putAll(map);
-//                    jsonList.add(json.toJSONString());
-                    map.clear();
-                    FileUtils.write(f, json.toJSONString() + "\n", Charset.defaultCharset(), true);
-                }
-            }
-            long end = System.currentTimeMillis();
-            System.out.println("真实数据查询时间: " + (end - start));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            rs.close();
-        }
-
-
 //        try {
 //            Table table = HBaseUtils.getConnection().getTable(tableName);
-//            long start=System.currentTimeMillis();
+//            long start = System.currentTimeMillis();
 //            rs = table.getScanner(scan);
 //            for (Result r : rs) {
-//                for (Cell cell : r.listCells()) {// 13382094215292190751919927372753
-//                    System.out.println(Bytes.toString(cell.getRowArray(),cell.getRowOffset(),cell.getRowLength()));
+//                for (Cell cell : r.listCells()) {
+//                    String rowKey1 = Bytes.toString(cell.getRowArray(), cell.getRowOffset(), cell.getRowLength());
 //                    String value = Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength());
-//                    System.out.println(value);
+////                    System.out.println(value);
+//                    String[] values = value.split("\001");
+////                    if (!"点菜".equals(values[3]))
+////                        break;
+//                    JSONObject json = JSON.parseObject(values[17]);
+//                    map.put("rowkey", rowKey1);
+//                    map.put("id", values[0]);
+//                    map.put("mw_id", values[1]);
+//                    map.put("action_id", values[2]);
+//                    map.put("action", values[3]);
+//                    map.put("state_id", values[4]);
+//                    map.put("state_name", values[5]);
+//                    map.put("business_time", values[6]);
+//                    map.put("brand_id", values[7]);
+//                    map.put("brand_name", values[8]);
+//                    map.put("shop_id", values[9]);
+//                    map.put("shop_name", values[10]);
+//                    map.put("category_name", values[11]);
+//                    map.put("city_id", values[12]);
+//                    map.put("city_name", values[13]);
+//                    map.put("province_id", values[14]);
+//                    map.put("province_name", values[15]);
+//                    map.put("bc_name", values[16]);
+//                    json.putAll(map);
+//                    jsonList.add(json.toJSONString());
+//                    map.clear();
+//                    FileUtils.write(f, json.toJSONString() + "\n", Charset.defaultCharset(), true);
 //                }
 //            }
-//            long end=System.currentTimeMillis();
-//            System.out.println(end-start);
+//            long end = System.currentTimeMillis();
+//            System.out.println("真实数据查询时间: " + (end - start));
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        } finally {
 //            rs.close();
 //        }
+
+
+        try {
+            Table table = HBaseUtils.getConnection().getTable(tableName);
+            long start = System.currentTimeMillis();
+            rs = table.getScanner(scan);
+            for (Result r : rs) {
+                for (Cell cell : r.listCells()) {// 13382094215292190751919927372753
+//                    System.out.println(Bytes.toString(cell.getRowArray(),cell.getRowOffset(),cell.getRowLength()));
+                    String value = Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength());
+                    System.out.print(value + "\t");
+                }
+                break;
+            }
+            long end = System.currentTimeMillis();
+            System.out.println(end - start);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            rs.close();
+        }
     }
 
 
@@ -174,6 +176,7 @@ public class SimpleAPI {
         scan.setCaching(1000);
         scan.setCacheBlocks(true);
 
+        scan.setReversed(true);
         String action = getAction(actionId);
 
         File f = new File(OUT_PATH);
@@ -288,10 +291,10 @@ public class SimpleAPI {
 
     public static void main(String[] args) throws IOException {
         long start = System.currentTimeMillis();
-//        getResultScan(TableName.valueOf("user_tag_detail4"), "13382094");
+        getResultScan(TableName.valueOf("user_tag_detail"), "31305617");
 //        getResultScan(TableName.valueOf(CONSTANT.TABLE_NAME), new StringBuilder("9453162").reverse().toString());
         // 162175342
-        getDataByPageSize(TableName.valueOf(CONSTANT.TABLE_NAME), new StringBuilder(lpadMwid("1")).reverse().toString(), 9999, 1, 10);
+//        getDataByPageSize(TableName.valueOf(CONSTANT.TABLE_NAME), new StringBuilder(lpadMwid("162175342")).reverse().toString(), 9999, 1, 10);
 //        getRegionInfo(TableName.valueOf(CONSTANT.TABLE_NAME));
         long end = System.currentTimeMillis();
         System.out.println(end - start);

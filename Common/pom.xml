@@ -69,7 +69,7 @@
                     <configuration>
                         <archive>
                             <manifest>
-                                <mainClass>test.AAA</mainClass>
+                                <mainClass>com.conan.bigdata.common.databases.JDBC</mainClass>
                             </manifest>
                         </archive>
                     </configuration>
