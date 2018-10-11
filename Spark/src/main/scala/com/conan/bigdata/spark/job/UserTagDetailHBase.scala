@@ -24,7 +24,7 @@ object UserTagDetailHBase {
     val JOB_NAME: String = "USER_ACTION_TO_HBASE"
     val TABLE_NAME: String = "user_action"
     val FAMILY_NAME: String = "info"
-    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail_new/{action_code=1,action_code=2,action_code=3,action_code=4,action_code=5,action_code=6,action_code=7,action_code=8}"
+    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail/{action_id=1,action_id=2,action_id=3,action_id=4,action_id=5,action_id=6,action_id=7,action_id=8}"
     //    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail/action_id=4"
     val OUTPUT_PATH: String = "/user/hadoop/hbase/user_action"
     val EXT_LIBS: String = "/user/hadoop/libs"
