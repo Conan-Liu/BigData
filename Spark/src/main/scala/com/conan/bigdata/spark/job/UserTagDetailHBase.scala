@@ -24,8 +24,8 @@ object UserTagDetailHBase {
     val JOB_NAME: String = "USER_ACTION_TO_HBASE"
     val TABLE_NAME: String = "user_action"
     val FAMILY_NAME: String = "info"
-    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail/{action_id=1,action_id=2,action_id=3,action_id=4,action_id=5,action_id=6,action_id=7,action_id=8}/*"
-    //    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail/action_id=4"
+    //    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail/{action_id=1,action_id=2,action_id=3,action_id=4,action_id=5,action_id=6,action_id=7,action_id=8}/*"
+    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail/action_id=8/*"
     val OUTPUT_PATH: String = "/user/hadoop/hbase/user_action"
     val EXT_LIBS: String = "/user/hadoop/libs"
     val fromDateFormat: FastDateFormat = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss")
@@ -37,8 +37,8 @@ object UserTagDetailHBase {
         hbaseConf.set("fs.defaultFS", "hdfs://nameservice1/")
         hbaseConf.set("dfs.nameservices", "nameservice1")
         hbaseConf.set("dfs.ha.namenodes.nameservice1", "nn1,nn2")
-        hbaseConf.set("dfs.namenode.rpc-address.nameservice1.nn1", "nn1.hadoop.pdbd.prod:8020")
-        hbaseConf.set("dfs.namenode.rpc-address.nameservice1.nn2", "nn2.hadoop.pdbd.prod:8020")
+        hbaseConf.set("dfs.namenode.rpc-address.nameservice1.nn1", "nn1.hadoop.pdbd.mwbyd.cn:8020")
+        hbaseConf.set("dfs.namenode.rpc-address.nameservice1.nn2", "nn1.hadoop.pdbd.mwbyd.cn:8020")
         hbaseConf.set("dfs.client.failover.proxy.provider.ns1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider")
         hbaseConf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem")
         hbaseConf.set("mapreduce.reduce.memory.mb", "4096")
@@ -97,6 +97,7 @@ object UserTagDetailHBase {
         val fs = new FsShell(hbaseConf)
         fs.run(Array("-chmod", "-R", "777", OUTPUT_PATH))
 
+        // 这个方法是增量生成HFile文件，往HBase中写数据， 全量增量都可以
         val bulkLoader = new LoadIncrementalHFiles(hbaseConf)
         bulkLoader.doBulkLoad(new Path(OUTPUT_PATH), table.asInstanceOf[HTable])
 
