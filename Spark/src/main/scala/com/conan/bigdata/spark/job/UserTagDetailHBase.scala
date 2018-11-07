@@ -24,7 +24,7 @@ object UserTagDetailHBase {
     val JOB_NAME: String = "USER_ACTION_TO_HBASE"
     val TABLE_NAME: String = "user_action"
     val FAMILY_NAME: String = "info"
-    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail/{action_id=1,action_id=2,action_id=3,action_id=4,action_id=5,action_id=6,action_id=7,action_id=8}"
+    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail/{action_id=1,action_id=2,action_id=3,action_id=4,action_id=5,action_id=6,action_id=7,action_id=8}/*"
     //    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail/action_id=4"
     val OUTPUT_PATH: String = "/user/hadoop/hbase/user_action"
     val EXT_LIBS: String = "/user/hadoop/libs"
@@ -80,7 +80,8 @@ object UserTagDetailHBase {
 
         val hbaseRdd = userTagDetail.map(x => {
             val v = x._2.get()
-            val rowkey = createRowKey(String.valueOf(v(1)), String.valueOf(v(2)), String.valueOf(v(6)), String.valueOf(v(7)))
+            //            val rowkey = createRowKey(String.valueOf(v(1)), String.valueOf(v(2)), String.valueOf(v(6)), String.valueOf(v(7)))
+            val rowkey = String.valueOf(v(0))
             val userAction = createValue(v)
             (new ImmutableBytesWritable(Bytes.toBytes(rowkey)), new KeyValue(Bytes.toBytes(rowkey), Bytes.toBytes(FAMILY_NAME), Bytes.toBytes("user_action"), Bytes.toBytes(userAction)))
         }).sortBy(kv => kv._1, true)

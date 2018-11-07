@@ -17,9 +17,6 @@ public class AAA {
     public static int[] a = new int[1 + 10 / 32];
 
     public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException, ParseException {
-        SimpleDateFormat parse=new SimpleDateFormat("yyyy-MM-dd");
-        Calendar c=Calendar.getInstance();
-        c.setTime(parse.parse("2018-01-07"));
-        System.out.println(c.get(Calendar.WEEK_OF_YEAR));
+        System.out.println(0.2f == 0.2);
     }
 }
