@@ -9,7 +9,7 @@ public class ImpalaJDBC {
     private static Connection conn = null;
 
     private static final String CLASS_NAME = "com.cloudera.impala.jdbc41.Driver";
-    private static final String URL = "jdbc:impala://dn2.hadoop.pdbd.mwbyd.cn:21050/database;AuthMech=3;UID=cloudera;PWD=cloudera;";
+    private static final String URL = "jdbc:impala://dn2.hadoop.pdbd.mwbyd.cn:21050/default";
     private static final String USER = "";
     private static final String PASSWORD = "";
 
@@ -23,10 +23,12 @@ public class ImpalaJDBC {
     }
 
     public static void main(String[] args) throws SQLException {
+        System.out.println(conn.isClosed());
         PreparedStatement ps = conn.prepareStatement("select count(*) from ads.user_tag");
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
             System.out.println(rs.getString(1));
         }
+        conn.close();
     }
 }
