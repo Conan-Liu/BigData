@@ -27,15 +27,18 @@ public class TestHbase {
             hbaseConf.set("fs.defaultFS", "hdfs://nameservice1/");
             hbaseConf.set("dfs.nameservices", "nameservice1");
             hbaseConf.set("dfs.ha.namenodes.nameservice1", "nn1,nn2");
-            hbaseConf.set("dfs.namenode.rpc-address.nameservice1.nn1", "nn1.hadoop.pdbd.mwbyd.cn:8020");
-            hbaseConf.set("dfs.namenode.rpc-address.nameservice1.nn2", "nn2.hadoop.pdbd.mwbyd.cn:8020");
+//            hbaseConf.set("dfs.namenode.rpc-address.nameservice1.nn1", "nn1.hadoop.pdbd.mwbyd.cn:8020");
+//            hbaseConf.set("dfs.namenode.rpc-address.nameservice1.nn2", "nn2.hadoop.pdbd.mwbyd.cn:8020");
+            hbaseConf.set("dfs.namenode.rpc-address.nameservice1.nn1", "nn1.hadoop.pdbd.test.cn:8020");
+            hbaseConf.set("dfs.namenode.rpc-address.nameservice1.nn2", "nn2.hadoop.pdbd.test.cn:8020");
             hbaseConf.set("dfs.client.failover.proxy.provider.ns1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
             hbaseConf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
             hbaseConf.set("mapreduce.reduce.memory.mb", "4096");
             hbaseConf.set("mapreduce.reduce.shuffle.input.buffer.percent", "0.3");
             hbaseConf.set("mapreduce.reduce.shuffle.parallelcopies", "3");
             hbaseConf.set("mapreduce.map.maxattempts", "2");
-            hbaseConf.set("hbase.zookeeper.quorum", "10.1.39.98,10.1.39.99,10.1.39.100");
+//            hbaseConf.set("hbase.zookeeper.quorum", "10.1.39.98,10.1.39.99,10.1.39.100");
+            hbaseConf.set("hbase.zookeeper.quorum", "10.0.24.41,10.0.24.42,10.0.24.43");
             hbaseConf.set("hbase.zookeeper.property.clientPort", "2181");
         }
         return hbaseConf;
@@ -56,28 +59,42 @@ public class TestHbase {
     }
 
     public static void show(ResultScanner rs) {
+        int sum = 0;
         try {
             for (Result r : rs) {
-                for (Cell cell : r.rawCells()) {
-                    System.out.print(new String(CellUtil.cloneQualifier(cell)) + ":" + new String(CellUtil.cloneValue(cell), "UTF-8") + "\t");
-                }
-                System.out.println();
+//                for (Cell cell : r.rawCells()) {
+//                    System.out.print(new String(CellUtil.cloneQualifier(cell)) + ":" + new String(CellUtil.cloneValue(cell), "UTF-8") + "\t");
+//                }
+//                System.out.println("row_key = " + new String(r.getRow(), "UTF-8"));
+                // r.size() 的值由 batch 来决定 ， 当 batch = 字段数 的时候， 每一次Result遍历就是一条记录
+//                System.out.println(r.size());
+                sum++;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println("总数: " + sum);
     }
 
     public static void getScanner(String searchKey) throws Exception {
         String startKey = reverseWithLpad(searchKey);
         String stopKey = reverseWithLpad(searchKey) + "B";
 
+        System.out.println(startKey);
+
         Scan scan = new Scan();
         scan.setStartRow(Bytes.toBytes(startKey));
         scan.setStopRow(Bytes.toBytes(stopKey));
-        scan.setBatch(1);
-        scan.setCaching(1000);
+
+        // 如果设置了 逆序查找， 那么startrow 和 endrow 需要调换下才行
+//        scan.setReversed(true);
+//        scan.setStartRow(Bytes.toBytes(stopKey));
+//        scan.setStopRow(Bytes.toBytes(startKey));
+
+        scan.setBatch(19);
+        scan.setCaching(100);
         scan.setCacheBlocks(true);
+
 
         ResultScanner rs = getConnection().getTable(TableName.valueOf("user_tag_detail")).getScanner(scan);
         show(rs);
@@ -124,7 +141,7 @@ public class TestHbase {
     }
 
 
-    public static void main(String[] args) throws Exception{
-        getScanner("219399682");
+    public static void main(String[] args) throws Exception {
+        getScanner("3840722");
     }
 }
