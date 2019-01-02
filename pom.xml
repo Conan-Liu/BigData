@@ -12,15 +12,15 @@
 
     <modules>
         <module>Common</module>
-        <module>DeepLearning</module>
+        <!--<module>DeepLearning</module>
         <module>ElasticSearch</module>
-        <module>Flume</module>
+        <module>Flume</module>-->
         <module>Hadoop</module>
         <module>Hbase</module>
         <module>Hive</module>
-        <module>Kafka</module>
+       <!-- <module>Kafka</module>-->
         <module>Spark</module>
-        <module>Redis</module>
+       <!-- <module>Redis</module> -->
     </modules>
 
     <repositories>

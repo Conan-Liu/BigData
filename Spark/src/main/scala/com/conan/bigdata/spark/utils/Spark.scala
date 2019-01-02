@@ -7,7 +7,7 @@ import org.apache.spark.sql.SparkSession
   */
 object Spark {
     def getSparkSession(appName:String):SparkSession={
-        val sparkSession=SparkSession.builder().appName(appName).getOrCreate()
+        val sparkSession=SparkSession.builder().appName(appName).master("local[2]").getOrCreate()
         sparkSession
     }
 }

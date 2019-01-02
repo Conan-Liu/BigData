@@ -63,7 +63,8 @@ public class TestHbase {
         try {
             for (Result r : rs) {
 //                for (Cell cell : r.rawCells()) {
-//                    System.out.print(new String(CellUtil.cloneQualifier(cell)) + ":" + new String(CellUtil.cloneValue(cell), "UTF-8") + "\t");
+////                    System.out.print(new String(CellUtil.cloneQualifier(cell)) + ":" + new String(CellUtil.cloneValue(cell), "UTF-8") + "\t");
+//                    System.out.println(new String(CellUtil.cloneRow(cell)));
 //                }
 //                System.out.println("row_key = " + new String(r.getRow(), "UTF-8"));
                 // r.size() 的值由 batch 来决定 ， 当 batch = 字段数 的时候， 每一次Result遍历就是一条记录
