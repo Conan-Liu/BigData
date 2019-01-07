@@ -28,4 +28,10 @@ public class ESClient {
         factory.setHttpClientConfig(httpClientConfig.build());
         this.esClient = factory.getObject();
     }
+
+    public void closeClient() {
+        if (esClient != null) {
+            esClient.shutdownClient();
+        }
+    }
 }
