@@ -10,17 +10,17 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.io.compress.CompressionOutputStream;
-import org.apache.hadoop.util.GenericOptionsParser;
-import org.apache.hadoop.util.ReflectionUtils;
-import org.apache.hadoop.util.Tool;
-import org.apache.hadoop.util.ToolRunner;
+import org.apache.hadoop.util.*;
 
 import java.io.IOException;
 
 /**
  * Created by Administrator on 2019/1/14.
+ * Usage Example:
+ * hadoop jar hadoop-1.0-SNAPSHOT.jar com.conan.bigdata.hadoop.compress.MultiCompress compress org.apache.hadoop.io.compress.GzipCodec /tmp/repository/compress/2018.12.24.log log gz
  */
 public class MultiCompress extends Configured implements Tool {
+
     public static void main(String[] args) {
         try {
             int result = ToolRunner.run(HadoopConf.getInstance(), new MultiCompress(), args);
@@ -32,7 +32,9 @@ public class MultiCompress extends Configured implements Tool {
 
     /**
      * optType     [compress, uncompress]
-     * codeClass   [org.apache.hadoop.io.compress.GzipCodec, org.apache.hadoop.io.compress.BZip2Codec, org.apache.hadoop.io.compress.SnappyCodec]
+     * codeClass   [org.apache.hadoop.io.compress.GzipCodec,
+     * org.apache.hadoop.io.compress.BZip2Codec,
+     * org.apache.hadoop.io.compress.SnappyCodec]
      * sourceDir   [文件]
      * sourceType  [源数据后缀]
      * targetType  [目标数据后缀]
@@ -87,9 +89,15 @@ public class MultiCompress extends Configured implements Tool {
             try {
                 input = fs.open(path);
                 System.out.println(String.format("开始压缩: [%s]", path.toString()));
-                FSDataOutputStream output = fs.create(new Path(path.toString().replace(sourceType, targetType)), () -> System.out.print("*"));
+                // 回调函数显示进度， 这个进度条是 64K 打印一次， 没找到控制的地方
+                FSDataOutputStream output = fs.create(new Path(path.toString().replace(sourceType, targetType)), new Progressable() {
+                    @Override
+                    public void progress() {
+                        System.out.print("*");
+                    }
+                });
                 compressOut = codec.createOutputStream(output);
-                IOUtils.copyBytes(input, compressOut, conf);
+                IOUtils.copyBytes(input, compressOut, 8192, true);
                 System.out.println("完成\n");
             } catch (IOException e) {
                 e.printStackTrace();
