@@ -9,9 +9,11 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.compress.CompressionCodec;
+import org.apache.hadoop.io.compress.CompressionInputStream;
 import org.apache.hadoop.io.compress.CompressionOutputStream;
 import org.apache.hadoop.util.*;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -86,16 +88,33 @@ public class MultiCompress extends Configured implements Tool {
         if (path.getName().indexOf(sourceType) > 0) {
             FSDataInputStream input = null;
             CompressionOutputStream compressOut = null;
+//            long fileLength = (new File(path.toUri()).length()) / 65536;
             try {
                 input = fs.open(path);
+
                 System.out.println(String.format("开始压缩: [%s]", path.toString()));
                 // 回调函数显示进度， 这个进度条是 64K 打印一次， 没找到控制的地方
-                FSDataOutputStream output = fs.create(new Path(path.toString().replace(sourceType, targetType)), new Progressable() {
-                    @Override
-                    public void progress() {
-                        System.out.print("*");
-                    }
-                });
+//                FSDataOutputStream output = fs.create(new Path(path.toString().replace(sourceType, targetType)), new Progressable() {
+////                    int fileCount = 0;
+//
+//                    // 每一次回调都是输出 64K ， 可以使用这个打印百分数进度
+//                    @Override
+//                    public void progress() {
+////                        fileCount++;
+////                        System.out.println(fileCount / fileLength);
+//                        System.out.print("*");
+//                    }
+//                });
+
+//                FSDataOutputStream output = fs.create(new Path(path.toString().replace(sourceType, targetType)), true, 8096, new Progressable() {
+//                    @Override
+//                    public void progress() {
+//                        System.out.print("*");
+//                    }
+//                });
+
+                // 不打印进度
+                FSDataOutputStream output = fs.create(new Path(path.toString().replace(sourceType, targetType)), true, 8096);
                 compressOut = codec.createOutputStream(output);
                 IOUtils.copyBytes(input, compressOut, 8192, true);
                 System.out.println("完成\n");
