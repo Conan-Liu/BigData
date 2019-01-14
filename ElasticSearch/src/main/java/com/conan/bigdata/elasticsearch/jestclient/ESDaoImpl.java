@@ -1,16 +1,24 @@
 package com.conan.bigdata.elasticsearch.jestclient;
 
+import com.alibaba.fastjson.JSONObject;
 import io.searchbox.client.JestResult;
 import io.searchbox.cluster.Health;
 import io.searchbox.cluster.NodesInfo;
 import io.searchbox.cluster.NodesStats;
 import io.searchbox.core.Get;
+import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
 import io.searchbox.indices.IndicesExists;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2019/1/5.
@@ -45,6 +53,7 @@ public class ESDaoImpl implements ESDao {
         try {
             result = esClient.getEsClient().execute(nodesInfo);
             LOG.info("nodesInfo == " + result.getJsonString());
+            System.out.println("nodesInfo == " + result.getJsonString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -84,9 +93,13 @@ public class ESDaoImpl implements ESDao {
         try {
             result = esClient.getEsClient().execute(get);
             if (result.isSucceeded()) {
-                Object t1 = result.getSourceAsObject(Object.class);
-                LOG.info("getDocument == " + t1.toString());
-                System.out.println("getDocument == " + t1.toString());
+//                Object t1 = result.getSourceAsObject(Object.class);
+//                LOG.info("getDocument == " + t1.toString());
+//                System.out.println("getDocument == " + t1.toString());
+
+                JSONObject r = result.getSourceAsObject(JSONObject.class);
+                System.out.println("getDocument == " + r);
+                System.out.println("module: " + r.getString("module"));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -94,9 +107,46 @@ public class ESDaoImpl implements ESDao {
         return result;
     }
 
+    @Override
+    public JestResult getAllDocument(String indices, String type) {
+
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        QueryBuilder query = QueryBuilders.matchAllQuery();
+        searchSourceBuilder.query(query).size(2);
+
+        System.out.println(searchSourceBuilder.toString());
+
+        Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex(indices).addType(type).build();
+        SearchResult result = null;
+        try {
+            result = esClient.getEsClient().execute(search);
+            System.out.println(result.getTotal());
+            List<SearchResult.Hit<JSONObject, Void>> hits = result.getHits(JSONObject.class);
+            System.out.println(hits.size());
+            for (SearchResult.Hit<JSONObject, Void> hit : hits) {
+                JSONObject jsonObject=hit.source;
+                System.out.println(jsonObject.toJSONString());
+                for(Map.Entry<String,Object> map:jsonObject.entrySet()){
+                    System.out.println(map.getValue().toString());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
     public static void main(String[] args) {
+        final String indices = "user_action-2019.01.09";
+        final String type = "span";
+
         ESDaoImpl esDao = new ESDaoImpl("http://10.0.26.55:9200");
 
-        esDao.getDocument("user_action-2019.01.05", "span", "AWgdJ1Ldg4ixvVIcDisH");
+//        esDao.getDocument("user_action-2019.01.06", "span", "AWgnpUNQg4ixvVIcEDAU");
+
+//        esDao.getAllDocument(indices, type);
+
+//        esDao.nodesInof();
     }
 }

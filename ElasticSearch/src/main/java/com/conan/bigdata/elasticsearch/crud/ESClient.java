@@ -14,6 +14,7 @@ public class ESClient {
     private static final String ES_HOST = "localhost";
     private static final int ES_PORT = 9300;
 
+    // 该链接方式是基于TCP的， 据说到ES 5.0之后， 支持不如 http 性能好
     private static TransportClient client;
 
     public static synchronized TransportClient getClient() {

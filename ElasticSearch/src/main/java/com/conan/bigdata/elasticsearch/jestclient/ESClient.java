@@ -20,6 +20,8 @@ public class ESClient {
         JestClientFactory factory = new JestClientFactory();
         HttpClientConfig.Builder httpClientConfig = new HttpClientConfig.Builder(esURL)
 //                .setPreemptiveAuth(new HttpHost(esURL))
+//                .defaultCredentials("","")
+                .maxTotalConnection(10)
                 .gson(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create())
                 .multiThreaded(true)
                 .readTimeout(10000)

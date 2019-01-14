@@ -18,13 +18,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
+
+        <es.version>2.4.0</es.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
-            <version>2.4.0</version>
+            <version>${es.version}</version>
         </dependency>
 
         <dependency>
@@ -38,6 +40,12 @@
             <artifactId>jest</artifactId>
             <version>2.4.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

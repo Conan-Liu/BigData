@@ -17,4 +17,6 @@ public interface ESDao {
     JestResult nodesStats();
 
     JestResult getDocument(String indices, String type, String id);
+
+    JestResult getAllDocument(String indices,String type);
 }
