@@ -13,7 +13,6 @@ import org.apache.hadoop.io.compress.CompressionInputStream;
 import org.apache.hadoop.io.compress.CompressionOutputStream;
 import org.apache.hadoop.util.*;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
