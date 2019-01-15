@@ -8,7 +8,9 @@ import io.searchbox.cluster.NodesStats;
 import io.searchbox.core.Get;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
+import io.searchbox.core.SearchScroll;
 import io.searchbox.indices.IndicesExists;
+import io.searchbox.params.Parameters;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -16,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -124,9 +125,9 @@ public class ESDaoImpl implements ESDao {
             List<SearchResult.Hit<JSONObject, Void>> hits = result.getHits(JSONObject.class);
             System.out.println(hits.size());
             for (SearchResult.Hit<JSONObject, Void> hit : hits) {
-                JSONObject jsonObject=hit.source;
+                JSONObject jsonObject = hit.source;
                 System.out.println(jsonObject.toJSONString());
-                for(Map.Entry<String,Object> map:jsonObject.entrySet()){
+                for (Map.Entry<String, Object> map : jsonObject.entrySet()) {
                     System.out.println(map.getValue().toString());
                 }
             }
@@ -136,9 +137,38 @@ public class ESDaoImpl implements ESDao {
         return result;
     }
 
+    @Override
+    public JestResult getDocumentFromScroll(String indices, String type) {
+        String query = "{\"query\" : {\"match_all\" : { }}}";
+        JestResult result = null;
+        List<JSONObject> hits = null;
+        String scrollId;
+        try {
+            // 循环拉取ES数据， 每一次拉50条， scroll的session context生存期是5分钟， scrollId是一样的
+            Search search = new Search.Builder(query).addIndex(indices).addType(type).setParameter(Parameters.SIZE, 50).setParameter(Parameters.SCROLL, "5m").build();
+            result = esClient.getEsClient().execute(search);
+            scrollId = result.getJsonObject().get("_scroll_id").getAsString();
+            System.out.println("scrollId: " + scrollId);
+            hits = result.getSourceAsObjectList(JSONObject.class);
+            do {
+                for (JSONObject hit : hits) {
+                    System.out.println(hit.toJSONString());
+                }
+                hits.clear();
+                SearchScroll scroll = new SearchScroll.Builder(scrollId, "5m").build();
+                result = esClient.getEsClient().execute(scroll);
+                scrollId = result.getJsonObject().get("_scroll_id").getAsString();
+                System.out.println("scrollId: " + scrollId);
+                hits = result.getSourceAsObjectList(JSONObject.class);
+            } while (hits.size() > 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
     public static void main(String[] args) {
-        final String indices = "user_action-2019.01.09";
+        final String indices = "user_action-2019.01.14";
         final String type = "span";
 
         ESDaoImpl esDao = new ESDaoImpl("http://10.0.26.55:9200");
@@ -148,5 +178,7 @@ public class ESDaoImpl implements ESDao {
 //        esDao.getAllDocument(indices, type);
 
 //        esDao.nodesInof();
+
+        esDao.getDocumentFromScroll(indices, type);
     }
 }

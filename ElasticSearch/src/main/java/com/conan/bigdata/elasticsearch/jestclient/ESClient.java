@@ -16,7 +16,7 @@ public class ESClient {
         return this.esClient;
     }
 
-    public ESClient(String esURL) {
+    public ESClient(final String esURL) {
         JestClientFactory factory = new JestClientFactory();
         HttpClientConfig.Builder httpClientConfig = new HttpClientConfig.Builder(esURL)
 //                .setPreemptiveAuth(new HttpHost(esURL))
@@ -24,8 +24,10 @@ public class ESClient {
                 .maxTotalConnection(10)
                 .gson(new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create())
                 .multiThreaded(true)
+                .connTimeout(1000)
                 .readTimeout(10000)
-                .discoveryEnabled(true);
+//                .discoveryEnabled(true)  // 加上这个参数报如下错: NoServerConfiguredException: No Server is assigned to client to connect
+                ;
 
         factory.setHttpClientConfig(httpClientConfig.build());
         this.esClient = factory.getObject();

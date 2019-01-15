@@ -18,5 +18,7 @@ public interface ESDao {
 
     JestResult getDocument(String indices, String type, String id);
 
-    JestResult getAllDocument(String indices,String type);
+    JestResult getAllDocument(String indices, String type);
+
+    JestResult getDocumentFromScroll(String indices, String type);
 }
