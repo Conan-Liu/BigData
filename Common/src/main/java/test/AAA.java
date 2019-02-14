@@ -18,6 +18,12 @@ import java.util.UUID;
  */
 public class AAA {
 
+    public static void printStrings(String... args){
+        for(String arg:args){
+            System.out.println(arg);
+        }
+    }
+
     public static int[] a = new int[1 + 10 / 32];
 
     public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException, ParseException {
@@ -33,5 +39,8 @@ public class AAA {
         System.out.println(format.parse("2019-01-01").getTime());
 
         System.out.println(-1 ^ (-1 << 12));
+
+        printStrings("hello","world","java");
+
     }
 }
