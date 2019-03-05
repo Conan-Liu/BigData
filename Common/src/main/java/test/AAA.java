@@ -18,8 +18,8 @@ import java.util.UUID;
  */
 public class AAA {
 
-    public static void printStrings(String... args){
-        for(String arg:args){
+    public static void printStrings(String... args) {
+        for (String arg : args) {
             System.out.println(arg);
         }
     }
@@ -35,12 +35,13 @@ public class AAA {
         // UUID 唯一标识符， 目前全球通用的是微软（GUID）的 8-4-4-4-12 的标准, 占36个字符
         System.out.println(UUID.randomUUID().toString().getBytes().length);
 
-        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         System.out.println(format.parse("2019-01-01").getTime());
 
         System.out.println(-1 ^ (-1 << 12));
 
-        printStrings("hello","world","java");
+        printStrings("hello", "world", "java");
 
+        System.out.println(Math.pow(2, -2));
     }
 }
