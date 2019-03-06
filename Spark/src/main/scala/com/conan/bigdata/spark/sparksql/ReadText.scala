@@ -44,11 +44,16 @@ object ReadText {
         val data = Spark.getSparkSession("aaa").createDataFrame(rowRDD, schema_1)
 
         // spark2 的隐式转换
-        import sparkSession.sqlContext.implicits._
+        //        import sparkSession.sqlContext.implicits._
+        import sparkSession.implicits._
+        // 新版推荐
         val rowCase = txtDF.map(_.split("\\|")).map(p => City(p(0), p(1))).toDF()
 
         data.show(10)
         rowCase.show(10)
+
+        // 释放资源
+        sparkSession.stop()
     }
 
 }
