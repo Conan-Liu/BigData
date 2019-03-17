@@ -1,16 +1,9 @@
 package test;
 
-import org.apache.commons.lang3.time.FastDateFormat;
-
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.security.MessageDigest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.UUID;
 
 /**
