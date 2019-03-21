@@ -6,6 +6,7 @@ import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.DoubleObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
+import org.apache.hadoop.io.Text;
 
 /**
  * Created by Administrator on 2019/3/20.
@@ -28,8 +29,8 @@ public class GenericUDFGPS extends GenericUDF {
 
     @Override
     public Object evaluate(DeferredObject[] deferredObjects) throws HiveException {
-        double x = (double) deferredObjects[0].get();
-        double y = (double) deferredObjects[1].get();
+        double x = Double.valueOf(deferredObjects[0].get().toString());
+        double y = Double.valueOf(deferredObjects[1].get().toString());
         double x_pi = 3.14159265358979324 * 3000.0 / 180.0;
 
         double z = Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi);
@@ -38,7 +39,7 @@ public class GenericUDFGPS extends GenericUDF {
         double bd_lat = z * Math.sin(theTa) + 0.006;
         String bd_gps = String.valueOf(bd_lng) + "," + String.valueOf(bd_lat);
 
-        return bd_gps;
+        return new Text(bd_gps);
     }
 
     @Override
