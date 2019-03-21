@@ -24,6 +24,8 @@ import java.util.List;
  * Created by Administrator on 2017/5/23.
  */
 @Description(name = "median", value = "_FUNC_(x) return the median number of a number array. eg:median(x)")
+// 这个类也不推荐使用了， 也不说用哪个来代替
+@SuppressWarnings("deprecation")
 public class GenericUDAFMedian extends AbstractGenericUDAFResolver {
 
     private static final Log LOG = LogFactory.getLog(GenericUDAFMedian.class);
@@ -49,6 +51,7 @@ public class GenericUDAFMedian extends AbstractGenericUDAFResolver {
             case SHORT:
             case INT:
             case LONG:
+                return new GenericUDAFMedianEvaluatorLong();
             case FLOAT:
             case DOUBLE:
                 return new GenericUDAFMedianEvaluatorDouble();
@@ -57,6 +60,39 @@ public class GenericUDAFMedian extends AbstractGenericUDAFResolver {
             default:
                 throw new UDFArgumentException("Only numeric type(int long double) arguments are accepted but" +
                         info[0].getTypeName() + " was passed as parameter of index -> 1.");
+        }
+    }
+
+    public static class GenericUDAFMedianEvaluatorLong extends GenericUDAFEvaluator {
+
+        @Override
+        public AggregationBuffer getNewAggregationBuffer() throws HiveException {
+            return null;
+        }
+
+        @Override
+        public void reset(AggregationBuffer agg) throws HiveException {
+
+        }
+
+        @Override
+        public void iterate(AggregationBuffer agg, Object[] parameters) throws HiveException {
+
+        }
+
+        @Override
+        public Object terminatePartial(AggregationBuffer agg) throws HiveException {
+            return null;
+        }
+
+        @Override
+        public void merge(AggregationBuffer agg, Object partial) throws HiveException {
+
+        }
+
+        @Override
+        public Object terminate(AggregationBuffer agg) throws HiveException {
+            return null;
         }
     }
 
@@ -181,13 +217,13 @@ public class GenericUDAFMedian extends AbstractGenericUDAFResolver {
             Collections.sort(medianNumberAgg.aggIntegerList);
             int size = medianNumberAgg.aggIntegerList.size();
             if (size == 1) {
-                result.set((double) medianNumberAgg.aggIntegerList.get(0).get());
+                result.set(medianNumberAgg.aggIntegerList.get(0).get());
                 return result;
             }
             double rs = 0.0;
             int midIndex = size / 2;
             if (size % 2 == 1) {
-                rs = (double) medianNumberAgg.aggIntegerList.get(midIndex).get();
+                rs = medianNumberAgg.aggIntegerList.get(midIndex).get();
             } else if (size % 2 == 0) {
                 rs = (medianNumberAgg.aggIntegerList.get(midIndex - 1).get() + medianNumberAgg.aggIntegerList.get(midIndex).get()) / 2.0;
             }
