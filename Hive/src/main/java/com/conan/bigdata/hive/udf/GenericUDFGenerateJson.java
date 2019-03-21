@@ -13,7 +13,7 @@ import java.util.Arrays;
 /**
  * Created by Administrator on 2018/8/7.
  */
-public class GenerateJson extends GenericUDF {
+public class GenericUDFGenerateJson extends GenericUDF {
 
     //这个方法只调用一次，并且在evaluate()方法之前调用。该方法接受的参数是一个ObjectInspectors数组。该方法检查接受正确的参数类型和参数个数。
     @Override

@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2017/4/18.
  */
-public class StringToList extends GenericUDF {
+public class GenericUDFStringToList extends GenericUDF {
 
     private static int mapTasks = 0;
     private static String init = "";

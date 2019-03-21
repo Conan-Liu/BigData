@@ -10,7 +10,7 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 /**
  * Created by Administrator on 2019/3/20.
  */
-public class GenericGPS extends GenericUDF {
+public class GenericUDFGPS extends GenericUDF {
 
     @Override
     public ObjectInspector initialize(ObjectInspector[] objectInspectors) throws UDFArgumentException {
