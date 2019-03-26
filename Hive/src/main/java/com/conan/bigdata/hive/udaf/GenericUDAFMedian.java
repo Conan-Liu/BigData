@@ -107,10 +107,10 @@ public class GenericUDAFMedian extends AbstractGenericUDAFResolver {
         ListObjectInspector listFieldOI;
 
         /*
-        PARTIAL1   mapper
-        PARTIAL2   combine
-        FINAL      reduce
-        COMPLETE   只有mapper
+        PARTIAL1   mapper     调用iterate()和terminatePartial()
+        PARTIAL2   combine    调用merge()和terminatePartial()
+        FINAL      reduce     调用merge()和terminate()
+        COMPLETE   只有mapper 调用iterate()和terminate()
          */
 
         @Override
