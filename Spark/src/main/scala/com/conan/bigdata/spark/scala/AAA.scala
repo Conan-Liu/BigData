@@ -19,6 +19,8 @@ object AAA {
         println(name)
     }
 
+    def myPrint=println("2222222222")
+
     def main(args: Array[String]): Unit = {
         scala.Symbol("x")
         println("this is \" hahah")
@@ -69,5 +71,8 @@ object AAA {
         println(t4._3)
         val (x1, x2, x3, x4) = t4
         println(x1 + ", " + x2 + ", " + x3 + ", " + x4)
+
+
+        myPrint
     }
 }
