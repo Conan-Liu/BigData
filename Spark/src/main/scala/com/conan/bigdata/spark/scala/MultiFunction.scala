@@ -20,6 +20,20 @@ object MultiFunction {
             f2(a, b)
     }
 
+    // 一个完整的高阶函数使用, calcFull 参数是函数， 返回值也是函数
+    def calcFull(a: Int, b: Int, f1: (Int, Int) => Int, f2: (Int, Int) => Int): (Int) => Int = {
+        var n = 0
+        if (a < b) {
+            n = f1(a, b)
+        } else {
+            n = f2(a, b)
+        }
+
+        def linear(x: Int): Int = n * x
+
+        linear
+    }
+
     def highFunction(): Unit = {
         val arr = Array(3.14, 1.42, 2.0)
         arr.map(ceil).foreach(print)
@@ -35,6 +49,7 @@ object MultiFunction {
         // 下面是调用自己定义的高阶函数 calc , 定义高阶函数可以参考calc的示例， 直接使用
         // 函数名作为参数，传给高阶函数
         println("高阶函数返回值： " + calc(-8, 2, add, sub))
+        println("完整的高阶函数演示： " + calcFull(10, 3, add, sub)(100))
     }
 
     def anonyFunction(): Unit = {
