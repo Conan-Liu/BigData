@@ -21,6 +21,7 @@ object MultiFunction {
     }
 
     // 一个完整的高阶函数使用, calcFull 参数是函数， 返回值也是函数
+    // (Int) => Int 这是定义函数的数据类型的格式
     def calcFull(a: Int, b: Int, f1: (Int, Int) => Int, f2: (Int, Int) => Int): (Int) => Int = {
         var n = 0
         if (a < b) {
