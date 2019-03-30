@@ -36,5 +36,7 @@ public class AAA {
         printStrings("hello", "world", "java");
 
         System.out.println(Math.pow(2, -2));
+
+        System.out.println(100/200/365);
     }
 }
