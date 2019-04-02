@@ -55,13 +55,19 @@ object MultiFunction {
 
     def anonyFunction(): Unit = {
         val arr = Array(1, 2, 3, 4)
-        //        arr.map((x: Int) => x * 2;println(x*2)).foreach(print)
+        arr.map((x: Int) => {
+            println(x)
+            x * 2
+        }).foreach(println)
     }
 
     def main(args: Array[String]): Unit = {
         highFunction
         println
         anonyFunction
+
+        // * 可以表示乘法， 字符串也可应用与乘法
+        (1 to 10).map("*" * _).foreach(println)
     }
 
 }
