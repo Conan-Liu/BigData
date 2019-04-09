@@ -74,5 +74,10 @@ object AAA {
 
 
         myPrint
+
+
+        println("aaaa"+"bbb")
+
+        println("2019-03-02".endsWith("01"))
     }
 }
