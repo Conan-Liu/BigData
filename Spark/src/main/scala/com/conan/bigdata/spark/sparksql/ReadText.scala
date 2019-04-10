@@ -44,6 +44,7 @@ object ReadText {
         val data = Spark.getSparkSession("aaa").createDataFrame(rowRDD_2, schema_1)
 
         // spark2 的隐式转换
+        // 在使用一些特殊的操作时，一定要加上 import spark.implicits._ 不然toDF、toDS无法使用
         //        import sparkSession.sqlContext.implicits._
         import sparkSession.implicits._
         // 新版推荐
@@ -53,6 +54,8 @@ object ReadText {
             var ss = line.split("\\|")
             (ss(0), ss(1))
         }).toDF("col1", "col2")
+        // DF 转成 DS
+        val rowCase1DS = rowCase1.as[City]
 
         data.show(10)
         rowCase.show(10)
