@@ -19,7 +19,7 @@ object AAA {
         println(name)
     }
 
-    def myPrint=println("2222222222")
+    def myPrint = println("2222222222")
 
     def main(args: Array[String]): Unit = {
         scala.Symbol("x")
@@ -76,8 +76,10 @@ object AAA {
         myPrint
 
 
-        println("aaaa"+"bbb")
+        println("aaaa" + "bbb")
 
         println("2019-03-02".endsWith("01"))
+
+        val s: String = "a"
     }
 }

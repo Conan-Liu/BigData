@@ -39,7 +39,7 @@ object ReadText {
         val sc = new SparkContext(new SparkConf())
         val txtDF = sc.textFile(txtPath)
 
-        val rowRDD_1 = txtDF.map(_.split("\\|")).map(p => Row(p: _*))    // _* 把p这个case class转变成序列， 传入到可变长数组参数
+        val rowRDD_1 = txtDF.map(_.split("\\|")).map(p => Row(p: _*)) // _* 把p这个case class转变成序列， 传入到可变长数组参数
         val rowRDD_2 = txtDF.map(_.split("\\|")).map(p => Row(p(0), p(1)))
         val data = Spark.getSparkSession("aaa").createDataFrame(rowRDD_2, schema_1)
 
@@ -48,6 +48,11 @@ object ReadText {
         import sparkSession.implicits._
         // 新版推荐
         val rowCase = txtDF.map(_.split("\\|")).map(p => City(p(0), p(1))).toDF()
+        // 元组方式
+        val rowCase1 = txtDF.map(line => {
+            var ss = line.split("\\|")
+            (ss(0), ss(1))
+        }).toDF("col1", "col2")
 
         data.show(10)
         rowCase.show(10)
