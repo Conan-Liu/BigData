@@ -22,4 +22,14 @@ public class JieCheng {
         }
         System.out.println(sum);
     }
+
+    @Test
+    public void test2() {
+        double sum1 = 1, sum = 0;
+        for (int i = 1; i <= 20; i++) {
+            sum1 *= i;
+            sum += 1 / sum1;
+        }
+        System.out.println(sum);
+    }
 }
