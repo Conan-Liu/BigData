@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class TestA {
 
-    @org.junit.Test
+    @Test
     public void test1() {
         List<String> stringArrayList = new ArrayList<>();
         List<Integer> integerArrayList = new ArrayList<>();
