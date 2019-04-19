@@ -1,5 +1,6 @@
 package com.conan.bigdata.hive.udf;
 
+import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
@@ -13,6 +14,11 @@ import java.util.Arrays;
 /**
  * Created by Administrator on 2018/8/7.
  */
+@Description(
+        name="GenerateJson",    // 函数的名称
+        value = "_FUNC_(string...) - even number of string arguments, return json",   // 该函数在  DESCRIBE FUNCTION ... 时 显示的提示
+        extended = "hahahaha"   // 函数使用示例，DESCRIBE FUNCTION EXTENDED 显示的提示。
+)
 public class GenericUDFGenerateJson extends GenericUDF {
 
     //这个方法只调用一次，并且在evaluate()方法之前调用。该方法接受的参数是一个ObjectInspectors数组。该方法检查接受正确的参数类型和参数个数。
