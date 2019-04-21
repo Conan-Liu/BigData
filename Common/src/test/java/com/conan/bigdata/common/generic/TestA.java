@@ -19,6 +19,7 @@ public class TestA {
         Class classIntegerArrayList = integerArrayList.getClass();
 
         if (classStringArrayList.equals(classIntegerArrayList)) {
+            System.out.println(classIntegerArrayList.getName());
             System.out.println("类型相同");
         }
     }

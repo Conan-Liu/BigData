@@ -1,19 +1,30 @@
 package com.conan.bigdata.kafka.util;
 
 /**
- * Created by Administrator on 2017/1/12.
+ * Created by Conan on 2019/4/21.
  */
-public interface KafkaProperties {
-    String zkConnect = "master:2181";
-    String groupID = "group1";
-    String topic = "topic1";
-    String kafkaServerURLPort = "master:9092";
-    String kafkaServerURL = "master";
-    int kafkaServerPort = 9092;
-    int kafkaProducerBufferSize = 64 * 1024;
-    int connectionTimeOut = 20000;
-    int reconnectInterval = 10000;
-    String topic2 = "topic2";
-    String topic3 = "topic3";
-    String clientID = "SimpleConsumerDemoClient";
+public class KafkaProperties {
+
+    public static final String ZOOKEEPER = "192.168.56.101:2181";
+
+    public static final String GROUP_ID_1 = "group_id_1";
+
+    public static final String GROUP_ID_2= "group_id_2";
+
+    public static final String TOPIC = "hellotopic";
+
+    public static final String BROKER = "192.168.56.101:9092";
+
+    public static final String BROKER_HOST = "192.168.56.101";
+
+    public static final int BROKER_PORT = 9092;
+
+    public static final int kafkaProducerBufferSize = 64 * 1024;
+
+    public static final int connectionTimeOut = 20000;
+
+    public static final int reconnectInterval = 10000;
+
+    public static final  String CLIENT_ID = "SimpleConsumerDemoClient";
+
 }
