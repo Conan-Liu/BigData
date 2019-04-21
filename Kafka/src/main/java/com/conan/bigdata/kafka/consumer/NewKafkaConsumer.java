@@ -1,5 +1,6 @@
 package com.conan.bigdata.kafka.consumer;
 
+import com.conan.bigdata.kafka.util.KafkaProperties;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -11,33 +12,34 @@ import java.util.Properties;
  * Created by Administrator on 2017/1/12.
  */
 public class NewKafkaConsumer {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         System.out.println("begin consumer");
         connectionKafka();
         System.out.println("finish consumer");
     }
 
-    public static void connectionKafka(){
+    public static void connectionKafka() {
         Properties properties = new Properties();
-        properties.put("bootstrap.servers", "192.168.56.101:9092");
-        properties.put("group.id", "testConsumer");
+        properties.put("bootstrap.servers", KafkaProperties.BROKER);
+        properties.put("group.id", KafkaProperties.GROUP_ID_1);
         properties.put("enable.auto.commit", "true");
         properties.put("auto.commit.interval.ms", "1000");
         properties.put("session.timeout.ms", "30000");
-        properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        properties.put("key.deserializer", "org.apache.kafka.common.serialization.IntegerDeserializer");
         properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 
-        KafkaConsumer<String,String> consumer=new KafkaConsumer<String, String>(properties);
-        consumer.subscribe(Arrays.asList("test"));
-        while (true){
-            ConsumerRecords<String,String> records=consumer.poll(100);
-            try{
-                Thread.sleep(20000);
-            }catch (InterruptedException e){
+        KafkaConsumer<Integer, String> consumer = new KafkaConsumer<>(properties);
+        consumer.subscribe(Arrays.asList(KafkaProperties.TOPIC));
+        while (true) {
+            ConsumerRecords<Integer, String> records = consumer.poll(100);
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            for(ConsumerRecord<String,String> record:records){
-                System.out.printf("offset = %d, key = %s, value = %s",record.offset(),record.key(),record.value());
+            for (ConsumerRecord<Integer, String> record : records) {
+                System.out.printf("offset = %d, key = %s, value = %s", record.offset(), record.key(), record.value());
+                System.out.println();
             }
         }
     }
