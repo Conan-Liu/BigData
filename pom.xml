@@ -53,6 +53,17 @@
             </snapshots>
         </repository>
         <repository>
+            <id>cloudera1</id>
+            <name>cloudera</name>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>cloudera</id>
             <name>cloudera</name>
             <url>https://repository.cloudera.com/content/repositories/releases/</url>
