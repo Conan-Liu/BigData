@@ -1,5 +1,8 @@
 package com.conan.bigdata.spark.scala
 
+import com.conan.bigdata.spark.streaming.WordCountToMysql
+
+import scala.collection.immutable.HashMap
 import scala.util.control.Breaks._
 
 /**
@@ -20,6 +23,14 @@ object AAA {
     }
 
     def myPrint = println("2222222222")
+
+    def testOption(): Unit = {
+        var map = new HashMap[String, String]()
+        map += ("1" -> "liu")
+        map += ("2" -> "fei")
+        val s=map.get("3")
+        println(s.getOrElse("aaa").length)
+    }
 
     def main(args: Array[String]): Unit = {
         scala.Symbol("x")
@@ -81,5 +92,11 @@ object AAA {
         println("2019-03-02".endsWith("01"))
 
         val s: String = "a"
+
+        // 测试关键字Option
+        testOption()
+
+        //测试 redis 链接
+        WordCountToMysql.createJedisConnection()
     }
 }

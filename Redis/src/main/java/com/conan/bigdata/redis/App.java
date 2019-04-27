@@ -11,7 +11,7 @@ import java.util.Set;
 public class App {
 
     public static void main(String[] args) {
-        Jedis jedis = new Jedis("107.182.20.237", 6379);
+        Jedis jedis = new Jedis("CentOS", 6379);
         System.out.println("是否链接成功: " + jedis.isConnected());  // 这个居然是false
         System.out.println("服务正在运行: " + jedis.ping());
 
