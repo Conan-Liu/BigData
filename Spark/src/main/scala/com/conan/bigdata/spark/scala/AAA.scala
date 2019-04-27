@@ -98,5 +98,12 @@ object AAA {
 
         //测试 redis 链接
         WordCountToMysql.createJedisConnection()
+
+        // 测试 flatMap
+        testFlatMap()
+    }
+
+    def testFlatMap():Unit={
+
     }
 }
