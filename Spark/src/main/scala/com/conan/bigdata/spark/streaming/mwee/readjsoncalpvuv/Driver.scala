@@ -2,7 +2,7 @@ package com.conan.bigdata.spark.streaming.mwee.readjsoncalpvuv
 
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.spark.SparkConf
-import org.apache.spark.streaming.kafka010.KafkaUtils
+//import org.apache.spark.streaming.kafka010.KafkaUtils
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 /**
