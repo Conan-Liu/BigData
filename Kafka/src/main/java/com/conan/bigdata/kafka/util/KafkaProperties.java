@@ -5,7 +5,7 @@ package com.conan.bigdata.kafka.util;
  */
 public class KafkaProperties {
 
-    public static final String ZOOKEEPER = "192.168.56.101:2181";
+    public static final String ZOOKEEPER = "CentOS:2181";
 
     public static final String GROUP_ID_1 = "group_id_1";
 
@@ -13,9 +13,9 @@ public class KafkaProperties {
 
     public static final String TOPIC = "hellotopic";
 
-    public static final String BROKER = "192.168.56.101:9092";
+    public static final String BROKER = "CentOS:9092";
 
-    public static final String BROKER_HOST = "192.168.56.101";
+    public static final String BROKER_HOST = "CentOS";
 
     public static final int BROKER_PORT = 9092;
 

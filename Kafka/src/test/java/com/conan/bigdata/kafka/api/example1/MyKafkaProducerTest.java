@@ -1,5 +1,6 @@
 package com.conan.bigdata.kafka.api.example1;
 
+import com.conan.bigdata.kafka.util.KafkaProperties;
 import org.junit.Test;
 
 /**

@@ -33,7 +33,7 @@ public class NewKafkaConsumer {
         while (true) {
             ConsumerRecords<Integer, String> records = consumer.poll(100);
             try {
-                Thread.sleep(200);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
