@@ -2,6 +2,9 @@ package com.conan.bigdata.common;
 
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,5 +40,18 @@ public class TestAPI {
         map.put("2","fei");
         String a=map.get("3");
         System.out.println(a.length());
+    }
+
+    // 测试一个catch 捕捉多个异常
+    @Test
+    public void test5(){
+//        try{
+//            throw new IOException("aaa");
+//            throw new SQLException("bbb");
+//            throw new InterruptedException("ccc");
+//                    // 这种多异常的写法， 必须类不相关， 也就是说不能互为父子类
+//        }catch (SQLException | IOException | InterruptedException e){
+//
+//        }
     }
 }
