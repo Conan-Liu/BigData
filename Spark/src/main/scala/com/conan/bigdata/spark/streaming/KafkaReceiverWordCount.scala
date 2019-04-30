@@ -17,7 +17,7 @@ object KafkaReceiverWordCount {
             System.exit(1)
         }
 
-        val sparkConf = new SparkConf().setAppName("KafkaReceiverWordCount").setMaster("local[2]")
+        val sparkConf = new SparkConf().setAppName("KafkaReceiverWordCount").setMaster("local[*]")
         val ssc = new StreamingContext(sparkConf, Seconds(5))
         ssc.sparkContext.setLogLevel("WARN")
 
@@ -25,13 +25,14 @@ object KafkaReceiverWordCount {
 
         val topicMap = topics.split(",").map((_, threads.toInt)).toMap
 
-        // TODO... 这个没有接收到数据怎么回事？ 难道是kafka的版本不兼容？
+        // zkQuorum = CentOS:2181/kafka0901, group_id=test_group, topic=streamingtopic, threads=1
+        // 一定要注意该kafka所在的zk地址， 否则，不报错， 拿不到数据
         val message = KafkaUtils.createStream(ssc, zkQuorum, group_id, topicMap)
-        // 查看message的数据结构长什么样
-        message.print()
+        // 查看message的数据结构长什么样, 打印 null 什么鬼
+        //        message.map(_._1).print()
 
         val result = message.map(_._2).flatMap(_.split("\\s+")).map(x => (x, 1)).reduceByKey(_ + _)
-        print()
+        result.print()
 
         ssc.start()
         ssc.awaitTermination()
