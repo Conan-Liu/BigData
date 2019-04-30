@@ -14,7 +14,7 @@
         <module>Common</module>
         <!--<module>DeepLearning</module>-->
         <module>ElasticSearch</module>
-        <!--<module>Flume</module>-->
+        <module>Flume</module>
         <module>Hadoop</module>
         <module>Hbase</module>
         <module>Hive</module>

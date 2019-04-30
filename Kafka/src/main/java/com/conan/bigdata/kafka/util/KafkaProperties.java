@@ -11,7 +11,7 @@ public class KafkaProperties {
 
     public static final String GROUP_ID_2= "group_id_2";
 
-    public static final String TOPIC = "hellotopic";
+    public static final String TOPIC = "kafkastreaming";
 
     public static final String BROKER = "CentOS:9092";
 

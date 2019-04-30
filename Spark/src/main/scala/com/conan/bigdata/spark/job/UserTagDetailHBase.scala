@@ -18,6 +18,8 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 /**
   * Created by Administrator on 2018/8/31.
+  * 把hive中的parquet数据，导入hbase， row_key在hive中已经生成
+  * hive和hbase整合的话， 插入数据会很慢， 所以最好走底层 HFile 的方式
   */
 object UserTagDetailHBase {
 

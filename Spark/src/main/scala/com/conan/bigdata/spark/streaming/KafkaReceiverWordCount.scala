@@ -17,7 +17,7 @@ object KafkaReceiverWordCount {
             System.exit(1)
         }
 
-        val sparkConf = new SparkConf().setAppName("KafkaReceiverWordCount").setMaster("local[*]")
+        val sparkConf = new SparkConf()//.setAppName("KafkaReceiverWordCount").setMaster("local[*]")
         val ssc = new StreamingContext(sparkConf, Seconds(5))
         ssc.sparkContext.setLogLevel("WARN")
 
