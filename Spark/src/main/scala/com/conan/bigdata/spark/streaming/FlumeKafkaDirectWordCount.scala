@@ -11,6 +11,8 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
   * 方式一
   */
 object FlumeKafkaDirectWordCount {
+
+    // 传入的参数 : CentOS:9092 flumekafkastreaming
     def main(args: Array[String]): Unit = {
 
         if (args.length != 2) {
