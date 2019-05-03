@@ -1,10 +1,14 @@
 package com.conan.bigdata.spark.streaming.simple
 
-import com.conan.bigdata.spark.streaming.simple.bean.ClickLog
+import com.conan.bigdata.spark.streaming.simple.bean.{ClickLog, CourseClickCount}
+import com.conan.bigdata.spark.streaming.simple.dao.CourseClickCountDAO
 import com.conan.bigdata.spark.streaming.utils.DateUtils
+import kafka.serializer.StringDecoder
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.kafka.KafkaUtils
 import org.apache.spark.streaming.{Minutes, StreamingContext}
+
+import scala.collection.mutable.ListBuffer
 
 /**
   * Created by Conan on 2019/5/2.
@@ -25,19 +29,25 @@ object UVStreamingAPP {
         val ssc = new StreamingContext(sparkConf, Minutes(1))
         ssc.sparkContext.setLogLevel("WARN")
 
-        val Array(zkQuorum, group_id, topics, threads) = args
-
-        val topicMap = topics.split(",").map((_, threads.toInt)).toMap
-
+        // 1. streaming 通过Receiver来接收数据
+        val Array(zkQuorum, group_id, topics1, threads) = args
+        val topicMap = topics1.split(",").map((_, threads.toInt)).toMap
         val messages = KafkaUtils.createStream(ssc, zkQuorum, group_id, topicMap)
 
+        // 2. streaming 直连kafka读取数据
+        val Array(broker, topics2) = Array("CentOS:9092","flumekafkastreaming")
+        var kafkaParams = Map[String, String]()
+        kafkaParams += ("bootstrap.servers" -> broker)
+        val topicSet = topics2.split(",").toSet
+        val messageDirect = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc, kafkaParams, topicSet)
+
         // 步骤一:  测试数据接收
-        val result = messages.map(_._2).count()
+        val result = messageDirect.map(_._2).count()
         result.print()
 
         // 步骤二:  数据清洗, 数据格式 GET /class/112.html HTTP/1.1
         // 过滤掉不是class开头的网址
-        val filterD = messages.map(message => {
+        val filterD = messageDirect.map(message => {
             val msgSplits = message._2.split("\t")
             val url = msgSplits(2).split(" ")(1)
             var courseId = 0
@@ -51,6 +61,24 @@ object UVStreamingAPP {
             // ClickLog(ip:String,time:String,courseId:Int,statusCode:Int,referer:String)
             ClickLog(msgSplits(0), DateUtils.parseToMinute(msgSplits(1)), courseId, msgSplits(3).toInt, msgSplits(4))
         }).filter(_.courseId != 0)
+
+        // 过滤后的数据， 需要转成写入 hbase 的格式
+        val hbaseD = filterD.map(x => {
+            // 计算这个批次的PV
+            (x.time.substring(0, 8) + "_" + x.courseId, 1)
+        }).reduceByKey(_ + _)
+
+        // 写入hbase
+        hbaseD.foreachRDD(rdd => {
+            rdd.foreachPartition(partition => {
+                val list = new ListBuffer[CourseClickCount]
+                partition.foreach(record => {
+                    list.append(CourseClickCount(record._1, record._2))
+                })
+
+                CourseClickCountDAO.saveToHbase(list)
+            })
+        })
 
         filterD.print()
         ssc.start()
