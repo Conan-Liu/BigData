@@ -1,7 +1,7 @@
 package com.conan.bigdata.spark.streaming.simple
 
-import com.conan.bigdata.spark.streaming.simple.bean.{ClickLog, CourseClickCount}
-import com.conan.bigdata.spark.streaming.simple.dao.CourseClickCountDAO
+import com.conan.bigdata.spark.streaming.simple.bean.{ClickLog, CourseClickCount, CourseSearchClickCount}
+import com.conan.bigdata.spark.streaming.simple.dao.{CourseClickCountDAO, CourseSearchClickCountDAO}
 import com.conan.bigdata.spark.streaming.utils.DateUtils
 import kafka.serializer.StringDecoder
 import org.apache.spark.SparkConf
@@ -25,17 +25,17 @@ object UVStreamingAPP {
             System.exit(1)
         }
 
-        val sparkConf = new SparkConf().setAppName("UVStreamingAPP").setMaster("local[*]")
+        val sparkConf = new SparkConf()//.setAppName("UVStreamingAPP").setMaster("local[*]")
         val ssc = new StreamingContext(sparkConf, Minutes(1))
-        ssc.sparkContext.setLogLevel("WARN")
+//        ssc.sparkContext.setLogLevel("WARN")
 
         // 1. streaming 通过Receiver来接收数据
-        val Array(zkQuorum, group_id, topics1, threads) = args
-        val topicMap = topics1.split(",").map((_, threads.toInt)).toMap
-        val messages = KafkaUtils.createStream(ssc, zkQuorum, group_id, topicMap)
+//        val Array(zkQuorum, group_id, topics1, threads) = Array("CentOS:2181/kafka", "test_group_uv", "flumekafkastreaming", "1")
+//        val topicMap = topics1.split(",").map((_, threads.toInt)).toMap
+//        val messages = KafkaUtils.createStream(ssc, zkQuorum, group_id, topicMap)
 
         // 2. streaming 直连kafka读取数据
-        val Array(broker, topics2) = Array("CentOS:9092","flumekafkastreaming")
+        val Array(broker, topics2) = Array("CentOS:9092", "flumekafkastreaming")
         var kafkaParams = Map[String, String]()
         kafkaParams += ("bootstrap.servers" -> broker)
         val topicSet = topics2.split(",").toSet
@@ -62,13 +62,12 @@ object UVStreamingAPP {
             ClickLog(msgSplits(0), DateUtils.parseToMinute(msgSplits(1)), courseId, msgSplits(3).toInt, msgSplits(4))
         }).filter(_.courseId != 0)
 
-        // 过滤后的数据， 需要转成写入 hbase 的格式
+        // 写入hbase, 采用累加的方式， 统计今天到现在为止的全部PV量
         val hbaseD = filterD.map(x => {
             // 计算这个批次的PV
             (x.time.substring(0, 8) + "_" + x.courseId, 1)
         }).reduceByKey(_ + _)
 
-        // 写入hbase
         hbaseD.foreachRDD(rdd => {
             rdd.foreachPartition(partition => {
                 val list = new ListBuffer[CourseClickCount]
@@ -80,7 +79,28 @@ object UVStreamingAPP {
             })
         })
 
-        filterD.print()
+        // 统计从搜索引擎过来的pv量
+        val searchHbaseD = filterD.map(x => {
+            val hostSplit = x.referer.split("/")
+            var host = ""
+            if (hostSplit.length >= 3) {
+                host = hostSplit(2).replace(".", "_")
+            }
+            (host, x.time, x.courseId)
+        }).filter(_._1 != "").map(x => (x._2.substring(0, 8) + "_" + x._1 + "_" + x.x._3, 1))
+            .reduceByKey(_ + _)
+
+        searchHbaseD.foreachRDD(rdd => {
+            rdd.foreachPartition(partition => {
+                val list = new ListBuffer[CourseSearchClickCount]
+                partition.foreach(record => {
+                    list.append(CourseSearchClickCount(record._1, record._2))
+                })
+
+                CourseSearchClickCountDAO.saveToHbase(list)
+            })
+        })
+
         ssc.start()
         ssc.awaitTermination()
     }
