@@ -28,8 +28,8 @@ object AAA {
         var map = new HashMap[String, String]()
         map += ("1" -> "liu")
         map += ("2" -> "fei")
-        val s=map.get("3")
-        println(s.getOrElse("aaa").length)
+        val s = map.get("3")
+        println("Option ====" + s.getOrElse("aaa").length)
     }
 
     def main(args: Array[String]): Unit = {
@@ -99,11 +99,6 @@ object AAA {
         //测试 redis 链接
         WordCountToMysql.createJedisConnection()
 
-        // 测试 flatMap
-        testFlatMap()
     }
 
-    def testFlatMap():Unit={
-
-    }
 }
