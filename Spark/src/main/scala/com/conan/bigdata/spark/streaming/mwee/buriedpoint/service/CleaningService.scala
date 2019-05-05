@@ -4,6 +4,7 @@ import java.util.Date
 
 import com.alibaba.fastjson.{JSON, JSONObject}
 import com.conan.bigdata.spark.streaming.mwee.buriedpoint.common.{BuriedPointData, Constant}
+import com.conan.bigdata.spark.streaming.mwee.buriedpoint.utils.KafkaProducerUtil
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.slf4j.LoggerFactory
@@ -27,7 +28,7 @@ object CleaningService {
                 val verifyResult = CheckService.verify(jsonObject)
                 if (verifyResult._1) {
                     val line = transform(jsonObject)
-                    send2SinkKafka(line)
+                    KafkaProducerUtil.sendKafka(line)
                 } else {
                     val timestamp = jsonObject.getLong(BuriedPointData.TIMESTAMP)
                     LOG.error(s"数据验证未通过 [${verifyResult._2}], timestamp=${timestamp}")
@@ -55,11 +56,22 @@ object CleaningService {
                 if (typeOption.nonEmpty) {
                     typeOption.get match {
                         // 类型匹配
-                        case Constant.INTEGER =>addNotNullValue()
+                        case Constant.INTEGER => addNotNullValue(jsonObj, fieldName, bizJsonObj.getInteger(key))
+                        case Constant.LONG => addNotNullValue(jsonObj, fieldName, bizJsonObj.getLong(key))
+                        case Constant.STRING => addNotNullValue(jsonObj, fieldName, bizJsonObj.getString(key))
+                        case Constant.DOUBLE => addNotNullValue(jsonObj, fieldName, bizJsonObj.getDouble(key))
                     }
+                } else {
+                    // DATA_TYPE不存在
+                    addNotNullValue(jsonObj, fieldName, bizJsonObj.getString(key))
                 }
             }
+            jsonObj.put(BuriedPointData.BIZ, bizJsonObj.toJSONString)
         }
+
+        transformDruid(jsonObj)
+
+        jsonObj.toJSONString
     }
 
     /**
@@ -68,6 +80,21 @@ object CleaningService {
     def addNotNullValue(jsonObj: JSONObject, fieldName: String, value: Any): Unit = {
         if (value != null) {
             jsonObj.put(fieldName, value);
+        }
+    }
+
+    /**
+      * 转换成druid
+      */
+    def transformDruid(jsonObj: JSONObject): Unit = {
+        addNotNullValue(jsonObj, BuriedPointData.PV, if ("Page" == jsonObj.getString(BuriedPointData.EVENT_TYPE)) 1 else 0)
+
+        if ("mwapp" == jsonObj.getString(BuriedPointData.APP_NAME)) {
+            addNotNullValue(jsonObj, BuriedPointData.UV_ID, jsonObj.getString(BuriedPointData.DISTINCT_ID))
+        } else {
+            val userId = jsonObj.getString(BuriedPointData.USERID)
+            val mwId = jsonObj.getString(BuriedPointData.MWID)
+            addNotNullValue(jsonObj, BuriedPointData.UV_ID, if (userId != null) userId else mwId)
         }
     }
 }
