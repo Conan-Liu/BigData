@@ -7,6 +7,8 @@ import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Conan on 2019/5/3.
@@ -30,12 +32,23 @@ public class HbaseUtils {
         conf.set("hbase.rootdir", "hdfs://CentOS:8020/hbase");
     }
 
+    /**
+     * 连接池方式一
+     * 这个是官方推荐使用的方式
+     *
+     * @return
+     * @throws IOException
+     */
     public static Connection getConnection() throws IOException {
         if (connection == null) {
-            connection = ConnectionFactory.createConnection(conf);
+            ExecutorService pool= Executors.newFixedThreadPool(10);
+            // 这里有个重载的方法，可以传入连接池参数
+            // 所有进程共用一个connection对象， 这样就能保证Table 和 Admin 操作是线程安全的
+            connection = ConnectionFactory.createConnection(conf,pool);
         }
         return connection;
     }
+
 
     public static Admin getHbaseAdmin() throws IOException {
         if (admin == null) {
