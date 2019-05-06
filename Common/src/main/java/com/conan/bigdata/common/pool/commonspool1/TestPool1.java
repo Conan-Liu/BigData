@@ -1,5 +1,6 @@
 package com.conan.bigdata.common.pool.commonspool1;
 
+import com.conan.bigdata.common.pool.rdbmspool.TestRDBMSPool1;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
@@ -26,5 +27,16 @@ public class TestPool1 {
             connectionPool.returnObject(conn);
 
         }
+
+
+//        GenericObjectPool<Connection> pool = TestRDBMSPool1.getInstance();
+//        for (int i = 0; i < 20; i++) {
+//            Connection conn = pool.borrowObject();
+//            System.out.println("类[" + TestPool1.class.getName() + "]活跃的连接数 : " + pool.getNumActive());
+//            if (i == 2) {
+//                Thread.sleep(1000000);
+//            }
+////            pool.returnObject(conn);
+//        }
     }
 }
