@@ -41,7 +41,7 @@ object UpdateKafka08OffsetToZK {
         // 前后两个topic的类型不一样， streaming需要set类型的， 这里是需要string类型
         val topicDirs = new ZKGroupTopicDirs(groupId, topics)
         // 获取zookeeper中的路径， 因为之前配置kafka的时候，指定的目录不在根目录，有/kafka前缀，看kafka的配置文件
-        // 为了放在一个目录下好管理，所以需要特别加上前缀
+        // 为了放在一个目录下好管理，所以需要特别加上前缀， 最好是新生成的zookeeper路径， 否则路径查找可能有问题
         val zkTopicPath = s"/kafka${topicDirs.consumerOffsetDir}"
         // 创建zookeeper client用于更新偏移量， 这是第三方的开源客户端
         val zkClient = new ZkClient(zkQuorum)
