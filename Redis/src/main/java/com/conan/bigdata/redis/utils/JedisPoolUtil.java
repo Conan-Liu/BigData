@@ -44,6 +44,7 @@ public class JedisPoolUtil {
         }
     }
 
+    // 构造一个单例, 线程安全
     public static JedisPool getJedisPoolInstance(String ipAddress, int port, String password) {
         if (pool == null) {
             synchronized (JedisPool.class) {
