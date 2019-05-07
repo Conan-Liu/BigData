@@ -33,7 +33,8 @@ object UpdateKafka08OffsetToZK {
         val kafkaParams = Map[String, String](
             "bootstrap.servers" -> brokerList,
             "group.id" -> groupId,
-            "auto.commit.enable" -> "false"
+            "auto.commit.enable" -> "false",
+            "auto.offset.reset"->"smallest"     // 设定如果没有offset指定的时候， 从什么地方开始消费，默认最新
         )
         val topicSet = topics.split(",").toSet
         // 创建一个 ZKGroupTopicDirs 对象,其实是指定往zk中写入数据的目录，用于保存偏移量
