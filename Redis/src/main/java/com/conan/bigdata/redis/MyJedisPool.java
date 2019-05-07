@@ -1,5 +1,6 @@
-package com.conan.bigdata.redis.utils;
+package com.conan.bigdata.redis;
 
+import com.conan.bigdata.redis.utils.JedisPoolUtil;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
