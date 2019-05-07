@@ -8,12 +8,16 @@ import redis.clients.jedis.JedisPool;
  * Created by Administrator on 2019/5/7.
  */
 public class MyJedisPool {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         JedisPool pool = JedisPoolUtil.getJedisPoolInstance("CentOS", 6379, "");
-        Jedis jedis = pool.getResource();
-        System.out.println("name = " + jedis.get("name"));
-        jedis.set("name", "V");
-        System.out.println("name = " + jedis.get("name"));
-        pool.close();
+        for (int i = 0; i < 10; i++) {
+            Jedis jedis = pool.getResource();
+//            System.out.println("name = " + jedis.get("name"));
+//            jedis.set("name", "V");
+//            System.out.println("name = " + jedis.get("name"));
+            System.out.println("pool地址: " + pool + "\t\tjedis地址: " + jedis);
+//            pool.close();
+        }
+        Thread.sleep(1000000);
     }
 }
