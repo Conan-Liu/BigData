@@ -6,8 +6,9 @@ import kafka.serializer.StringDecoder
 import kafka.utils.{ZKGroupTopicDirs, ZkUtils}
 import org.I0Itec.zkclient.ZkClient
 import org.apache.spark.SparkConf
+import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.dstream.{DStream, InputDStream}
-import org.apache.spark.streaming.{Seconds, StreamingContext}
+import org.apache.spark.streaming.{Seconds, StreamingContext, Time}
 import org.apache.spark.streaming.kafka.{HasOffsetRanges, KafkaUtils, OffsetRange}
 
 /**
@@ -17,7 +18,7 @@ object UpdateKafka08OffsetToZK {
 
     def main(args: Array[String]): Unit = {
         val sparkConf = new SparkConf().setAppName("UpdateKafka08OffsetToZK").setMaster("local[*]")
-        val ssc = new StreamingContext(sparkConf, Seconds(5))
+        val ssc = new StreamingContext(sparkConf, Seconds(10))
         ssc.sparkContext.setLogLevel("WARN")
 
         /**
@@ -32,14 +33,15 @@ object UpdateKafka08OffsetToZK {
         val kafkaParams = Map[String, String](
             "bootstrap.servers" -> brokerList,
             "group.id" -> groupId,
-            "enable.auto.commit" -> "false"
+            "auto.commit.enable" -> "false"
         )
         val topicSet = topics.split(",").toSet
         // 创建一个 ZKGroupTopicDirs 对象,其实是指定往zk中写入数据的目录，用于保存偏移量
         // 前后两个topic的类型不一样， streaming需要set类型的， 这里是需要string类型
         val topicDirs = new ZKGroupTopicDirs(groupId, topics)
-        // 获取zookeeper中的路径
-        val zkTopicPath = s"${topicDirs.consumerOffsetDir}"
+        // 获取zookeeper中的路径， 因为之前配置kafka的时候，指定的目录不在根目录，有/kafka前缀，看kafka的配置文件
+        // 为了放在一个目录下好管理，所以需要特别加上前缀
+        val zkTopicPath = s"/kafka${topicDirs.consumerOffsetDir}"
         // 创建zookeeper client用于更新偏移量， 这是第三方的开源客户端
         val zkClient = new ZkClient(zkQuorum)
         val children = zkClient.countChildren(zkTopicPath)
@@ -79,7 +81,8 @@ object UpdateKafka08OffsetToZK {
         val result: DStream[(String, Int)] = transformStream.map(_._2).flatMap(_.split("\\s+")).map(x => (x, 1)).reduceByKey(_ + _)
 
         // 数据遍历逻辑
-        result.foreachRDD(rdd => {
+        result.foreachRDD((rdd: RDD[(String, Int)], time: Time) => {
+            println(s"============${time}==================================")
             rdd.foreachPartition(partition => {
                 partition.foreach(x => {
                     println(x)
