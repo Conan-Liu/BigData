@@ -13,6 +13,7 @@ import org.apache.spark.streaming.{Seconds, StreamingContext, Time}
 
 /**
   * Created by Administrator on 2019/5/7.
+  * 目前 0.8 的版本是稳定版本， 考虑用这个， spark 2.3 以后0.8的版本已经不推荐使用了
   */
 object UpdateKafka08OffsetToZK {
 
@@ -96,7 +97,9 @@ object UpdateKafka08OffsetToZK {
                 // 一个Topic有多个partition， 遍历更新partition的offset
                 val zkPath = s"${zkTopicPath}/${o.partition}"
                 // 设置了 auto.commit.enable 不自动提交， 需要自己手动提交offset
-                ZkUtils.updatePersistentPath(zkClient, zkPath, o.fromOffset.toString)
+                // 注意这里应该是 o.untilOffset.toString， 网上有很多地方写的是 o.fromOffset.toString， 这是错的
+                // 你想想， 消费完了， 肯定要把最后的offset记录下来，而不是开始的那个， 这样会重复消费
+                ZkUtils.updatePersistentPath(zkClient, zkPath, o.untilOffset.toString)
             }
         })
 
