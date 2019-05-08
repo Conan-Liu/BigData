@@ -3,13 +3,13 @@ package com.conan.bigdata.spark.streaming
 import kafka.common.TopicAndPartition
 import kafka.message.MessageAndMetadata
 import kafka.serializer.StringDecoder
-import kafka.utils.{ZKGroupTopicDirs, ZkUtils}
+import kafka.utils.{ZKGroupTopicDirs, ZKStringSerializer, ZkUtils}
 import org.I0Itec.zkclient.ZkClient
 import org.apache.spark.SparkConf
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.dstream.{DStream, InputDStream}
-import org.apache.spark.streaming.{Seconds, StreamingContext, Time}
 import org.apache.spark.streaming.kafka.{HasOffsetRanges, KafkaUtils, OffsetRange}
+import org.apache.spark.streaming.{Seconds, StreamingContext, Time}
 
 /**
   * Created by Administrator on 2019/5/7.
@@ -28,13 +28,13 @@ object UpdateKafka08OffsetToZK {
           * groupId    spark消费所在的消费者组
           * topics     spark要消费的topic
           */
-        val Array(brokerList, zkQuorum, groupId, topics) = Array("CentOS:9092", "CentOS:2181", "test_group", "kafkastreaming")
+        val Array(brokerList, zkQuorum, groupId, topics) = Array("CentOS:9092", "CentOS:2181", "test_group", "mulitkafkastreaming")
 
         val kafkaParams = Map[String, String](
             "bootstrap.servers" -> brokerList,
             "group.id" -> groupId,
             "auto.commit.enable" -> "false",
-            "auto.offset.reset"->"smallest"     // 设定如果没有offset指定的时候， 从什么地方开始消费，默认最新
+            "auto.offset.reset" -> "smallest" // 设定如果没有offset指定的时候， 从什么地方开始消费，默认最新
         )
         val topicSet = topics.split(",").toSet
         // 创建一个 ZKGroupTopicDirs 对象,其实是指定往zk中写入数据的目录，用于保存偏移量
@@ -43,8 +43,9 @@ object UpdateKafka08OffsetToZK {
         // 获取zookeeper中的路径， 因为之前配置kafka的时候，指定的目录不在根目录，有/kafka前缀，看kafka的配置文件
         // 为了放在一个目录下好管理，所以需要特别加上前缀， 最好是新生成的zookeeper路径， 否则路径查找可能有问题
         val zkTopicPath = s"/kafka${topicDirs.consumerOffsetDir}"
-        // 创建zookeeper client用于更新偏移量， 这是第三方的开源客户端
-        val zkClient = new ZkClient(zkQuorum)
+        // 创建zookeeper client用于更新偏移量， 这是第三方的开源客户端， 如果直接传入zkQuorum，记录的offset会乱码
+        // 用下面的方法可以编码zookeeper中乱码， 就是换个构造方法
+        val zkClient = new ZkClient(zkQuorum, Integer.MAX_VALUE, Integer.MAX_VALUE, ZKStringSerializer)
         val children = zkClient.countChildren(zkTopicPath)
         var kafkaStream: InputDStream[(String, String)] = null
         var fromOffsets: Map[TopicAndPartition, Long] = Map()
@@ -85,8 +86,8 @@ object UpdateKafka08OffsetToZK {
         result.foreachRDD((rdd: RDD[(String, Int)], time: Time) => {
             println(s"============${time}==================================")
             rdd.foreachPartition(partition => {
-                partition.foreach(x => {
-                    println(x)
+                partition.foreach(record => {
+                    println(record)
                 })
             })
 
@@ -94,6 +95,7 @@ object UpdateKafka08OffsetToZK {
                 // 获取每个partition保存offset对应的zookeeper地址
                 // 一个Topic有多个partition， 遍历更新partition的offset
                 val zkPath = s"${zkTopicPath}/${o.partition}"
+                // 设置了 auto.commit.enable 不自动提交， 需要自己手动提交offset
                 ZkUtils.updatePersistentPath(zkClient, zkPath, o.fromOffset.toString)
             }
         })
