@@ -5,6 +5,7 @@ import kafka.message.MessageAndMetadata
 import kafka.serializer.StringDecoder
 import kafka.utils.{ZKGroupDirs, ZKGroupTopicDirs, ZKStringSerializer, ZkUtils}
 import org.I0Itec.zkclient.ZkClient
+import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.spark.{SparkConf, TaskContext}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.dstream.{DStream, InputDStream}
@@ -28,15 +29,15 @@ object UpdateMultiKafka08OffsetToZK {
           * brokerList 就是spark要直连的broker地址
           * zkQuorum   就是spark把offset的偏移量保存到指定的zk中， 逗号隔开
           * groupId    spark消费所在的消费者组
-          * topics     spark要消费的topic
+          * topics     spark要消费的topic, 可支持消费多个topic, 逗号隔开, 如 kafkastreaming,mulitkafkastreaming
           */
-        val Array(brokerList, zkQuorum, groupId, topics) = Array("CentOS:9092", "CentOS:2181", "test_group", "kafkastreaming,mulitkafkastreaming")
+        val Array(brokerList, zkQuorum, groupId, topics) = Array("CentOS:9092", "CentOS:2181", "test_group", "mulitkafkastreaming")
 
         val kafkaParams = Map[String, String](
-            "bootstrap.servers" -> brokerList,
-            "group.id" -> groupId,
+            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG -> brokerList,
+            ConsumerConfig.GROUP_ID_CONFIG -> groupId,
             "auto.commit.enable" -> "false",
-            "auto.offset.reset" -> "smallest"
+            "auto.offset.reset" -> "smallest" // 设定如果没有offset指定的时候， 从什么地方开始消费，默认最新
         )
         val topicSet = topics.split(",").map(_.trim).toSet
         val zkClient = new ZkClient(zkQuorum, Integer.MAX_VALUE, Integer.MAX_VALUE, ZKStringSerializer)
@@ -62,8 +63,26 @@ object UpdateMultiKafka08OffsetToZK {
                 }
             }
         })
+        for (o <- fromOffsets) {
+            println(o._1.topic + "\t" + o._1.partition + "\t" + o._2)
+        }
+
         val messageHandler = (mmd: MessageAndMetadata[String, String]) => (mmd.topic, mmd.message())
         val kafkaStream: InputDStream[(String, String)] = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder, (String, String)](ssc, kafkaParams, fromOffsets, messageHandler)
+
+
+        //  ===========================这是代码上的一个分水岭========================
+        //  任务启动的时候， 代码回去保存 offset 的 ZK 中查找一次， 来确定开始消费的 offset
+        //  一旦正常运行后， 以后的每个批次就不再去 ZK 中拿offset， 因为正常运行的时候， kafka和streaming 应该是自己维护具体的消费 offset，
+        //  所以， 只要永远不挂机或重启， 一直消费下去， offset永远不会有问题， 但是一旦出现死机或重启， 这个维护的offset就丢了
+        //  启动的时候， 会重新去 ZK 中获取 offset， 所以才需要没消费一个批次， 就保存一次offset， 避免发生意外情况重启重复消费
+        //  以上的代码， 只会在启动的时候执行一次，  下面的代码在每个批次的时候重复执行， 无限循环
+
+        //  综上所述： 只有启动的时候才会去 ZK 中拿offset， streaming正常运行是不用去ZK中获取offset的， 这个由kafka和streaming共同维护
+        //  代码每消费一个批次，都要保存offset， 虽然正常运行时， 这个ZK中的offset用不上，
+        //  但是如果出现意外的时候， 就可能从记录的offset地方开始启动消费
+        //  这才是 ZK 保存 offset 的用途所在, 其它第三方保存offset， 也是这个道理
+
 
         var offsetRanges = Array[OffsetRange]()
         val transformStream: DStream[(String, String)] = kafkaStream.transform(rdd => {

@@ -9,6 +9,8 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
   * Created by Conan on 2019/5/8.
   * 这个 0.10 版本的目前还在实验阶段, 有些方法不合适, 某些api可能存在修改的风险, 不考虑这个方法
   * 这段代码没有执行成功
+  *
+  * 官方推荐使用这种 API , 将 offset保存到 kafka 中， 而不是第三方存储系统
   */
 object UpdateKafka10OffsetToZK {
 

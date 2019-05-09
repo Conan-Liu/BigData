@@ -14,6 +14,11 @@ import org.apache.spark.streaming.{Seconds, StreamingContext, Time}
 /**
   * Created by Administrator on 2019/5/7.
   * 目前 0.8 的版本是稳定版本， 考虑用这个， spark 2.3 以后0.8的版本已经不推荐使用了
+  *
+  * 注意，这中直连方式， 在调用 createDirectStream 的时候， 创建的RDD和Kafka的分区是一一对应的
+  * 保证消费， 如果kafka增加了分区（目前不支持减少分区）, 如果生产者产生的数据刚好被分到这个新的分区,
+  * 那么这个新的分区的数据是不能被 streaming消费到的, 导致数据丢失
+  * 因为RDD不能动态的创建与之对应的分区, 所以需要注意, 初期设定分区的时候，就要考虑清楚
   */
 object UpdateKafka08OffsetToZK {
 
@@ -52,6 +57,10 @@ object UpdateKafka08OffsetToZK {
         var fromOffsets: Map[TopicAndPartition, Long] = Map()
 
         // 如果zookeeper返回的children大于0 ，代表曾经保存过offset， 从这里开始消费
+        // 这种方式有问题， 当kafka新增分区的时候， 以前已经有老的分区被消费过了， 所以该offset节点下子节点的数量 > 0 是成立的，
+        // 但是接下来，获取分区的offset的时候， offset的节点下还没有创建新分区的消费信息， 所以只能获取老的分区消费情况
+        // 导致新分区获取不了offset， 没有指定offset的情况下， 新分区也不能从头开始消费，永远消费不到
+        // 这个代码的bug在这
         if (children > 0) {
             for (i <- 0 until children) {
                 // 获得该分区， 在zookeeper中保存的offset
