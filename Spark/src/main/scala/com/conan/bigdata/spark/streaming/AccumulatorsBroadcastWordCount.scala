@@ -88,7 +88,6 @@ object AccumulatorsBroadcastWordCount {
             println("broadcast : " + wordBlackList.value)
             rdd.foreachPartition(partition => {
                 var newAddBlackWord = Seq[String]()
-                val conn = JDBCPool.getInstance().borrowObject()
                 partition.foreach(record => {
                     if (wordBlackList.value.contains(record)) {
                         dropWordCount.add(1)
@@ -99,8 +98,11 @@ object AccumulatorsBroadcastWordCount {
                     }
                 })
                 if (newAddBlackWord.size > 0) {
+                    val pool = JDBCPool.getInstance()
+                    val conn = pool.borrowObject()
                     import scala.collection.JavaConverters._
                     DML.insertBlackListData(conn, newAddBlackWord.asJava)
+                    pool.returnObject(conn)
                 }
             })
 
