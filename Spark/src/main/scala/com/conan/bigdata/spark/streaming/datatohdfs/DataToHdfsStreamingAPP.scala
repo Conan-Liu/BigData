@@ -4,6 +4,7 @@ import kafka.serializer.StringDecoder
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, FileUtil, Path, PathFilter}
 import org.apache.hadoop.io.IOUtils
+import org.apache.hadoop.io.compress.{BZip2Codec, GzipCodec}
 import org.apache.spark.SparkConf
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.kafka.KafkaUtils
@@ -42,17 +43,21 @@ object DataToHdfsStreamingAPP {
         wordCntDStream.repartition(1).foreachRDD((rdd: RDD[(String, Int)], time: Time) => {
             println(s"======================${time}======================")
             println("总数 : " + rdd.count())
-            saveRddAsTextFileAndMerge[(String, Int)](hdfsUrl, fileNamePrefix, time.milliseconds, tempPath, targetPath, rdd)
+            rdd.filter()
+            saveRddAsTextFileAndMerge[String, Int](hdfsUrl, fileNamePrefix, time.milliseconds, tempPath, targetPath, rdd)
         })
 
         ssc.start()
         ssc.awaitTermination()
     }
 
-    def saveRddAsTextFileAndMerge[T: ClassTag](hdfsUrl: String, fileNamePrefix: String, time: Long, tempPath: String, targetPath: String, rdd: RDD[T]): Unit = {
+    def saveRddAsTextFileAndMerge[K: ClassTag, V: ClassTag](hdfsUrl: String, fileNamePrefix: String, time: Long, tempPath: String, targetPath: String, rdd: RDD[(K, V)]): Unit = {
         // 先保存到 temp 路径下
         val tempFullPath = hdfsUrl + tempPath
-        rdd.saveAsTextFile(tempFullPath + "/" + time)
+        // GzipCodec 不可分割，  BZip2Codec 可分割
+        rdd.saveAsTextFile(tempFullPath + "/" + time, classOf[BZip2Codec])
+        // 只有 PairRDD 才能使用下面这种hadoop api来保存rdd， 如果是普通RDD，只能使用上面那种方法
+        // rdd.saveAsNewAPIHadoopFile()
 
         if ((time / 10000) % 10 == 5) {
             // 在 merge 到目标路径
