@@ -43,7 +43,6 @@ object DataToHdfsStreamingAPP {
         wordCntDStream.repartition(1).foreachRDD((rdd: RDD[(String, Int)], time: Time) => {
             println(s"======================${time}======================")
             println("总数 : " + rdd.count())
-            rdd.filter()
             saveRddAsTextFileAndMerge[String, Int](hdfsUrl, fileNamePrefix, time.milliseconds, tempPath, targetPath, rdd)
         })
 
