@@ -6,9 +6,9 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 /**
   * Created by Administrator on 2017/1/5.
   */
-object FileWordCount {
+object FileWithKryoWordCount {
     def main(args: Array[String]) {
-        val sparkConf = new SparkConf().setAppName("FileWordCount").setMaster("local[1]")
+        val sparkConf = new SparkConf().setAppName("FileWithKryoWordCount").setMaster("local[1]")
         val ssc = new StreamingContext(sparkConf, Seconds(10))
         ssc.sparkContext.setLogLevel("WARN")
         //val lines=ssc.textFileStream("hdfs://192.168.56.101:9000/data/spark")
