@@ -70,8 +70,11 @@ object AAA {
             println
         }
 
+        val t1 = Tuple2(1, 2)
+        val (t11, t12) = t1
+        println("=====" + t11 + "\t" + t12)
 
-        // 惰性变量只能是不可变变量 , 也就是 val ， 而不能是 var, 只有用到对象时才会调用实例化方法,并且无论缩少次调用，实例化方法只会执行一次。
+        // 惰性变量只能是不可变变量 , 也就是 val ， 而不能是 var, 只有用到对象时才会调用实例化方法,并且无论多少次调用，实例化方法只会执行一次。
         lazy val a: Int = 1
 
         val multiDim = Array.ofDim[Int](3, 4)
