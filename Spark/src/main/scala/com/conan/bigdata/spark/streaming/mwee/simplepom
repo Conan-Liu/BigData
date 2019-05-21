@@ -165,6 +165,7 @@
 	</reporting>
 
 
+    <!-- maven package ....... -Dverbose -Pdev  指定哪个环境编译 -Ponline -->
 	<profiles>
 		<!-- 开发环境，默认激活 -->
 		<profile>
@@ -173,6 +174,7 @@
 				<env>dev</env>
 			</properties>
 			<activation>
+			    <!-- 默认是激活这个 -->
 				<activeByDefault>true</activeByDefault>
 			</activation>
 		</profile>
