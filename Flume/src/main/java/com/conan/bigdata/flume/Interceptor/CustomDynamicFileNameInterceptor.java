@@ -20,6 +20,48 @@ import java.util.Map;
  * 这个是flume的拦截器， 对应的应用程序
  * com.conan.bigdata.spark.streaming.mwee.buriedpoint.DataCleaning
  * 这是埋点日志数据的拦截器
+ *
+ * 对应flume.conf
+ * #配置agent1表示代理名称 ：
+ * agent1.sources=source1
+ * agent1.sinks=sink1
+ * agent1.channels=channel1
+
+ * #配置source1：
+ * agent1.sources.source1.type = org.apache.flume.source.kafka.KafkaSource
+ * agent1.sources.source1.kafka.bootstrap.servers=10.1.24.159:9092,10.1.24.160:9092,10.1.24.161:9092
+ * agent1.sources.source1.kafka.consumer.auto.offset.reset=earliest
+ * agent1.sources.source1.groupId =meimeng2hdfs_group
+ * agent1.sources.source1.kafka.topics =MEIMENG_DATA_CLEANING_Topic_20190102
+ * agent1.sources.source1.channels=channel1
+
+ * #配置source1拦截器：
+ * agent1.sources.source1.interceptors = i1
+ * agent1.sources.source1.interceptors.i1.type = com.mzj.customInterceptor.CustomDynamicFileNameInterceptor$Builder
+
+
+ * #配置channel1：
+ * agent1.channels = channel1
+ * agent1.channels.channel1.type = file
+ * agent1.channels.channel1.checkpointDir=/bdata/flume-1.8.0/data/meimeng/file-channel/checkpoint
+ * agent1.channels.channel1.dataDirs=/bdata/flume-1.8.0/data/meimeng/file-channel/data
+
+ * #配置sink1：
+ * agent1.sinks.sink1.channel=channel1
+ * agent1.sinks.sink1.type=hdfs
+ * agent1.sinks.sink1.hdfs.path=hdfs://nameservice1/meimeng/activity/%{timePath}
+ * agent1.sinks.sink1.hdfs.rollInterval=0
+ * agent1.sinks.sink1.hdfs.filePrefix=meimeng
+ * agent1.sinks.sink1.hdfs.inUsePrefix=.
+ * agent1.sinks.sink1.hdfs.rollSize=134217728
+ * agent1.sinks.sink1.hdfs.rollCount=0
+ * agent1.sinks.sink1.hdfs.rollInterval=1800
+ * agent1.sinks.sink1.hdfs.fileType=DataStream
+ * agent1.sinks.sink1.hdfs.writeFormat=Text
+ * agent1.sinks.sink1.hdfs.useLocalTimeStamp=true
+ *
+ * 数据存到hdfs上文件名样例， 上面的sink， 定义了文件大小和时间来切分文件， 128MB一个文件， 或半小时一个
+ * /meimeng/activity/2019/05/13/meimeng.1558425412806
  */
 public class CustomDynamicFileNameInterceptor implements Interceptor {
 
