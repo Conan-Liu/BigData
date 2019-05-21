@@ -62,6 +62,8 @@ import java.util.Map;
  *
  * 数据存到hdfs上文件名样例， 上面的sink， 定义了文件大小和时间来切分文件， 128MB一个文件， 或半小时一个
  * /meimeng/activity/2019/05/13/meimeng.1558425412806
+ *
+ * 如果要发射自定定义的Event， 可以使用 [[org.apache.flume.event.SimpleEvent]] 类
  */
 public class CustomDynamicFileNameInterceptor implements Interceptor {
 
