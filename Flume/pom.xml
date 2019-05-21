@@ -32,14 +32,19 @@
         <dependency>
             <groupId>org.apache.flume</groupId>
             <artifactId>flume-ng-core</artifactId>
-            <version>1.6.0-cdh5.7.5</version>
+            <version>${flume.version}</version>
             <!--<scope>${self.scope}</scope>-->
         </dependency>
 
         <dependency>
             <groupId>org.apache.flume.flume-ng-clients</groupId>
             <artifactId>flume-ng-log4jappender</artifactId>
-            <version>1.6.0-cdh5.7.5</version>
+            <version>${flume.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
         </dependency>
     </dependencies>
 
