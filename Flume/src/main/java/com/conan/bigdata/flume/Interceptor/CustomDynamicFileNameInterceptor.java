@@ -16,6 +16,10 @@ import java.util.Map;
 
 /**
  * Created by Administrator on 2019/5/21.
+ *
+ * 这个是flume的拦截器， 对应的应用程序
+ * com.conan.bigdata.spark.streaming.mwee.buriedpoint.DataCleaning
+ * 这是埋点日志数据的拦截器
  */
 public class CustomDynamicFileNameInterceptor implements Interceptor {
 
