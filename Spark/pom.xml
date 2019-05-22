@@ -96,7 +96,10 @@
             <version>${spark.version}</version>
         </dependency>
 
-        <!-- 0.8的版本包含两种接收kafka的数据，  0.10的只有一种Direct的方式 -->
+        <!--
+            0.8的版本包含两种接收kafka的数据，  0.10的只有一种Direct的方式
+            这个jar包， 目前还是试验性质的， 可以看源码的注解， 可能以后会调整， 不太建议使用
+        -->
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-streaming-kafka-0-10_2.11</artifactId>

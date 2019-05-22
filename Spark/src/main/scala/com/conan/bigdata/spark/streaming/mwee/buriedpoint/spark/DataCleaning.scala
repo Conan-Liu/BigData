@@ -6,7 +6,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.spark.SparkConf
-import org.apache.spark.streaming.kafka010._
+import org.apache.spark.streaming.kafka010._   // 这些类目前是实验性质， 不建议使用
 import org.apache.spark.streaming.{Minutes, StreamingContext}
 import org.slf4j.LoggerFactory
 
@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory
   *
   * 这个数据流程 kafka -> spark streaming -> kafka -> flume -> hdfs
   * 我可能更偏爱 spark streaming 直接到 hdfs
+  *
   */
 object DataCleaning {
 
