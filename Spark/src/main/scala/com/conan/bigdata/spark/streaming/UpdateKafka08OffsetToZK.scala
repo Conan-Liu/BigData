@@ -86,6 +86,7 @@ object UpdateKafka08OffsetToZK {
         // 去kafka读取消息， DStream的Transform方法可以将当前批次的RDD获取出来
         val transformStream: DStream[(String, String)] = kafkaStream.transform(rdd => {
             // 得到该批次rdd对应kafka的offset， 该rdd是一个kafka的rdd，可以获取偏移量范围
+            // 这是在不改变 rdd 类型的基础上得到kafka offsetRanges的，
             offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
             rdd
         })
@@ -94,6 +95,9 @@ object UpdateKafka08OffsetToZK {
 
         // 数据遍历逻辑
         result.foreachRDD((rdd: RDD[(String, Int)], time: Time) => {
+            // 会报 ClassCastException ， 这个 rdd已经经过转换， 不在是KafkaDirectStream的trait了, RDD与DStream的类型都改变了
+            // 所以必须在最开始就要获取kafka offset才行， 参考上面的 transform 方法
+            // val aaa=rdd.asInstanceOf[HasOffsetRanges].offsetRanges
             println(s"============${time}==================================")
             rdd.foreachPartition(partition => {
                 partition.foreach(record => {

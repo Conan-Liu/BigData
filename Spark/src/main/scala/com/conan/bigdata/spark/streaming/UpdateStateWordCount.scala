@@ -20,6 +20,7 @@ object UpdateStateWordCount {
 
         // 使用updateStateByKey 算子， 一定要使用checkpoint保存下来
         // 生产环境上， 建议checkpoint到HDFS上， 这个例子保存到当前路径
+        // 如果Streaming程序的代码改变了，重新打包执行就会出现反序列化异常的问题, checkpoint 不推荐使用
         ssc.checkpoint("E:\\Temp\\spark\\UpdateStateWordCount")
 
         val lines = ssc.socketTextStream("CentOS", 9999)
