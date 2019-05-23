@@ -23,25 +23,27 @@ object NumericOperate {
         val cnt3 = nums.mapPartitions(partitions => {
             val list = new ListBuffer[(Int, Int)]()
             var (sum, cnt) = (0, 0)
-            partitions.map(x => {
+            partitions.foreach(x => {
                 sum += x
                 cnt += 1
             })
-            list.append((sum, cnt))
-            list.toIterator
+            // 下面两种返回迭代器都可以
+            Iterator((sum, cnt))
+            // list.append((sum, cnt))
+            // list.toIterator
         }).reduce((x, y) => (x._1 + y._1, x._2 + y._2))
         println(cnt3._1 / cnt3._2.toDouble)
     }
 
     def showStats(sc: SparkContext, nums: RDD[Int]): Unit = {
         val stats = nums.stats()
-        println("总记录数:"+stats.count)
-        println("最大值:"+stats.max)
-        println("最小值:"+stats.min)
-        println("平均值:"+stats.mean)
-        println("标准差:"+stats.stdev)
-        println("方差:"+stats.variance)
-        println("求和:"+stats.sum)
+        println("总记录数:" + stats.count)
+        println("最大值:" + stats.max)
+        println("最小值:" + stats.min)
+        println("平均值:" + stats.mean)
+        println("标准差:" + stats.stdev)
+        println("方差:" + stats.variance)
+        println("求和:" + stats.sum)
     }
 
     def main(args: Array[String]): Unit = {

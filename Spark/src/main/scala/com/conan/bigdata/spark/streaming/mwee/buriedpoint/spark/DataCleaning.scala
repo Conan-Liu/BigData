@@ -36,7 +36,7 @@ object DataCleaning {
             ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG -> classOf[StringDeserializer],
             "group.id" -> "wahaha",
             ConsumerConfig.AUTO_OFFSET_RESET_CONFIG -> "latest",
-            "enable.auto.commit" -> false //关闭自动提交
+            "enable.auto.commit" -> (false:java.lang.Boolean) //关闭自动提交, 这个要变成 java.lang.Object 的形式， 否则默认是 scala.Boolean
         )
 
         val streamD = KafkaUtils.createDirectStream[String, String](
