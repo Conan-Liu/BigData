@@ -60,10 +60,58 @@
   </build>
   <dependencies>
     <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-hive_2.11</artifactId>
+      <version>2.2.3</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>parquet-hadoop-bundle</artifactId>
+          <groupId>com.twitter</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hive-exec</artifactId>
+          <groupId>org.spark-project.hive</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>hive-metastore</artifactId>
+          <groupId>org.spark-project.hive</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>calcite-avatica</artifactId>
+          <groupId>org.apache.calcite</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>calcite-core</artifactId>
+          <groupId>org.apache.calcite</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jodd-core</artifactId>
+          <groupId>org.jodd</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>datanucleus-core</artifactId>
+          <groupId>org.datanucleus</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>libthrift</artifactId>
+          <groupId>org.apache.thrift</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>libfb303</artifactId>
+          <groupId>org.apache.thrift</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>derby</artifactId>
+          <groupId>org.apache.derby</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.12</version>
-      <scope>test</scope>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   <properties>
