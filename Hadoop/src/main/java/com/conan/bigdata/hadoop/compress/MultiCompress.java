@@ -99,13 +99,12 @@ public class MultiCompress extends Configured implements Tool {
 //        String sourceDir = argsSplit[2];
 //        String sourceType = argsSplit[3];
 //        String targetType = argsSplit[4];
-        String dir1 = argsSplit[0];
-        String dir2 = argsSplit[1];
-//        String fileDate = argsSplit[1];
+        String dir = argsSplit[0];
+        String fileDate = argsSplit[1];
         String optType = "compress";
         String codeClass = "org.apache.hadoop.io.compress.GzipCodec";
-        String sourceDir = String.format("/rdb/%s/%s", dir1, dir2);
-        String targetDir = String.format("/rdb_bak/%s/%s", dir1, dir2);
+        String sourceDir = String.format("/repository/kafka/%s/%s", dir, fileDate);
+        String targetDir = String.format("/repository/kafka/%s", dir);
         String sourceType = "log";
         String targetType = "gz";
 
