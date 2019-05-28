@@ -38,6 +38,7 @@ object FileWithKryoWordCount {
         println(wordsCnt1.count())
         println(wordsCnt2.count())
 
+        // 这里暂停的目的是让程序停在这里， 这样可以查看web页面， 不然一会就执行完了， web看不到
         while (true) {
             Thread.sleep(5000)
         }
