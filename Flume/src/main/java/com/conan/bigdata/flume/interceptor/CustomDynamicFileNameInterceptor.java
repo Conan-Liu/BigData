@@ -73,11 +73,19 @@ public class CustomDynamicFileNameInterceptor implements Interceptor {
     public static final String PRESERVE = "preserveExisting";
     public static final boolean PRESERVE_DEFAULT = true;
 
+    /**
+     * 该方法用来初始化拦截器，在拦截器的构造方法执行之后执行，也就是创建完拦截器对象之后执行
+     */
     @Override
     public void initialize() {
 
     }
 
+    /**
+     * 用来处理每一个event对象，该方法不会被系统自动调用，一般在 List<Event> intercept(List<Event> events) 方法内部调用。
+     * @param event
+     * @return
+     */
     @Override
     public Event intercept(Event event) {
         Map<String, String> headers = event.getHeaders();
@@ -95,6 +103,11 @@ public class CustomDynamicFileNameInterceptor implements Interceptor {
         return event;
     }
 
+    /**
+     * 用来处理一批event对象集合，集合大小与flume启动配置有关，和transactionCapacity大小保持一致。一般直接调用 Event intercept(Event event) 处理每一个event数据。
+     * @param events
+     * @return
+     */
     @Override
     public List<Event> intercept(List<Event> events) {
         List<Event> out = new ArrayList<>();
