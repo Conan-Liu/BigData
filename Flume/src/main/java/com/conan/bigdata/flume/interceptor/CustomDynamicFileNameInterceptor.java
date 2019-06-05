@@ -1,4 +1,4 @@
-package com.conan.bigdata.flume.Interceptor;
+package com.conan.bigdata.flume.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.exception.ExceptionUtils;
