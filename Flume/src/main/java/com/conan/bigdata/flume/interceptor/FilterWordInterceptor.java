@@ -82,6 +82,8 @@ public class FilterWordInterceptor implements Interceptor {
 
     /**
      * List是引用传递， 所以，直接修改值即可， 无需重新定义新的集合
+     * 这个方法不知道什么情况下才能执行？
+     * TODO...
      *
      * @param events
      * @return
