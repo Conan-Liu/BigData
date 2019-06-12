@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 /**
  * Created by Administrator on 2019/6/5.
- *
+ * <p>
  * 用户Source读取events发送到Sink的时候，在events header中加入一些有用的信息，或者对events的内容进行过滤，完成初步的数据清洗。
  */
 public class FilterWordInterceptor implements Interceptor {
@@ -40,9 +40,10 @@ public class FilterWordInterceptor implements Interceptor {
         LOG.warn("这是intercept 单个Event的方法...................................");
         Map<String, String> headers = event.getHeaders();
         String body = new String(event.getBody());
+        LOG.warn("=================" + body);
         try {
-            Pattern pattern = Pattern.compile("^[0-9]*$");
-            boolean isNumeric = pattern.matcher(body).matches();
+            boolean isNumeric = isNumeric(body);
+            LOG.warn("=================" + isNumeric);
             // 判断字符串是否为纯数字
             if (isNumeric) {
                 headers.put("suffix", "numerics");
@@ -57,21 +58,41 @@ public class FilterWordInterceptor implements Interceptor {
         return event;
     }
 
+    private boolean isNumeric(String body) {
+        Pattern pattern = Pattern.compile("^[0-9]*$");
+        return pattern.matcher(body).matches();
+    }
+
+//    @Override
+//    public List<Event> intercept(List<Event> events) {
+//        LOG.warn("这是intercept 多个Event的方法...................................");
+//        List<Event> list = new ArrayList<>(events.size());
+//        for (Event event : events) {
+////            intercept(event);
+//            Event e1 = intercept(event);
+//            // 如果为null，就不输出了， 起到过滤作用
+//            if (e1 != null) {
+//                list.add(e1);
+//            }
+//            LOG.warn("**************" + e1.getHeaders().get("suffix"));
+//        }
+//        LOG.warn("===============" + list.size());
+//        return list;
+//    }
+
+    /**
+     * List是引用传递， 所以，直接修改值即可， 无需重新定义新的集合
+     *
+     * @param events
+     * @return
+     */
     @Override
     public List<Event> intercept(List<Event> events) {
         LOG.warn("这是intercept 多个Event的方法...................................");
-        List<Event> list = new ArrayList<>(events.size());
         for (Event event : events) {
-//            intercept(event);
-            Event e1 = intercept(event);
-            // 如果为null，就不输出了， 起到过滤作用
-            if (e1 != null) {
-                list.add(e1);
-            }
-            LOG.warn("**************" + e1.getHeaders().get("suffix"));
+            intercept(event);
         }
-        LOG.warn("===============" + list.size());
-        return list;
+        return events;
     }
 
     @Override

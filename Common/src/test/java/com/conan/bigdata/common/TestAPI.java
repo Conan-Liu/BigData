@@ -7,6 +7,7 @@ import java.io.InterruptedIOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Created by Administrator on 2019/3/30.
@@ -53,5 +54,11 @@ public class TestAPI {
 //        }catch (SQLException | IOException | InterruptedException e){
 //
 //        }
+    }
+
+    @Test
+    public void test6(){
+        Pattern pattern = Pattern.compile("^[0-9]*$");
+        System.out.println(pattern.matcher("123").matches());
     }
 }
