@@ -1,5 +1,6 @@
 package com.conan.bigdata.hadoop.mr;
 
+import com.conan.bigdata.hadoop.util.HadoopConf;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -15,43 +16,16 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.Comparator;
 import java.util.TreeSet;
 
 /**
  * Created by Administrator on 2019/6/20.
- *
+ * <p>
  * 使用TreeSet的排序功能实现TopN
  */
 public class TopN1 extends Configured implements Tool {
-
-    public static void main(String[] args) throws Exception {
-        int result = ToolRunner.run(new Configuration(), new TopN1(), args);
-        System.exit(result);
-    }
-
-    @Override
-    public int run(String[] args) throws Exception {
-        Configuration conf = getConf();
-
-        Job job = Job.getInstance(conf);
-        job.setJobName(TopN1.class.getName());
-        job.setJarByClass(TopN1.class);
-        job.setMapperClass(TopN1Map.class);
-        job.setReducerClass(TopN1Reduce.class);
-        // 想做到全部数据的TopN， 只能是一个Reduce去计算， 才能保证
-        job.setNumReduceTasks(1);
-        job.setMapOutputKeyClass(LongWritable.class);
-        job.setMapOutputValueClass(NullWritable.class);
-        job.setOutputKeyClass(LongWritable.class);
-        job.setOutputValueClass(NullWritable.class);
-        job.setOutputFormatClass(FileOutputFormat.class);
-
-        FileInputFormat.addInputPaths(job, "/user/hdfs/temp/in/");
-        FileOutputFormat.setOutputPath(job, new Path("/user/hdfs/temp/out"));
-        boolean isSuccess = job.waitForCompletion(true);
-        return isSuccess ? 0 : 1;
-    }
 
     private static class TopN1Map extends Mapper<LongWritable, Text, LongWritable, NullWritable> {
         // 默认升序排, 需要重定义排序方法，降序取TopN名
@@ -109,5 +83,39 @@ public class TopN1 extends Configured implements Tool {
                 context.write(K, NullWritable.get());
             }
         }
+    }
+
+    @Override
+    public int run(String[] args) throws Exception {
+        Configuration conf = getConf();
+        // 查看 HadoopConf 类运行时， 所在的jar包
+        String path = URLDecoder.decode(HadoopConf.class.getProtectionDomain().getCodeSource().getLocation().getFile(), "UTF-8");
+        System.out.println(path);
+        Job job = Job.getInstance(conf);
+        job.setJobName(TopN1.class.getName());
+        job.setJarByClass(TopN1.class);
+        job.setMapperClass(TopN1Map.class);
+        job.setReducerClass(TopN1Reduce.class);
+        // 想做到全部数据的TopN， 只能是一个Reduce去计算， 才能保证
+        job.setNumReduceTasks(1);
+        job.setMapOutputKeyClass(LongWritable.class);
+        job.setMapOutputValueClass(NullWritable.class);
+        job.setOutputKeyClass(LongWritable.class);
+        job.setOutputValueClass(NullWritable.class);
+        job.setOutputFormatClass(FileOutputFormat.class);
+
+        FileInputFormat.addInputPath(job, new Path("/user/hdfs/temp/in/"));
+        FileOutputFormat.setOutputPath(job, new Path("/user/hdfs/temp/out/"));
+        boolean isSuccess = job.waitForCompletion(true);
+        return isSuccess ? 0 : 1;
+    }
+
+    public static void main(String[] args) throws Exception {
+        // 这个地方要注意了， HadoopConf 这个类是用来加载配置的， 但是因为名字比较广泛， 很容易打包的时候， 其它的jar包里面
+        // 有这个类， 导致， 我在代码里面修改这个类， 搞了一头的汗， 运行的时候并没有效果， 只因为自己之前打包的时候， 把这个类打包
+        // 放线上了， 且这个jar包包含这个类， classpath 优先级高， 所以，每次都是加载线上老的jar包， 我自己打包的工作jar包， 一直不生效
+        // 可以打印这个类的全路径和这个类运行时所在的jar包，查看具体加载的类， 定位错误
+        int result = ToolRunner.run(HadoopConf.getInstance(), new TopN1(), args);
+        System.exit(result);
     }
 }

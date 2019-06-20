@@ -1,5 +1,6 @@
 package com.conan.bigdata.hadoop.basic;
 
+import com.conan.bigdata.hadoop.util.HadoopConf;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FsShell;
@@ -13,7 +14,7 @@ import org.apache.hadoop.util.ToolRunner;
 public class TestFsShell extends Configured implements Tool {
     public static void main(String[] args) {
         try {
-            int result = ToolRunner.run(new Configuration(), new TestFsShell(), args);
+            int result = ToolRunner.run(HadoopConf.getInstance(), new TestFsShell(), args);
             System.out.println("result = " + result);
         } catch (Exception e) {
             System.out.println("出错啦");
