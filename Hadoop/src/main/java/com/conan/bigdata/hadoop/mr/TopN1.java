@@ -39,6 +39,8 @@ public class TopN1 extends Configured implements Tool {
         job.setJarByClass(TopN1.class);
         job.setMapperClass(TopN1Map.class);
         job.setReducerClass(TopN1Reduce.class);
+        // 想做到全部数据的TopN， 只能是一个Reduce去计算， 才能保证
+        job.setNumReduceTasks(1);
         job.setMapOutputKeyClass(LongWritable.class);
         job.setMapOutputValueClass(NullWritable.class);
         job.setOutputKeyClass(LongWritable.class);
