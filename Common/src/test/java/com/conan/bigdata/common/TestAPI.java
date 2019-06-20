@@ -5,8 +5,10 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 /**
@@ -35,17 +37,17 @@ public class TestAPI {
     }
 
     @Test
-    public void test4(){
-        Map<String,String> map=new HashMap<>();
-        map.put("1","liu");
-        map.put("2","fei");
-        String a=map.get("3");
+    public void test4() {
+        Map<String, String> map = new HashMap<>();
+        map.put("1", "liu");
+        map.put("2", "fei");
+        String a = map.get("3");
         System.out.println(a.length());
     }
 
     // 测试一个catch 捕捉多个异常
     @Test
-    public void test5(){
+    public void test5() {
 //        try{
 //            throw new IOException("aaa");
 //            throw new SQLException("bbb");
@@ -57,8 +59,33 @@ public class TestAPI {
     }
 
     @Test
-    public void test6(){
+    public void test6() {
         Pattern pattern = Pattern.compile("^[0-9]*$");
         System.out.println(pattern.matcher("123").matches());
+    }
+
+    @Test
+    public void test7() {
+        TreeSet<Integer> set = new TreeSet<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                if (o1 > o2) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+        });
+        set.add(3);
+        set.add(-1);
+        set.add(5);
+        set.add(2);
+        set.add(0);
+        set.pollFirst();
+        set.add(100);
+        set.pollFirst();
+        set.pollLast();
+        for (Integer val : set)
+            System.out.println(val);
     }
 }
