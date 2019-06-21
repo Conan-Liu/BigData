@@ -12,6 +12,16 @@ public class HadoopConf {
     private static void init() {
         conf = new Configuration();
         // 必须指定， 否则会报 schema 不一致
+        conf.set("fs.defaultFS", "hdfs://CentOS:8020/");
+        conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
+        conf.set("mapreduce.reduce.memory.mb", "4096");
+        conf.set("mapreduce.reduce.shuffle.input.buffer.percent", "0.3");
+        conf.set("mapreduce.reduce.shuffle.parallelcopies", "3");
+    }
+
+    private static void initHA() {
+        conf = new Configuration();
+        // 必须指定， 否则会报 schema 不一致
         conf.set("fs.defaultFS", "hdfs://nameservice1/");
         conf.set("dfs.nameservices", "nameservice1");
         conf.set("dfs.ha.namenodes.nameservice1", "nn1,nn2");
