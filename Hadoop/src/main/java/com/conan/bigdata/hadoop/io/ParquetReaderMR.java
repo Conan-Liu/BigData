@@ -24,8 +24,10 @@ import java.util.StringTokenizer;
 
 /**
  * Created by Administrator on 2018/9/6.
+ *
+ * https://blog.csdn.net/csdnmrliu/article/details/86505386
  */
-public class ParquetReaderDriver extends Configured implements Tool {
+public class ParquetReaderMR extends Configured implements Tool {
 
     private static final String IN_PATH = "/user/deploy/mr/in/text.txt";
     private static final String OUT_PATH = "/user/deploy/mr/out/";
@@ -74,8 +76,8 @@ public class ParquetReaderDriver extends Configured implements Tool {
                 "}";
         conf.set("parquet.example.schema", writeSchema);
         Job job = Job.getInstance(conf);
-        job.setJarByClass(ParquetReaderDriver.class);
-        job.setJobName(ParquetReaderDriver.class.getName());
+        job.setJarByClass(ParquetReaderMR.class);
+        job.setJobName(ParquetReaderMR.class.getName());
 
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(IntWritable.class);
@@ -103,7 +105,7 @@ public class ParquetReaderDriver extends Configured implements Tool {
 
     public static void main(String[] args) {
         try {
-            int result = ToolRunner.run(HadoopConf.getInstance(), new ParquetReaderDriver(), args);
+            int result = ToolRunner.run(HadoopConf.getInstance(), new ParquetReaderMR(), args);
             System.exit(result);
         } catch (Exception e) {
             e.printStackTrace();
