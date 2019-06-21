@@ -11,7 +11,9 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -27,7 +29,7 @@ import java.util.TreeSet;
  */
 public class TopN1 extends Configured implements Tool {
 
-    private static class TopN1Map extends Mapper<LongWritable, Text, LongWritable, NullWritable> {
+    private static class TopN1Mapper extends Mapper<LongWritable, Text, LongWritable, NullWritable> {
         // 默认升序排, 需要重定义排序方法，降序取TopN名
         private TreeSet<Long> topn = new TreeSet<>(new Comparator<Long>() {
             @Override
@@ -42,9 +44,9 @@ public class TopN1 extends Configured implements Tool {
             String[] values = value.toString().split("\\s+");
             for (String val : values) {
                 topn.add(Long.parseLong(val));
-            }
-            if (topn.size() > 3) {
-                topn.pollLast();
+                if (topn.size() > 3) {
+                    topn.pollLast();
+                }
             }
         }
 
@@ -58,7 +60,7 @@ public class TopN1 extends Configured implements Tool {
         }
     }
 
-    private static class TopN1Reduce extends Reducer<LongWritable, NullWritable, LongWritable, NullWritable> {
+    private static class TopN1Reducer extends Reducer<LongWritable, NullWritable, LongWritable, NullWritable> {
         // 默认升序排, 需要重定义排序方法，降序取TopN名
         private TreeSet<Long> topn = new TreeSet<>(new Comparator<Long>() {
             @Override
@@ -69,9 +71,11 @@ public class TopN1 extends Configured implements Tool {
 
         @Override
         protected void reduce(LongWritable key, Iterable<NullWritable> values, Context context) throws IOException, InterruptedException {
-            topn.add(key.get());
-            if (topn.size() > 3) {
-                topn.pollLast();
+            for (NullWritable w : values) {
+                topn.add(key.get());
+                if (topn.size() > 3) {
+                    topn.pollLast();
+                }
             }
         }
 
@@ -94,15 +98,20 @@ public class TopN1 extends Configured implements Tool {
         Job job = Job.getInstance(conf);
         job.setJobName(TopN1.class.getName());
         job.setJarByClass(TopN1.class);
-        job.setMapperClass(TopN1Map.class);
-        job.setReducerClass(TopN1Reduce.class);
+        job.setMapperClass(TopN1Mapper.class);
+        job.setReducerClass(TopN1Reducer.class);
         // 想做到全部数据的TopN， 只能是一个Reduce去计算， 才能保证
         job.setNumReduceTasks(1);
         job.setMapOutputKeyClass(LongWritable.class);
         job.setMapOutputValueClass(NullWritable.class);
         job.setOutputKeyClass(LongWritable.class);
         job.setOutputValueClass(NullWritable.class);
-        job.setOutputFormatClass(FileOutputFormat.class);
+
+        // FileInputFormat FileOutputFormat 这两个是文件操作的抽象类， 不能直接使用该类作为输入输出类
+        // 必须使用这两个抽象类的具体子类
+        job.setInputFormatClass(TextInputFormat.class);
+        // job.setOutputFormatClass(FileOutputFormat.class); 这是错的， 不能直接使用FileOutputFormat
+        job.setOutputFormatClass(TextOutputFormat.class);
 
         FileInputFormat.addInputPath(job, new Path("/user/hdfs/temp/in/"));
         FileOutputFormat.setOutputPath(job, new Path("/user/hdfs/temp/out/"));
