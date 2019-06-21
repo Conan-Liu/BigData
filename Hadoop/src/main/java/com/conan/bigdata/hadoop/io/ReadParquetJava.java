@@ -25,7 +25,7 @@ import java.util.List;
  *
  * 此例子是基于 1.7.0 版本
  */
-public class ReadParquet {
+public class ReadParquetJava {
 
     private final static String PARQUET_PATH = "D:\\city_info.parquet";
 
@@ -67,5 +67,5 @@ public class ReadParquet {
                 break;
             }
         }
-    }k
+    }
 }

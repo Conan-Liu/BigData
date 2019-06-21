@@ -5,7 +5,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -14,17 +13,13 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-import parquet.example.data.Group;
-import parquet.example.data.simple.SimpleGroupFactory;
-import parquet.hadoop.ParquetOutputFormat;
-import parquet.hadoop.example.GroupWriteSupport;
+import org.apache.parquet.example.data.Group;
 
 import java.io.IOException;
-import java.util.StringTokenizer;
 
 /**
  * Created by Administrator on 2018/9/6.
- *
+ * <p>
  * https://blog.csdn.net/csdnmrliu/article/details/86505386
  */
 public class ParquetReaderMR extends Configured implements Tool {
@@ -32,29 +27,20 @@ public class ParquetReaderMR extends Configured implements Tool {
     private static final String IN_PATH = "/user/deploy/mr/in/text.txt";
     private static final String OUT_PATH = "/user/deploy/mr/out/";
 
-    public static class ParquetReaderMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
-        private final IntWritable one = new IntWritable(1);
+    public static class ParquetReaderMapper extends Mapper<Void, Group, Text, IntWritable> {
+        private IntWritable one = new IntWritable(1);
         private Text word = new Text();
 
         @Override
-        protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-            String line = value.toString();
-            StringTokenizer token = new StringTokenizer(line);
-            while (token.hasMoreTokens()) {
-                word.set(token.nextToken());
-                context.write(word, one);
-            }
+        protected void map(Void key, Group value, Context context) throws IOException, InterruptedException {
+            String province = value.getString("province", 0);
+            word.set(province);
+            context.write(word, one);
         }
     }
 
-    public static class ParquetReaderReducer extends Reducer<Text, IntWritable, Void, Group> {
-        private SimpleGroupFactory factory;
-
-        @Override
-        protected void setup(Context context) throws IOException, InterruptedException {
-            super.setup(context);
-            factory = new SimpleGroupFactory(GroupWriteSupport.getSchema(context.getConfiguration()));
-        }
+    public static class ParquetReaderReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+        private IntWritable result = new IntWritable();
 
         @Override
         protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
@@ -62,8 +48,8 @@ public class ParquetReaderMR extends Configured implements Tool {
             for (IntWritable val : values) {
                 sum += val.get();
             }
-            Group group = factory.newGroup().append("name", key.toString()).append("age", sum);
-            context.write(null, group);
+            result.set(sum);
+            context.write(key, result);
         }
     }
 
