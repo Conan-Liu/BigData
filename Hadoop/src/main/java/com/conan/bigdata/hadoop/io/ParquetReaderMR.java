@@ -3,8 +3,10 @@ package com.conan.bigdata.hadoop.io;
 import com.conan.bigdata.hadoop.util.HadoopConf;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -32,34 +34,36 @@ public class ParquetReaderMR extends Configured implements Tool {
     private static final String IN_PATH = "/user/hadoop/parquetreadermr/in/";
     private static final String OUT_PATH = "/user/hadoop/parquetreadermr/out/";
 
-    private static class ParquetReaderMapper extends Mapper<Void, Group, Text, IntWritable> {
-        private IntWritable one = new IntWritable(1);
-        private Text word = new Text();
+    public static class ParquetReaderMapper extends Mapper<Void, Group, IntWritable, Text> {
+        private IntWritable K = new IntWritable(1);
+        private Text V = new Text();
 
         @Override
         protected void map(Void key, Group value, Context context) throws IOException, InterruptedException {
+            int cityId = value.getInteger("cityid", 0);
+            String cityName = value.getString("name", 0);
+            int provinceId = value.getInteger("provinceid", 0);
             String province = value.getString("province", 0);
-            word.set(province);
-            context.write(word, one);
+            K.set(cityId);
+            V.set(cityId + "," + cityName + "," + provinceId + "," + province);
+            context.write(K, V);
         }
     }
 
-    private static class ParquetReaderReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
-        private IntWritable result = new IntWritable();
+    public static class ParquetReaderReducer extends Reducer<IntWritable, Text, NullWritable, Text> {
+        private Text V = new Text();
 
         @Override
-        protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-            int sum = 0;
-            for (IntWritable val : values) {
-                sum += val.get();
+        protected void reduce(IntWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+            for (Text val : values) {
+                V.set(val);
+                context.write(NullWritable.get(), V);
             }
-            result.set(sum);
-            context.write(key, result);
         }
     }
 
-    private static class ParquetReadSupport extends DelegatingReadSupport<Group>{
-        public ParquetReadSupport(){
+    public static class ParquetReadSupport extends DelegatingReadSupport<Group> {
+        public ParquetReadSupport() {
             super(new GroupReadSupport());
         }
 
@@ -72,28 +76,38 @@ public class ParquetReaderMR extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {
         Configuration conf = getConf();
-        String readSchema="message example{\n" +
-                "required binary province;\n" +
+        /**
+         *  optional  代表可选的值，  required 代表必选的值， 也就是说该字段的值， 可不可以为null
+         *  binary    字符串形式
+         */
+        String readSchema = "message example{\n" +
+                "optional int32 cityid;\n" +
+                "optional binary name (UTF8);\n" +
+                "optional int32 provinceid;\n" +
+                "optional binary province (UTF8);\n" +
                 "}";
-        conf.set(ReadSupport.PARQUET_READ_SCHEMA, readSchema);
+        conf.set(GroupReadSupport.PARQUET_READ_SCHEMA, readSchema);
+        Path out=new Path(OUT_PATH);
+        FileSystem fs=FileSystem.get(conf);
+        if (fs.exists(out)) {
+            fs.delete(out,true);
+        }
 
         Job job = Job.getInstance(conf);
         job.setJarByClass(ParquetReaderMR.class);
         job.setJobName(ParquetReaderMR.class.getName());
 
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(IntWritable.class);
+        job.setMapOutputKeyClass(IntWritable.class);
+        job.setMapOutputValueClass(Text.class);
 
-        job.setNumReduceTasks(1);
-
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
+        job.setOutputKeyClass(NullWritable.class);
+        job.setOutputValueClass(Text.class);
 
         job.setMapperClass(ParquetReaderMapper.class);
         job.setReducerClass(ParquetReaderReducer.class);
 
         job.setInputFormatClass(ParquetInputFormat.class);
-        ParquetInputFormat.setReadSupportClass(job,ParquetReadSupport.class);
+        ParquetInputFormat.setReadSupportClass(job, GroupReadSupport.class);
         ParquetInputFormat.addInputPath(job, new Path(IN_PATH));
 
         job.setOutputFormatClass(TextOutputFormat.class);
