@@ -62,6 +62,7 @@ public class ParquetReaderMR extends Configured implements Tool {
         }
     }
 
+    // 这个不需要， 只需要直接使用 GroupReadSupport 即可， 多此一举
     public static class ParquetReadSupport extends DelegatingReadSupport<Group> {
         public ParquetReadSupport() {
             super(new GroupReadSupport());
@@ -111,7 +112,7 @@ public class ParquetReaderMR extends Configured implements Tool {
         ParquetInputFormat.addInputPath(job, new Path(IN_PATH));
 
         job.setOutputFormatClass(TextOutputFormat.class);
-        FileOutputFormat.setOutputPath(job, new Path(OUT_PATH));
+        FileOutputFormat.setOutputPath(job, out);
 
         if (job.waitForCompletion(true))
             return 0;

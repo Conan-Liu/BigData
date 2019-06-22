@@ -113,8 +113,8 @@ public class ParquetWriterMR extends Configured implements Tool {
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(IntWritable.class);
 
-//        job.setOutputKeyClass(NullWritable.class);
-        job.setOutputValueClass(Text.class);
+        // job.setOutputKeyClass(NullWritable.class);
+        job.setOutputValueClass(Group.class);
 
         job.setMapperClass(ParquetWriterMapper.class);
         job.setCombinerClass(ParquetWriterCombine.class);
@@ -125,7 +125,7 @@ public class ParquetWriterMR extends Configured implements Tool {
 
         job.setOutputFormatClass(ParquetOutputFormat.class);
         ParquetOutputFormat.setWriteSupportClass(job,GroupWriteSupport.class);
-        ParquetOutputFormat.setOutputPath(job, new Path(OUT_PATH));
+        ParquetOutputFormat.setOutputPath(job, out);
 
         if (job.waitForCompletion(true))
             return 0;
