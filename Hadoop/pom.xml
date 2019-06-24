@@ -37,10 +37,11 @@
             <artifactId>hadoop-common</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.twitter</groupId>
-            <artifactId>parquet-hadoop</artifactId>
-        </dependency>
+        <!-- 这个是老版本的parquet-hadoop， 两个放在一起，下面的那个依赖被忽略了，注释掉 -->
+        <!--<dependency>-->
+            <!--<groupId>com.twitter</groupId>-->
+            <!--<artifactId>parquet-hadoop</artifactId>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>org.apache.parquet</groupId>
