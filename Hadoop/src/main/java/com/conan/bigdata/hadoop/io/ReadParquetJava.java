@@ -9,8 +9,7 @@ import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.ParquetReader;
 import org.apache.parquet.hadoop.example.GroupReadSupport;
 import org.apache.parquet.hadoop.metadata.ParquetMetadata;
-import org.apache.parquet.schema.MessageType;
-import org.apache.parquet.schema.Type;
+import org.apache.parquet.schema.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,7 +30,8 @@ public class ReadParquetJava {
 
     public static void main(String[] args) throws IOException {
 //        readMetadata(PARQUET_PATH);
-        readParquet(PARQUET_PATH);
+//        readParquet(PARQUET_PATH);
+        messageType();
     }
 
     // 读取parquet的元数据
@@ -67,5 +67,14 @@ public class ReadParquetJava {
                 break;
             }
         }
+    }
+
+    // 构建 MessageType
+    public static void messageType(){
+        MessageType schema= Types.buildMessage().required(PrimitiveType.PrimitiveTypeName.INT32).named("cityid")
+                .required(PrimitiveType.PrimitiveTypeName.INT64).named("provinceid")
+                .required(PrimitiveType.PrimitiveTypeName.BINARY).as(OriginalType.UTF8).named("province")
+                .named("example"); // 这个example， 就相当于表的名称， 之前定义的字段就是表的field
+        System.out.println(schema);
     }
 }
