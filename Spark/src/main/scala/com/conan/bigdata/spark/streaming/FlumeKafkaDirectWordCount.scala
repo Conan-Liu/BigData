@@ -21,6 +21,8 @@ object FlumeKafkaDirectWordCount {
         }
 
         val sparkConf = new SparkConf().setAppName("FlumeKafkaDirectWordCount").setMaster("local[*]")
+            // 每秒钟从topic的每个partition最多消费的消息条数
+            .set("spark.streaming.kafka.maxRatePerPartition","1000")
         val ssc = new StreamingContext(sparkConf, Seconds(5))
         ssc.sparkContext.setLogLevel("WARN")
 
