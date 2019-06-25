@@ -21,8 +21,10 @@ object FlumeKafkaDirectWordCount {
         }
 
         val sparkConf = new SparkConf().setAppName("FlumeKafkaDirectWordCount").setMaster("local[*]")
-            // 每秒钟从topic的每个partition最多消费的消息条数
+            // 每秒钟从topic的每个partition最多消费的消息条数, 这个是Direct方式
             .set("spark.streaming.kafka.maxRatePerPartition","1000")
+            // 上面的限流是写死的，不利于动态扩展， 所以才有了反压机制
+            .set("spark.streaming.backpressure.enabled","true")
         val ssc = new StreamingContext(sparkConf, Seconds(5))
         ssc.sparkContext.setLogLevel("WARN")
 
