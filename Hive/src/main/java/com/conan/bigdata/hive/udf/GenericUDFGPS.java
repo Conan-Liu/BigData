@@ -10,6 +10,7 @@ import org.apache.hadoop.io.Text;
 
 /**
  * Created by Administrator on 2019/3/20.
+ * GPS 一般提供的不准， 有偏移量， 转换会去
  */
 public class GenericUDFGPS extends GenericUDF {
 
