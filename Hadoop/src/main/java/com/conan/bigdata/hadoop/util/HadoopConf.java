@@ -25,8 +25,8 @@ public class HadoopConf {
         conf.set("fs.defaultFS", "hdfs://nameservice1/");
         conf.set("dfs.nameservices", "nameservice1");
         conf.set("dfs.ha.namenodes.nameservice1", "nn1,nn2");
-        conf.set("dfs.namenode.rpc-address.nameservice1.nn1", "nn1.hadoop.pdbd.test.cn:8020");
-        conf.set("dfs.namenode.rpc-address.nameservice1.nn2", "nn2.hadoop.pdbd.test.cn:8020");
+        conf.set("dfs.namenode.rpc-address.nameservice1.nn1", "nn1.hadoop.pdbd.mwbyd.cn:8020");
+        conf.set("dfs.namenode.rpc-address.nameservice1.nn2", "nn2.hadoop.pdbd.mwbyd.cn:8020");
         conf.set("dfs.client.failover.proxy.provider.nameservice1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
         conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
         conf.set("mapreduce.reduce.memory.mb", "4096");
@@ -37,6 +37,13 @@ public class HadoopConf {
     public static Configuration getInstance() {
         if (conf == null) {
             init();
+        }
+        return conf;
+    }
+
+    public static Configuration getHAInstance() {
+        if (conf == null) {
+            initHA();
         }
         return conf;
     }
