@@ -24,6 +24,7 @@ import java.io.IOException;
  * 其余的Key都发送到Reduce 2；
  * 这种方法，明显有问题， 如果数据分布很不均匀， 就导致数据倾斜很严重, 所以重点在于如何实现一个 RangePartitioner
  * 能均匀的把数据发送到对应的reducer， 且在范围之间是有序的
+ * 参考 Spark sortByKey 方法， 底层就是RangePartitioner实现
  * <p>
  * 下面就是按第 2 步的例子
  */
