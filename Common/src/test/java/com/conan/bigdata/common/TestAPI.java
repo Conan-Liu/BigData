@@ -5,10 +5,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.sql.SQLException;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -87,5 +84,14 @@ public class TestAPI {
         set.pollLast();
         for (Integer val : set)
             System.out.println(val);
+    }
+
+    @Test
+    public void test8(){
+        System.out.println(Integer.parseInt("0000001100001000",2));
+        System.out.println(Integer.toBinaryString(776));
+
+        byte[] s="abc".getBytes();
+        System.out.println(Arrays.toString(s));
     }
 }
