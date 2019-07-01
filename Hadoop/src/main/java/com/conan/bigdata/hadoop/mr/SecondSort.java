@@ -93,7 +93,7 @@ public class SecondSort extends Configured implements Tool {
         }
     }
 
-    // 自定义分组函数
+    // 自定义分组函数, WritableComparator 继承自 RawComparator
     public static class SecondSortGroupingComparator extends WritableComparator {
         protected SecondSortGroupingComparator() {
             super(IntPair.class, true);
@@ -106,6 +106,20 @@ public class SecondSort extends Configured implements Tool {
             int f1 = pair1.getFirst();
             int f2 = pair2.getFirst();
             return f1 == f2 ? 0 : (f1 > f2 ? 1 : -1);
+        }
+    }
+
+    // 分组函数，可以直接继承自 RawComparator
+    public static class SecondSortGroupingComparator1 implements RawComparator{
+
+        @Override
+        public int compare(byte[] b1, int s1, int l1, byte[] b2, int s2, int l2) {
+            return 1;
+        }
+
+        @Override
+        public int compare(Object o1, Object o2) {
+            return 1;
         }
     }
 
