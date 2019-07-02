@@ -56,6 +56,8 @@ public class WordCount extends Configured implements Tool {
 
     @Override
     public int run(String[] args) throws Exception {
+        // 如果权限不对， 设置这个指定用户名去访问
+        System.setProperty("HADOOP_USER_NAME", "bdata");
         Configuration conf = getConf();
         String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
         if (otherArgs.length < 2) {
