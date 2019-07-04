@@ -18,6 +18,7 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * 计算下面用户的共同好友， 冒号前是一个用户， 冒号后是该用户的好友
@@ -112,6 +113,9 @@ public class CommonFriends extends Configured implements Tool {
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             String[] personFriends = value.toString().split(":");
+            if (personFriends.length != 2) {
+                return;
+            }
             String[] friends = personFriends[1].split(",");
             for (String friend : friends) {
                 K.set(friend);
@@ -153,7 +157,12 @@ public class CommonFriends extends Configured implements Tool {
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             String[] friendPersons = value.toString().split("\t");
+            if (friendPersons.length != 2) {
+                return;
+            }
             String[] persons = friendPersons[1].split(",");
+            // 排序很重要
+            Arrays.sort(persons);
             // 用户两两配对
             for (int i = 0; i < persons.length - 1; i++) {
                 for (int j = i + 1; j < persons.length; j++) {
