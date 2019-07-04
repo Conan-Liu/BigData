@@ -165,6 +165,10 @@ public class CommonFriends extends Configured implements Tool {
         }
     }
 
+    /**
+     * 第二阶段的reduce函数主要完成以下任务
+     * 1.<人-人，list(共同朋友)> 中的“共同好友”进行拼接 最后输出<人-人，两人的所有共同好友>
+     */
     public static class CommonFriendsReducer2 extends Reducer<Text, Text, Text, Text> {
         private StringBuilder sb = new StringBuilder();
         private Text V = new Text();
