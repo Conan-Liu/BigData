@@ -87,11 +87,27 @@ public class TestAPI {
     }
 
     @Test
-    public void test8(){
-        System.out.println(Integer.parseInt("0000001100001000",2));
+    public void test8() {
+        System.out.println(Integer.parseInt("0000001100001000", 2));
         System.out.println(Integer.toBinaryString(776));
 
-        byte[] s="abc".getBytes();
+        byte[] s = "abc".getBytes();
         System.out.println(Arrays.toString(s));
+    }
+
+    @Test
+    public void test9() {
+        int n1 = 99999;
+        int n2 = n1;
+        String hex = "0123456789abcdef";
+        StringBuilder sb = new StringBuilder();
+        while (n1 > 0) {
+            int i = n1 & 0xf;
+            sb.append(hex.charAt(i));
+            n1 >>= 4;
+        }
+
+        System.out.println(sb.reverse());
+        System.out.println(Integer.toHexString(n2));
     }
 }

@@ -27,6 +27,15 @@ public class MultiCompress extends Configured implements Tool {
         private String fileDate;
         private String fileName;
         private String fileType;
+        private long fileLength;
+
+        public long getFileLength() {
+            return fileLength;
+        }
+
+        public void setFileLength(long fileLength) {
+            this.fileLength = fileLength;
+        }
 
         public Path getPath() {
             return path;
@@ -62,7 +71,7 @@ public class MultiCompress extends Configured implements Tool {
 
         @Override
         public String toString() {
-            return "[path:" + this.path.toString() + ", fileDate:" + this.fileDate + ", fileType:" + this.fileType + "]";
+            return "[path:" + this.path.toString() + ", fileDate:" + this.fileDate + ", fileType:" + this.fileType + ", fileLength:" + this.fileLength + "]";
         }
     }
 
@@ -70,7 +79,7 @@ public class MultiCompress extends Configured implements Tool {
 
     public static void main(String[] args) {
         try {
-            int result = ToolRunner.run(HadoopConf.getInstance(), new MultiCompress(), args);
+            int result = ToolRunner.run(HadoopConf.getHAInstance(), new MultiCompress(), args);
             System.exit(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,12 +108,13 @@ public class MultiCompress extends Configured implements Tool {
 //        String sourceDir = argsSplit[2];
 //        String sourceType = argsSplit[3];
 //        String targetType = argsSplit[4];
-        String dir = argsSplit[0];
-        String fileDate = argsSplit[1];
+        String year = argsSplit[0];
+        String month = argsSplit[1];
+        String day = argsSplit[2];
         String optType = "compress";
         String codeClass = "org.apache.hadoop.io.compress.GzipCodec";
-        String sourceDir = String.format("/repository/kafka/%s/%s", dir, fileDate);
-        String targetDir = String.format("/repository/kafka/%s", dir);
+        String sourceDir = String.format("/meimeng/activity/%s/%s/%s", year, month, day);
+        String targetDir = String.format("/meimeng/activity_bak/%s/%s/%s", year, month, day);
         String sourceType = "log";
         String targetType = "gz";
 
@@ -136,7 +146,7 @@ public class MultiCompress extends Configured implements Tool {
                 hdfsFile.setFileName(file.getPath().getName());
                 String parentPath = file.getPath().getParent().toString();
                 hdfsFile.setFileDate(parentPath.substring(parentPath.lastIndexOf(File.separator) + 1));
-
+                hdfsFile.setFileLength(file.getLen());
                 listFiles.add(hdfsFile);
             }
         }
@@ -151,9 +161,27 @@ public class MultiCompress extends Configured implements Tool {
         Class clz = Class.forName(codeClass);
         CompressionCodec codec = (CompressionCodec) ReflectionUtils.newInstance(clz, conf);
 
+//        for (HdfsFile file : listFiles) {
+//            Path targetPath = new Path(String.format("%s/%s/%s.gz", targetDir, file.getFileDate(), file.getFileName()));
+//            compressFile(file.getPath(), targetPath, fs, codec, conf, file.getFileType(), targetType);
+//        }
+
+        // 合并固定大小的文件
+        List<HdfsFile> sourceList = new ArrayList<>();
+        long sumLength = 0L;
+        int serial = 0;
+        int cnt = 0;
         for (HdfsFile file : listFiles) {
-            Path targetPath = new Path(String.format("%s/%s/%s.gz", targetDir, file.getFileDate(), file.getFileName()));
-            compressFile(file.getPath(), targetPath, fs, codec, conf, file.getFileType(), targetType);
+            sumLength += file.getFileLength();
+            sourceList.add(file);
+            cnt++;
+            if (sumLength >= 1024 * 1024 * 1024 || cnt >= listFiles.size()) {
+                Path targetPath = new Path(String.format("%s/meimeng-%s.gz", targetDir, serial));
+                mergeCompressFile(fs, codec, sourceList, targetPath);
+                sumLength = 0L;
+                serial++;
+                sourceList.clear();
+            }
         }
     }
 
@@ -197,6 +225,24 @@ public class MultiCompress extends Configured implements Tool {
                 IOUtils.closeStream(input);
                 IOUtils.closeStream(compressOut);
             }
+        }
+    }
+
+    private void mergeCompressFile(FileSystem fs, CompressionCodec codec, List<HdfsFile> sourceFileList, Path targetFile) {
+        CompressionOutputStream compressOut = null;
+        try {
+            System.out.println(String.format("开始生成合并文件: [%s]", targetFile.toString()));
+            FSDataOutputStream output = fs.create(targetFile, true, 8192);
+            compressOut = codec.createOutputStream(output);
+            for (HdfsFile file : sourceFileList) {
+                FSDataInputStream input = fs.open(file.getPath());
+                IOUtils.copyBytes(input, compressOut, 8192, false);
+                input.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            IOUtils.closeStream(compressOut);
         }
     }
 }
