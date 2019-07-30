@@ -110,4 +110,10 @@ public class TestAPI {
         System.out.println(sb.reverse());
         System.out.println(Integer.toHexString(n2));
     }
+
+    @Test
+    public void test10(){
+        String[] s="".split("\\|");
+        System.out.println(s.length);
+    }
 }
