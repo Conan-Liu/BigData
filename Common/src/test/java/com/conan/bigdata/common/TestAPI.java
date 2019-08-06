@@ -112,8 +112,10 @@ public class TestAPI {
     }
 
     @Test
-    public void test10(){
-        String[] s="".split("\\|");
-        System.out.println(s.length);
+    public void test10() {
+        String[] ss = " a b".split("\\s+");
+        System.out.println(ss.length);
+        for (String s : ss)
+            System.out.println(s);
     }
 }

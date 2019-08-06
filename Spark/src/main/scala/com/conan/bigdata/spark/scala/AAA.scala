@@ -30,6 +30,9 @@ object AAA {
         map += ("2" -> "fei")
         val s = map.get("3")
         println("Option ====" + s.getOrElse("aaa").length)
+        for (m <- map) {
+            println(m._1 + "\t" + m._2)
+        }
     }
 
     def testYield(str: String): (String, Int) = {
@@ -112,7 +115,7 @@ object AAA {
         //        WordCountToMysql.createJedisConnection()
 
         // 测试yield方法
-//        "a,b,c,d,e,f".flatMap(testYield)
+        //        "a,b,c,d,e,f".flatMap(testYield)
     }
 
 }
