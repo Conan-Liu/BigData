@@ -6,7 +6,6 @@ import org.apache.spark.sql.Row
 import org.apache.spark.sql.types._
 
 /**
-  * Created by Administrator on 2019/3/5.
   */
 object ReadText {
 

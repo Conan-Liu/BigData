@@ -3,7 +3,6 @@ package com.conan.bigdata.spark.scala
 import org.apache.spark.{HashPartitioner, SparkConf, SparkContext}
 
 /**
-  * Created by Conan on 2019/5/14.
   * PageRank是执行多次连接的一个迭代算法, 因此它是RDD分区操作的一个很好的用例.
   * 算法会维护两个数据集:
   * 一个由(pageID，linkList)的元素组成, 包含每个页面的相邻页面的列表

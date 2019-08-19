@@ -5,7 +5,6 @@ import java.net.URL
 import org.apache.spark.Partitioner
 
 /**
-  * Created by Conan on 2019/5/15.
   * Spark 提供的 HashPartitioner 和 RgePartitioner， 也可以自定义 Partitioner
   * 比如说
   * 如果， 计算PageRank ， K 一般是 URL， 如果是一个网站内的网址， 域名一般是相同的， 而且关系很可能比较紧密

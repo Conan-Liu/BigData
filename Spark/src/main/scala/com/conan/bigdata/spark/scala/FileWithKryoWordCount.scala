@@ -4,7 +4,6 @@ import org.apache.spark.storage.StorageLevel
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
-  * Created by Administrator on 2019/5/25.
   *
   * 使用较好的序列化方式， 虽然增加 CPU 的使用， 但是明显降低数据量， 利于集群内部网络传输和存储
   */

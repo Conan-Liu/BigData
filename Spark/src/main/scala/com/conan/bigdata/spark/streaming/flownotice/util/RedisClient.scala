@@ -5,7 +5,6 @@ import java.text.DecimalFormat
 import redis.clients.jedis.Jedis
 
 /**
-  * Created by Conan on 2019/5/26.
   *
   * redis 里面有一个hash表， 每个月一份， 记录每个月对应手机号的所有流量值
   * 键值对分别是:  K V

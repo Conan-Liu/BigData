@@ -1,7 +1,6 @@
 package com.conan.bigdata.spark.streaming.simple.bean
 
 /**
-  * Created by Conan on 2019/5/2.
   */
 /**
   * 类似于java中的 javaBean

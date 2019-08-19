@@ -6,7 +6,6 @@ import org.apache.spark.SparkConf
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 /**
-  * Created by Administrator on 2018/11/13.
   */
 object Driver {
 

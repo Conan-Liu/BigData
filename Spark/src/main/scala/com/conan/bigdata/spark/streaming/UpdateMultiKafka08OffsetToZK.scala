@@ -13,7 +13,6 @@ import org.apache.spark.streaming.kafka.{HasOffsetRanges, KafkaUtils, OffsetRang
 import org.apache.spark.streaming.{Seconds, StreamingContext, Time}
 
 /**
-  * Created by Administrator on 2019/5/7.
   * 消费多个 Topic , 保存在zookeeper中， 每次消费时，把zookeeper中的多个Topic的offset拿出来， createDirectStream支持多个Topic读取
   * 然后再更新回去即可
   */

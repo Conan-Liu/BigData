@@ -7,7 +7,6 @@ import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.{StringDeserializer, StringSerializer}
 
 /**
-  * Created by Administrator on 2019/5/5.
   */
 object Config {
 

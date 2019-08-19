@@ -11,7 +11,6 @@ import org.apache.spark.streaming.{Minutes, StreamingContext}
 import scala.collection.mutable.ListBuffer
 
 /**
-  * Created by Conan on 2019/5/2.
   *
   * 使用 SparkStreaming 处理kafka来的用户行为日志数据
   */

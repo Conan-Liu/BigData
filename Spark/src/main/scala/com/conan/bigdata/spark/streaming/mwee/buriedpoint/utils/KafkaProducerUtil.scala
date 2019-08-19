@@ -4,7 +4,6 @@ import com.conan.bigdata.spark.streaming.mwee.buriedpoint.config.Config
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 
 /**
-  * Created by Conan on 2019/5/5.
   */
 object KafkaProducerUtil {
 

@@ -6,7 +6,6 @@ import org.apache.spark.{SparkConf, SparkContext}
 import scala.collection.mutable.ListBuffer
 
 /**
-  * Created by Administrator on 2019/5/18.
   */
 object NumericOperate {
 

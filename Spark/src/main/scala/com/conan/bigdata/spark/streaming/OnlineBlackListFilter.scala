@@ -4,7 +4,6 @@ import org.apache.spark.SparkConf
 import org.apache.spark.streaming.{Durations, StreamingContext}
 
 /**
-  * Created by Administrator on 2017/1/4.
   */
 object OnlineBlackListFilter {
     def main(args: Array[String]) {

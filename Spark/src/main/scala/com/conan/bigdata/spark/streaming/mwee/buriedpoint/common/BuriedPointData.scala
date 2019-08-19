@@ -2,7 +2,6 @@ package com.conan.bigdata.spark.streaming.mwee.buriedpoint.common
 
 import com.conan.bigdata.spark.streaming.mwee.buriedpoint.common.Constant._
 /**
-  * Created by Administrator on 2019/5/5.
   */
 object BuriedPointData {
     /**

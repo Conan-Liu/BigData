@@ -3,7 +3,6 @@ package com.conan.bigdata.spark.streaming.utils
 import org.apache.spark.util.AccumulatorV2
 
 /**
-  * Created by Administrator on 2019/5/18.
   * 累计器需要满足交换律和结合律才行
   */
 class MaxAccumulator extends AccumulatorV2[Long, Long] {

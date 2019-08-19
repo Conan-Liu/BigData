@@ -10,7 +10,6 @@ import org.apache.commons.lang3.time.DateFormatUtils
 import org.slf4j.LoggerFactory
 
 /**
-  * Created by Administrator on 2019/5/5.
   */
 object CleaningService {
 

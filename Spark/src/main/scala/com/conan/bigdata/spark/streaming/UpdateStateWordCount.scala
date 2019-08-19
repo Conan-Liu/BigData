@@ -4,7 +4,6 @@ import org.apache.spark.SparkConf
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 /**
-  * Created by Conan on 2019/4/27.
   *
   * 该类，记录了从运行时刻， 单词统计的历史记录， 计数， 是从最开始， 一直往后累计的功能
   * 累计的状态checkpoint到了指定目录

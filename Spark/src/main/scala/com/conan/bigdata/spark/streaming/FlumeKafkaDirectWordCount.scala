@@ -6,7 +6,6 @@ import org.apache.spark.streaming.kafka.KafkaUtils
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 /**
-  * Created by Conan on 2019/4/29.
   * Spark streaming 对接 Kafka
   * 方式一
   */

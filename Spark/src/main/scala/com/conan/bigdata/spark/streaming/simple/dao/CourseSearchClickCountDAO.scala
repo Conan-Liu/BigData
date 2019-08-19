@@ -8,7 +8,6 @@ import org.apache.hadoop.hbase.util.Bytes
 import scala.collection.mutable.ListBuffer
 
 /**
-  * Created by Conan on 2019/5/3.
   */
 object CourseSearchClickCountDAO {
 
