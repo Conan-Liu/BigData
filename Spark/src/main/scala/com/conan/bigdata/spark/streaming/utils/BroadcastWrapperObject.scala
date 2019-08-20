@@ -9,7 +9,6 @@ import scala.collection.JavaConverters._
 
 
 /**
-  * Created by Conan on 2019/5/10.
   * 这个是伴生对象， 不能指定泛型传递参数， 不够弹性
   */
 object BroadcastWrapperObject{

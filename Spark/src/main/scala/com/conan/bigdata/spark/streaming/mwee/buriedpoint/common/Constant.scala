@@ -1,7 +1,6 @@
 package com.conan.bigdata.spark.streaming.mwee.buriedpoint.common
 
 /**
-  * Created by Administrator on 2019/5/5.
   */
 object Constant {
     /**

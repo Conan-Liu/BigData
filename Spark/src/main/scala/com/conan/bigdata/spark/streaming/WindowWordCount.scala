@@ -5,7 +5,6 @@ import org.apache.spark.storage.StorageLevel
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 /**
-  * Created by Conan on 2019/5/23.
   */
 object WindowWordCount {
 

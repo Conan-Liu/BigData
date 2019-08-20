@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject
 import com.conan.bigdata.spark.streaming.mwee.buriedpoint.common.{BuriedPointData, Constant}
 
 /**
-  * Created by Administrator on 2019/5/5.
   */
 object CheckService {
 

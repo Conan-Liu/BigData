@@ -10,7 +10,6 @@ import org.apache.spark.streaming.{Seconds, StreamingContext, Time}
 import org.apache.spark.util.LongAccumulator
 
 /**
-  * Created by Conan on 2019/5/9.
   */
 object AccumulatorsBroadcastWordCount {
 

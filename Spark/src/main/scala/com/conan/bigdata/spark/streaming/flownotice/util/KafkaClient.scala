@@ -6,7 +6,6 @@ import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, Produce
 import org.apache.kafka.common.serialization.StringSerializer
 
 /**
-  * Created by Conan on 2019/5/26.
   */
 object KafkaClient extends Serializable{
 

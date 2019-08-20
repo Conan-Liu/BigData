@@ -6,7 +6,6 @@ import com.conan.bigdata.spark.utils.Spark
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
-  * Created by Administrator on 2018/12/17.
   */
 object jdbc {
     val URL = "jdbc:mysql://10.0.19.6:30242/test?tinyInt1isBit=false&useUnicode=true&characterEncoding=gbk&zeroDateTimeBehavior=convertToNull"

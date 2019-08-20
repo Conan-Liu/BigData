@@ -6,7 +6,6 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.streaming.{Seconds, StreamingContext, Time}
 
 /**
-  * Created by Conan on 2019/4/27.
   */
 case class Word(word: String, cnt: Int)
 

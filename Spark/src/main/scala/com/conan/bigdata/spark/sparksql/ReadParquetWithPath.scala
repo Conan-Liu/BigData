@@ -3,7 +3,6 @@ package com.conan.bigdata.spark.sparksql
 import com.conan.bigdata.spark.utils.Spark
 
 /**
-  * Created by Administrator on 2018/9/26.
   */
 object ReadParquetWithPath {
     val PARQUET_PATH = ""

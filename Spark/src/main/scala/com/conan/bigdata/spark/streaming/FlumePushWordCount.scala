@@ -6,7 +6,6 @@ import org.apache.spark.streaming.flume.FlumeUtils
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 /**
-  * Created by Conan on 2019/4/28.
   * SparkStreaming 整合 Flume
   * flume 监控控制台输入， 然后通过sink到指定avro端口， sparkstreaming来监听该端口
   * 这是 flume 推送数据到Streaming  Flume-style Push-based Approach

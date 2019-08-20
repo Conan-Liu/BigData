@@ -6,7 +6,6 @@ import org.apache.spark.storage.StorageLevel
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 /**
-  * Created by Administrator on 2017/1/5.
   * nc -lk 9999
   * 接收 9999 端口传来的数据， 并处理
   */

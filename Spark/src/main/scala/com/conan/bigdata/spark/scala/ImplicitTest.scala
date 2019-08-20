@@ -1,7 +1,6 @@
 package com.conan.bigdata.spark.scala
 
 /**
-  * Created by Conan on 2019/4/8.
   */
 object ImplicitTest {
 

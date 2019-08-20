@@ -7,7 +7,6 @@ import java.util.Random
 import scala.io.Source
 
 /**
-  * Created by Administrator on 2017/1/5.
   */
 object StreamingSimulation {
   def index(length: Int): Int = {

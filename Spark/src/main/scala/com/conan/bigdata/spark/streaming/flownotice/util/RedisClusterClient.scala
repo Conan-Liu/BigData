@@ -6,7 +6,6 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig
 import redis.clients.jedis.{HostAndPort, Jedis, JedisCluster}
 
 /**
-  * Created by Conan on 2019/5/26.
   *
   * 如果要使用集群模式链接 Redis， 需要先启用 Redis集群， 生产一般是集群， 单机测试
   */

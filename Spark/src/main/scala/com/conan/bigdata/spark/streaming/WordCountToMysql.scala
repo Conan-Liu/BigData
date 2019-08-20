@@ -6,7 +6,6 @@ import org.apache.spark.SparkConf
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 /**
-  * Created by Conan on 2019/4/27.
   * 词频统计， 写入mysql
   */
 object WordCountToMysql {

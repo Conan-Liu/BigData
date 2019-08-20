@@ -14,7 +14,6 @@ import spire.ClassTag
 import scala.collection.mutable.ArrayBuffer
 
 /**
-  * Created by Conan on 2019/5/11.
   */
 object DataToHdfsStreamingAPP {
 

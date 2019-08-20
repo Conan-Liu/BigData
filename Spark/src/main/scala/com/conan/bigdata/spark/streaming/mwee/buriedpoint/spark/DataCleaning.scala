@@ -11,7 +11,6 @@ import org.apache.spark.streaming.{Minutes, StreamingContext}
 import org.slf4j.LoggerFactory
 
 /**
-  * Created by Conan on 2019/5/5.
   *
   * 这个数据流程 kafka -> spark streaming -> kafka -> flume -> hdfs
   * 我可能更偏爱 spark streaming 直接到 hdfs

@@ -3,7 +3,6 @@ package com.conan.bigdata.spark.scala
 import scala.math._
 
 /**
-  * Created by Conan on 2019/3/27.
   */
 object MultiFunction {
 

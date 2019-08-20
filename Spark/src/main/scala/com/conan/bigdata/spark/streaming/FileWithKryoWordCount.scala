@@ -5,7 +5,6 @@ import org.apache.spark.storage.StorageLevel
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 /**
-  * Created by Administrator on 2017/1/5.
   */
 object FileWithKryoWordCount {
     def main(args: Array[String]) {

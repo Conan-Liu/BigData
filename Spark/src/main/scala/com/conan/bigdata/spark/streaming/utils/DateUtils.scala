@@ -3,7 +3,6 @@ package com.conan.bigdata.spark.streaming.utils
 import org.apache.commons.lang3.time.FastDateFormat
 
 /**
-  * Created by Conan on 2019/5/2.
   */
 object DateUtils {
 

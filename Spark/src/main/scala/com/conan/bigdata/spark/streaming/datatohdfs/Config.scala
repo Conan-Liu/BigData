@@ -3,7 +3,6 @@ package com.conan.bigdata.spark.streaming.datatohdfs
 import org.apache.spark.SparkConf
 
 /**
-  * Created by Conan on 2019/5/11.
   */
 object Config {
 

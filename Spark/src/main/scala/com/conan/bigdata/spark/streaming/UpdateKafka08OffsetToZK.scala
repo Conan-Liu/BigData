@@ -12,7 +12,6 @@ import org.apache.spark.streaming.kafka.{HasOffsetRanges, KafkaUtils, OffsetRang
 import org.apache.spark.streaming.{Seconds, StreamingContext, Time}
 
 /**
-  * Created by Administrator on 2019/5/7.
   * 目前 0.8 的版本是稳定版本， 考虑用这个， spark 2.3 以后0.8的版本已经不推荐使用了
   *
   * 注意，这中直连方式， 在调用 createDirectStream 的时候， 创建的RDD和Kafka的分区是一一对应的
