@@ -19,6 +19,7 @@ object NetworkWordCount {
 
         val conf = new SparkConf().setAppName("NetworkWordCount").setMaster("local[2]")
         val ssc = new StreamingContext(conf, Seconds(5))
+        ssc.addStreamingListener()
         //    ssc.checkpoint(".")
 
         val lines = ssc.socketTextStream("CentOS", 9999, StorageLevel.MEMORY_AND_DISK_SER)
