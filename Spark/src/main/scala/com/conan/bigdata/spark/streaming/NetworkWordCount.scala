@@ -1,5 +1,6 @@
 package com.conan.bigdata.spark.streaming
 
+import com.conan.bigdata.spark.streaming.utils.MyStreamingListener
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.SparkConf
 import org.apache.spark.storage.StorageLevel
@@ -18,9 +19,10 @@ object NetworkWordCount {
 
         val conf = new SparkConf().setAppName("NetworkWordCount").setMaster("local[2]")
         val ssc = new StreamingContext(conf, Seconds(5))
+        ssc.addStreamingListener(new MyStreamingListener())
         //    ssc.checkpoint(".")
 
-        val lines = ssc.socketTextStream("CentOS", 9999, StorageLevel.MEMORY_AND_DISK_SER)
+        val lines = ssc.socketTextStream("dn2.hadoop.pdbd.mwbyd.cn", 9999, StorageLevel.MEMORY_AND_DISK_SER)
 
         val words = lines.flatMap(_.split(","))
         val wordCounts = words.map(x => (x, 1)).reduceByKeyAndWindow((a: Int, b: Int) => (a + b), Seconds(20), Seconds(10))

@@ -35,31 +35,31 @@ object KafkaManager {
                 val consumerOffsets = consumerOffsetsE.right.get
 
                 // 可能只是存在部分分区consumerOffsets过时，所以只更新过时分区的consumerOffsets为earliestLeaderOffsets
-                var offsets: Map[TopicAndPartition, Long] = Map()
-                for (consumerOffset <- consumerOffsets) {
-                    val tp = consumerOffset._1
-                    val currentOffset = consumerOffset._2
-                    val earliestLeaderOffset = earliestLeaderOffsets(tp).offset
-                    if (currentOffset < earliestLeaderOffset)
-                        offsets += (tp -> earliestLeaderOffset)
-                }
-                if (!offsets.isEmpty) {
-                    kc.setConsumerOffsets(groupId, offsets)
-                }
+//                var offsets: Map[TopicAndPartition, Long] = Map()
+//                for (consumerOffset <- consumerOffsets) {
+//                    val tp = consumerOffset._1
+//                    val currentOffset = consumerOffset._2
+//                    val earliestLeaderOffset = earliestLeaderOffsets(tp).offset
+//                    if (currentOffset < earliestLeaderOffset)
+//                        offsets += (tp -> earliestLeaderOffset)
+//                }
+//                if (!offsets.isEmpty) {
+//                    kc.setConsumerOffsets(groupId, offsets)
+//                }
             } else {
                 // 没有消费过
-                val reset = kafkaParams.get("auto.offset.reset").map(_.toLowerCase)
-                var leaderOffsets: Map[TopicAndPartition, LeaderOffset] = null
-                if (reset == Some("smallest")) {
-                    leaderOffsets = kc.getEarliestLeaderOffsets(partitions).right.get
-                } else {
-                    leaderOffsets = kc.getLatestLeaderOffsets(partitions).right.get
-                }
-
-                val offsets = leaderOffsets.map({
-                    case (tp, leaderOffset) => (tp, leaderOffset.offset)
-                })
-                kc.setConsumerOffsets(groupId, offsets)
+//                val reset = kafkaParams.get("auto.offset.reset").map(_.toLowerCase)
+//                var leaderOffsets: Map[TopicAndPartition, LeaderOffset] = null
+//                if (reset == Some("smallest")) {
+//                    leaderOffsets = kc.getEarliestLeaderOffsets(partitions).right.get
+//                } else {
+//                    leaderOffsets = kc.getLatestLeaderOffsets(partitions).right.get
+//                }
+//
+//                val offsets = leaderOffsets.map({
+//                    case (tp, leaderOffset) => (tp, leaderOffset.offset)
+//                })
+//                kc.setConsumerOffsets(groupId, offsets)
             }
         }
     }
