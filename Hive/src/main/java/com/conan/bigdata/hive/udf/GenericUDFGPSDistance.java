@@ -72,4 +72,10 @@ public class GenericUDFGPSDistance extends GenericUDF {
     private double rad(double d) {
         return d * Math.PI / 180.0;
     }
+
+
+    public static void main(String[] args) {
+        // 单位 米 m
+        System.out.println(new GenericUDFGPSDistance().getDistance(31.274001,121.452356,31.270813,121.477135));
+    }
 }

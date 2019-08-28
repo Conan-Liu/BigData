@@ -1,6 +1,10 @@
 package com.conan.bigdata.common;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -117,5 +121,11 @@ public class TestAPI {
         System.out.println(ss.length);
         for (String s : ss)
             System.out.println(s);
+    }
+
+    @Test
+    public void test11() {
+        JSONObject json = JSON.parseObject("{\"name\":\"liu\",\"age\":null}");
+        System.out.println(json.get("age") == null ? "空" : json.get("age").getClass().getSimpleName());
     }
 }
