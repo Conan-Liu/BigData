@@ -9,18 +9,26 @@ import org.slf4j.LoggerFactory
   * 这些数据可以在WebUI上看到， 不过对于开发者来说， 总不至于经常看Web页面，
   * 可以通过这个程序来发送邮件实现batch任务信息的收集
   * 不过这样每个批次都会发送邮件， 那么邮件就会很多， 可以考虑写入数据库
+  * 或者只考虑程序阻塞的时候发邮件， 阻塞的定义： 处理时长 > 批次时间， 这就开始积压数据了
+  * 这样邮件就不会太频繁
+  * if(totalDelay.get >= 6 * duration * 1000 && totalDelay.get >= 10 * duration * 1000){
+  * val monitorTitle = s"spark streaming $appName 程序阻塞异常警告"
+  * val monitorContent = s"BJJListener : processingStartTime -> ${processingStartTime.get}, processingEndTime -> ${processingEndTime.get} , " +
+  * s"processingDelay -> ${processingDelay.get} , totalDelay -> ${totalDelay.get}, 请及时检查！"
+  * EmailSender.sendMail(monitorTitle, monitorContent)
+  * }
   *
   * 以 yarn-client 模式提交可以调试看到效果
   */
 class MyStreamingListener extends StreamingListener {
 
-    val LOG=LoggerFactory.getLogger("StreamingListener")
+    val LOG = LoggerFactory.getLogger("StreamingListener")
 
     // 流式计算开始时，出发的回调函数, 这个是streaming app提交时仅执行一次
     override def onStreamingStarted(streamingStarted: StreamingListenerStreamingStarted): Unit = {
         val startTime = streamingStarted.time
-//        println(s"任务启动时间:${startTime}")
-        LOG.info(s"任务启动时间:${startTime}")
+        //        println(s"任务启动时间:${startTime}")
+        LOG.info(s"任务启动时间:$startTime")
     }
 
     // 当前batch提交时出发的回调函数
@@ -53,7 +61,7 @@ class MyStreamingListener extends StreamingListener {
         val processingDelay = batchCompleted.batchInfo.processingDelay.getOrElse(0l)
         val schedulingDelay = batchCompleted.batchInfo.schedulingDelay.getOrElse(0l)
         val totalDelay = batchCompleted.batchInfo.totalDelay.getOrElse(0l)
-        println(s"1:${numRecords}, 2:${endTime}, 3:${processingDelay}, 4:${totalDelay}")
+        println(s"1:$numRecords, 2:$endTime, 3:$processingDelay, 4:$totalDelay")
         // 获取offset，并持久化到第三方容器
         // TODO...
     }
