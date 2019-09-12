@@ -126,6 +126,7 @@ public class TestAPI {
     @Test
     public void test11() {
         JSONObject json = JSON.parseObject("{\"name\":\"liu\",\"age\":null}");
+        System.out.println(json.toJSONString());
         System.out.println(json.get("age") == null ? "空" : json.get("age").getClass().getSimpleName());
     }
 }

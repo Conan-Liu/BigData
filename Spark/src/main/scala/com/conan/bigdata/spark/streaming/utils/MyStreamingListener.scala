@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory
   * 这个StreamingListener监控， 主要是用来收集任务执行时的一些数据，
   * 这些数据可以在WebUI上看到， 不过对于开发者来说， 总不至于经常看Web页面，
   * 可以通过这个程序来发送邮件实现batch任务信息的收集
+  * 不过这样每个批次都会发送邮件， 那么邮件就会很多， 可以考虑写入数据库
   *
   * 以 yarn-client 模式提交可以调试看到效果
   */
