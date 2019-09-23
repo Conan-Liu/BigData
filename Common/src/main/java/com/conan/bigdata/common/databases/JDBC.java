@@ -43,10 +43,10 @@ public class JDBC {
 
     public static void main(String[] args) throws SQLException {
         JDBC jdbc = new JDBC();
-        jdbc.getConnection(DB.MYSQL_18_81_COUPONS.driver, DB.MYSQL_18_81_COUPONS.url, DB.MYSQL_18_81_COUPONS.user, DB.MYSQL_18_81_COUPONS.password);
+        jdbc.getConnection(DB.POSTGRE_105.driver, DB.POSTGRE_105.url, DB.POSTGRE_105.user, DB.POSTGRE_105.password);
         System.out.println(conn);
         // 000094195827   000000074053
-        PreparedStatement ps = conn.prepareStatement("select * from cp_card_member where m_shopid = 43 and card_no = '000094195827'");
+        PreparedStatement ps = conn.prepareStatement("select * from shop_extend_user_4930");
         ResultSet rs = ps.executeQuery();
         jdbc.show(rs);
         System.out.println(conn.isClosed());

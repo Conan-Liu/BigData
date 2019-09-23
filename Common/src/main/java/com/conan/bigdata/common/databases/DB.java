@@ -36,7 +36,9 @@ public enum DB {
     ORACLE_37_BWSWD("10.0.24.10", "BQSWD", "pmadw", "pmadev021"),
     ORACLE_7_BWSWD("10.0.24.7", "BQSWD", "pmadw", "pmadev021"),
     ORACLE_9_BWSWD("10.0.24.9", "BQSWD", "pmadw", "pmadev120"),
-    ORACLE_12_BWSWD("10.0.24.12", "BQSWD", "pmadw", "pmadev021");
+    ORACLE_12_BWSWD("10.0.24.12", "BQSWD", "pmadw", "pmadev021"),
+
+    POSTGRE_105("10.0.19.105","postgres","postgres","postgres");
 
     public String ip;
     public String user;
@@ -64,6 +66,10 @@ public enum DB {
             this.url = String.format("jdbc:mysql://%s:30242/%s?%s", ip, database, this.MYSQL_PARAMETERS);
             this.driver = "com.mysql.jdbc.Driver";
             this.properties.put("driver", this.driver);
+        }else if(this.toString().startsWith("POSTGRE")){
+            this.url=String.format("jdbc:postgresql://%s:5432/%s",ip,database);
+            this.driver="org.postgresql.Driver";
+            this.properties.put("driver",this.driver);
         }
 
         this.properties.put("user", user);
