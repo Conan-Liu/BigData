@@ -11,7 +11,7 @@ object OperateHive {
             .appName(OperateHive.getClass.getName)
             // 从 2.0 开始不再推荐使用hive-site.xml文件中的 hive.metastore.warehouse.dir
             // spark.sql.warehouse.dir 来代替
-            .config("spark.sql.warehouse.dir", "")
+            .config("spark.sql.warehouse.dir", "/user/hive/warehouse")
             .enableHiveSupport()
             .getOrCreate()
 
@@ -19,9 +19,9 @@ object OperateHive {
         import spark.implicits._
 
         // 查询
-        val sqlDF = spark.sql("select f1,f2 from tab1")
-        sqlDF.map {
-            case Row(f1: Int, f2: String) => {
+        val sqlDF = spark.sql("select cityid,name,provinceid,province from ods.resta_citytable")
+        val caseDF=sqlDF.map {
+            case Row(cityId: Int, cityName: String,provinceId:Int,provinceName:String) => {
                 println(s"f1 : $f1, f2 : $f2")
                 f1.toString + f2
             }
@@ -32,7 +32,7 @@ object OperateHive {
         val recordsDF = spark.createDataFrame((1 to 100).map(i => Record(i, s"val_$i")))
         recordsDF.createOrReplaceTempView("record")
 
-        // 创建表
+        // 创建表, 正常情况下，都是在hive侧创建好了表，直接往里面写数据或读数据
         spark.sql("CREATE TABLE hive_records(key int, value string) STORED AS PARQUET")
         // 读取表
         val tableDF = spark.table("")

@@ -48,6 +48,7 @@ public enum DB {
     public String driver;
 
     private String MYSQL_PARAMETERS = "tinyInt1isBit=false&useUnicode=true&characterEncoding=gbk&zeroDateTimeBehavior=convertToNull";
+    private String POSTGRE_PARAMETERS="yearIsDateType=false&zeroDateTimeBehavior=convertToNull&tinyInt1isBit=false&rewriteBatchedStatements=true";
     private String ORACLE_PARAMETERS = "";
 
     DB(String ip, String database, String user, String password) {
@@ -67,7 +68,7 @@ public enum DB {
             this.driver = "com.mysql.jdbc.Driver";
             this.properties.put("driver", this.driver);
         }else if(this.toString().startsWith("POSTGRE")){
-            this.url=String.format("jdbc:postgresql://%s:5432/%s",ip,database);
+            this.url=String.format("jdbc:postgresql://%s:5432/%s?%s",ip,database,this.POSTGRE_PARAMETERS);
             this.driver="org.postgresql.Driver";
             this.properties.put("driver",this.driver);
         }

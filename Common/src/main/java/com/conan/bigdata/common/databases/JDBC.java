@@ -46,7 +46,7 @@ public class JDBC {
         jdbc.getConnection(DB.POSTGRE_105.driver, DB.POSTGRE_105.url, DB.POSTGRE_105.user, DB.POSTGRE_105.password);
         System.out.println(conn);
         // 000094195827   000000074053
-        PreparedStatement ps = conn.prepareStatement("select * from shop_extend_user_4930");
+        PreparedStatement ps = conn.prepareStatement("select count(*) from shop_extend_user_4930");
         ResultSet rs = ps.executeQuery();
         jdbc.show(rs);
         System.out.println(conn.isClosed());
