@@ -22,8 +22,7 @@ object OperateHive {
         val sqlDF = spark.sql("select cityid,name,provinceid,province from ods.resta_citytable")
         val caseDF=sqlDF.map {
             case Row(cityId: Int, cityName: String,provinceId:Int,provinceName:String) => {
-                println(s"f1 : $f1, f2 : $f2")
-                f1.toString + f2
+                s"$cityId, $cityName, $provinceId, $provinceName"
             }
         }
         sqlDF.show()
