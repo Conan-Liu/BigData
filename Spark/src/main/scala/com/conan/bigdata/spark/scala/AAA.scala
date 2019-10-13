@@ -34,15 +34,6 @@ object AAA {
         }
     }
 
-    def testYield(str: String): (String, Int) = {
-        val users = str.split(",")
-        for (i <- 0 until users.length - 1) {
-            for (j <- i + 1 until users.length)
-                yield (users(i) + "-" + users(j), 1)
-        }
-        null
-    }
-
     def main(args: Array[String]): Unit = {
         scala.Symbol("x")
         println("this is \" hahah")
@@ -113,8 +104,12 @@ object AAA {
         //测试 redis 链接
         //        WordCountToMysql.createJedisConnection()
 
-        // 测试yield方法
-        //        "a,b,c,d,e,f".flatMap(testYield)
+        val strs="a,b,c,d,e".split(",")
+        println(strs.take(3).mkString)
+        println(strs.takeRight(3).mkString)
+        println(strs.drop(2).mkString("-"))
+        println(strs.dropRight(2).mkString)
+
     }
 
 }
