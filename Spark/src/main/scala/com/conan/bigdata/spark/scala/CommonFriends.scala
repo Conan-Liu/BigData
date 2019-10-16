@@ -65,7 +65,8 @@ object CommonFriends {
               * }
               * }
               */
-            // 这个两级for循环有点特殊
+            // 这个两级for循环有点特殊, 如果想要多级循环里面的内容值带到外面， 则必须
+            // 按照使用一个 for 关键字来实现多级循环， 如果是金字塔式的循环，则 yield 不起效果
             for (i <- 0 until users.length - 1; j <- i + 1 until users.length)
                 yield (users(i) + "-" + users(j), comFriUser)
         })
