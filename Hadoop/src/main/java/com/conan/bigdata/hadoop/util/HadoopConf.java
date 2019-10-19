@@ -2,6 +2,8 @@ package com.conan.bigdata.hadoop.util;
 
 import org.apache.hadoop.conf.Configuration;
 
+import java.util.Map;
+
 /**
  * Created by Administrator on 2018/8/2.
  */
@@ -48,7 +50,14 @@ public class HadoopConf {
         return conf;
     }
 
+    public static void showConfiguration(Configuration conf) {
+        for (Map.Entry<String, String> c : conf) {
+            System.out.println(c.getKey() + " : " + c.getValue());
+        }
+    }
+
     public static void main(String[] args) {
-        System.out.println(getInstance().get("dfs.namenode.rpc-address.nameservice1.nn2", "aaa"));
+//        System.out.println(getInstance().get("dfs.namenode.rpc-address.nameservice1.nn2", "aaa"));
+        showConfiguration(getHAInstance());
     }
 }
