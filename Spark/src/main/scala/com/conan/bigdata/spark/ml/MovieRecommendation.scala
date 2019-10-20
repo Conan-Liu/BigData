@@ -13,7 +13,7 @@ import org.apache.spark.{SparkConf, SparkContext}
   * 1::122::5::838985046
   * 1::185::5::838983525
   */
-case class Rating(userId: Int, movieId: Int, score: Double)
+case class Ratings(userId: Int, movieId: Int, score: Double)
 
 object MovieRecommendation {
 
@@ -31,7 +31,7 @@ object MovieRecommendation {
         // 评分数据
         val rate = sc.textFile("D:\\Spark\\ml\\ml-10M100K\\ratings.dat", 10).map(line => {
             val str = line.split("::")
-            val rating = Rating(str(0).toInt, str(1).toInt, str(2).toDouble)
+            val rating = Ratings(str(0).toInt, str(1).toInt, str(2).toDouble)
             val times = str(3).toLong % 10
             (times, rating)
         })
