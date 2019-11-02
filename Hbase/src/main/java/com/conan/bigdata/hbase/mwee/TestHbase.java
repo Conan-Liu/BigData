@@ -1,5 +1,6 @@
 package com.conan.bigdata.hbase.mwee;
 
+import com.conan.bigdata.hadoop.util.HadoopConf;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellUtil;
@@ -7,6 +8,7 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.hadoop.security.UserGroupInformation;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -40,6 +42,15 @@ public class TestHbase {
 //            hbaseConf.set("hbase.zookeeper.quorum", "10.1.39.98,10.1.39.99,10.1.39.100");
             hbaseConf.set("hbase.zookeeper.quorum", "10.0.24.41,10.0.24.42,10.0.24.43");
             hbaseConf.set("hbase.zookeeper.property.clientPort", "2181");
+//            hbaseConf.set("hadoop.security.authentication","kerberos");
+//            hbaseConf.set("keytab.file" , "C:\\Users\\Administrator\\Desktop\\testKerberos\\hive.keytab" );
+//            hbaseConf.set("kerberos.principal" , "hive/_HOST@MWEER.COM" );
+//            UserGroupInformation.setConfiguration(hbaseConf);
+//            try{
+//                UserGroupInformation.loginUserFromKeytab("hive/_HOST@MWEER.COM","C:\\Users\\Administrator\\Desktop\\testKerberos\\hive.keytab");
+//            }catch (Exception e){
+//                e.printStackTrace();
+//            }
         }
         return hbaseConf;
     }
@@ -78,8 +89,10 @@ public class TestHbase {
     }
 
     public static void getScanner(String searchKey) throws Exception {
-        String startKey = reverseWithLpad(searchKey);
-        String stopKey = reverseWithLpad(searchKey) + "B";
+//        String startKey = reverseWithLpad(searchKey);
+//        String stopKey = reverseWithLpad(searchKey) + "B";
+        String startKey = searchKey;
+        String stopKey = searchKey + "B";
 
         System.out.println(startKey);
 
@@ -96,6 +109,7 @@ public class TestHbase {
         scan.setCaching(100);
         scan.setCacheBlocks(true);
 
+        System.out.println(getConnection().isClosed());
 
         ResultScanner rs = getConnection().getTable(TableName.valueOf("user_tag_detail")).getScanner(scan);
         show(rs);
@@ -143,6 +157,7 @@ public class TestHbase {
 
 
     public static void main(String[] args) throws Exception {
-        getScanner("3840722");
+//        System.setProperty("java.security.krb5.conf", "C:\\Users\\Administrator\\Desktop\\testKerberos\\krb5.conf");
+        getScanner("0948316000280");
     }
 }

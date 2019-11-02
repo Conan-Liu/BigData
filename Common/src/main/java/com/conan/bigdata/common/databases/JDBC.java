@@ -2,6 +2,7 @@ package com.conan.bigdata.common.databases;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 
+import java.io.*;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
@@ -41,14 +42,32 @@ public class JDBC {
         }
     }
 
-    public static void main(String[] args) throws SQLException {
+    public void readBlob(ResultSet rs) throws SQLException, IOException {
+        String fileName = "C:\\blob.txt";
+        while (rs.next()) {
+            Blob blob = rs.getBlob("log");
+            InputStream in = blob.getBinaryStream();
+            BufferedOutputStream bout = new BufferedOutputStream(new FileOutputStream(fileName));
+            byte[] buf = new byte[1024];
+            int len = 0;
+            while ((len = in.read(buf)) != -1) {
+                bout.write(buf, 0, len);
+            }
+            bout.flush();
+            bout.close();
+            in.close();
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
         JDBC jdbc = new JDBC();
-        jdbc.getConnection(DB.POSTGRE_105.driver, DB.POSTGRE_105.url, DB.POSTGRE_105.user, DB.POSTGRE_105.password);
+        jdbc.getConnection(DB.MYSQL_aliyun.driver, DB.MYSQL_aliyun.url, DB.MYSQL_aliyun.user, DB.MYSQL_aliyun.password);
         System.out.println(conn);
         // 000094195827   000000074053
-        PreparedStatement ps = conn.prepareStatement("select count(*) from shop_extend_user_4930");
+        PreparedStatement ps = conn.prepareStatement("select * from execution_logs where exec_id = 7022 and name like '%user_tag_detail_hbase%' order by upload_time desc limit 2");
         ResultSet rs = ps.executeQuery();
-        jdbc.show(rs);
+//        jdbc.show(rs);
+        jdbc.readBlob(rs);
         System.out.println(conn.isClosed());
     }
 }

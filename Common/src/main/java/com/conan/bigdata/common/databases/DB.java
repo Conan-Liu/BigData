@@ -38,6 +38,8 @@ public enum DB {
     ORACLE_9_BWSWD("10.0.24.9", "BQSWD", "pmadw", "pmadev120"),
     ORACLE_12_BWSWD("10.0.24.12", "BQSWD", "pmadw", "pmadev021"),
 
+    MYSQL_aliyun("rm-uf6yneb2w7flwrsr1.mysql.rds.aliyuncs.com","azkaban","shujudb","g2sJ5TA2itmU"), // 阿里云mysql
+    MYSQL_22("10.0.21.22","activites","root","root"),
     POSTGRE_105("10.0.19.105","postgres","postgres","postgres");
 
     public String ip;
@@ -47,7 +49,7 @@ public enum DB {
     public String url;
     public String driver;
 
-    private String MYSQL_PARAMETERS = "tinyInt1isBit=false&useUnicode=true&characterEncoding=gbk&zeroDateTimeBehavior=convertToNull";
+    private String MYSQL_PARAMETERS = "tinyInt1isBit=false&useUnicode=true&characterEncoding=gbk&zeroDateTimeBehavior=convertToNull&useSSL=true";
     private String POSTGRE_PARAMETERS="yearIsDateType=false&zeroDateTimeBehavior=convertToNull&tinyInt1isBit=false&rewriteBatchedStatements=true";
     private String ORACLE_PARAMETERS = "";
 
