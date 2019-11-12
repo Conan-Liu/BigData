@@ -4,6 +4,7 @@ import java.io.File
 
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.mllib.recommendation.{ALS, MatrixFactorizationModel, Rating}
+import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
@@ -92,11 +93,28 @@ object RecommendationExample {
                 // 保存和加载模型， 保存再hdfs上
                 val modelFile = new File(MODEL_PATH)
                 modelFile.deleteOnExit()
-                //                model.save(sc, s"$MODEL_PATH/$RMSE")
+                                model.save(sc, s"$MODEL_PATH/$RMSE")
                 //                val sameModel = MatrixFactorizationModel.load(sc, MODEL_PATH)
             }
         }
 
+
+
         sc.stop()
+    }
+
+    // 使用训练的模型为一个用户推荐5部电影
+    def recommendUserProduct(sc:SparkContext,movies:RDD[(Int,String)]):Unit={
+        // 加载模型
+        val model=MatrixFactorizationModel.load(sc,MODEL_PATH)
+        // 随机从训练集里面找一个用户id来推荐 如 123, 推荐 5部电影, 返回一个Rating 数组
+        // 调用sc.parallelize(Seq)将数组转为RDD, 当然也可以直接foreach遍历这个数组
+        val userProduct= sc.parallelize(model.recommendProducts(123,5).map(x=>(x.product,x.user)))
+        // 上面计算得到针对用户123推荐的5部电影id， 可以直接关联电影表找到电影名称， 也可以直接保存电影id
+        val userProductWithName=userProduct.join(movies)
+        println("为用户 123 推荐了五部电影， 如下")
+        userProductWithName.foreach(x=>{
+            println(s"${x._1} : ${x._2._2}")
+        })
     }
 }
