@@ -116,5 +116,11 @@ object RecommendationExample {
         userProductWithName.foreach(x=>{
             println(s"${x._1} : ${x._2._2}")
         })
+
+        // 表示为模型中所有用户推荐 5部电影
+        // 注意： 这个方法需要先得到用户对电影的喜好程度矩阵，然后针对每个用户，也就是每行排序取前5条
+        // 这里将耗费大量内存， 1千万用户， 10万部电影， 那么这个矩阵将有1千万 x 10万个数据
+        // 容易内存溢出
+        val allUserProducts=model.recommendProductsForUsers(5)
     }
 }
