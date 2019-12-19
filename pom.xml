@@ -53,6 +53,7 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        <!-- 目前maven仓库中没有支持cdh的相关依赖。cloudera自己建立了一个相关的仓库。要想利用maven添加相关依赖，则必须单独添加cloudera仓库 -->
         <repository>
             <id>cloudera1</id>
             <name>cloudera</name>

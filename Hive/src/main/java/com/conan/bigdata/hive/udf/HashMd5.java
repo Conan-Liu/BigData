@@ -6,7 +6,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * Created by Administrator on 2017/4/18.
  */
 public class HashMd5 extends UDF {
     private static MessageDigest sha1 = null;

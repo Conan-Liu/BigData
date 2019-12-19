@@ -9,6 +9,10 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 
 /**
  * 计算两个GPS之间的距离
+ *
+ * 注意继承GenericUDF， 实现hive 的udf， 一定不能有构造函数， 这是特有的抽象类， 只需要考虑实现抽象方法即可
+ * 如果 自己写了 构造函数会报错
+ * org.apache.hadoop.hive.ql.exec.FunctionTask. java.lang.NoSuchMethodException: xxx.xxx.xxx.xxx.<init>()
  */
 public class GenericUDFGPSDistance extends GenericUDF {
 

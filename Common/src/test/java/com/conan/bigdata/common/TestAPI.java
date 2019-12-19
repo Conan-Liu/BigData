@@ -129,4 +129,11 @@ public class TestAPI {
         System.out.println(json.toJSONString());
         System.out.println(json.get("age") == null ? "空" : json.get("age").getClass().getSimpleName());
     }
+
+    @Test
+    public void test12(){
+        System.out.println(-1<<5);
+        System.out.println(1<<5);
+        System.out.println(-1^-1<<5);
+    }
 }

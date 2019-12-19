@@ -148,12 +148,17 @@
                     <version>2.20.1</version>
                 </plugin>
                 <plugin>
+                    <!--
+                    java -[classpath|cp] $CLASSPATH:commons-lang3-3.4.jar:common-1.0-SNAPSHOT.jar com.conan.bigdata.common.util.ComputerEnvironment
+                    执行该ComputerEnvironment类时， 需要引入commons-lang3-3.4.jar包， 通过这种方式引入
+                    这是后，配置的主类就不起效果了， 项目的jar包以普通jar的形式添加的classpath中即可
+                     -->
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <configuration>
                         <archive>
                             <manifest>
-                                <mainClass>com.conan.bigdata.common.databases.JDBC</mainClass>
+                                <mainClass>com.conan.bigdata.common.util.ComputerEnvironment</mainClass>
                             </manifest>
                         </archive>
                     </configuration>

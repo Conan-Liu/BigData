@@ -1,5 +1,8 @@
 package com.conan.bigdata.common.util;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+
 /**
  * Created by Administrator on 2019/1/24.
  * <p>
@@ -74,6 +77,8 @@ public class SnowFlakeId {
 
         // 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
         if (timestamp < lastTimestamp) {
+            // 这里可以没必要直接抛异常退出， 阻塞到获取的时间正常即可
+            timestamp = getNextMillis(lastTimestamp);
             throw new RuntimeException(String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
         }
 
@@ -109,6 +114,31 @@ public class SnowFlakeId {
             timestamp = System.currentTimeMillis();
         }
         return timestamp;
+    }
+
+    /**
+     * 正常情况下，一台服务器可以运行多个JVM，就相当于一台服务器有多个work节点，那么该服务器可以认为是一个DataCenter
+     * 很多时候一台服务器会有多个网卡，那么就意味着有多个ip，我们暂定一个ip对应一个DataCenter， 任务的提交也是按照ip分发的
+     * 这里根据ip来计算DataCenterId， 可以使用ip转换成对应的整数取模, 具体操作参考
+     * {@link com.conan.bigdata.hive.udf.GetIpAttr.convertIP}
+     * 当然，这里是取模，那么意味着很多机器的时候，可能会得到同一个 dataCenterId， 这里的maxDataCenterId和集群机器数一致就避免了
+     *
+     * @return
+     */
+    private int getDataCenterId() {
+        return 0;
+    }
+
+    /**
+     * 每台机器上可以运行多个JVM，那么我们暂且认为一个JVM就是一个worker，这样不同的JVM就是不同的worker，互不干扰
+     *
+     * @return
+     */
+    private int getWorkId() {
+        RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
+        String jvmName = bean.getName(); // jvm的名称格式: jvm进程id@主机名
+        // String 的 hashCode 可能为负数
+        return Math.abs(jvmName.hashCode()) % (MAX_WORKER_ID + 1);
     }
 
     public static void main(String[] args) {
