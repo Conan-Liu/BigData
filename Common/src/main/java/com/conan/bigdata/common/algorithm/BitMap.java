@@ -1,6 +1,7 @@
 package com.conan.bigdata.common.algorithm;
 
 import java.util.Arrays;
+import java.util.BitSet;
 
 /**
  * bitmap的实现可以用 int 数组(32bit)， 也可以用 byte 数组(8bit)， 仅仅是bit数不同， 逻辑一致
@@ -27,6 +28,20 @@ public class BitMap {
         System.out.println(Integer.parseInt("100110001001011010000000", 2));
         System.out.println(Long.parseLong("100101010000001011111001000000000", 2));
 
+        System.out.println("\n************* java.util.BitSet实现 ********************");
+        int[] array = new int[]{1, 2, 3, 22, 0, 3, 63};
+        BitSet bitSet = new BitSet(10); // 构造函数参数表示要构建多少bit的bitmap， 类似于自己实现的数组表示法 arr.length * 8
+        int size = bitSet.size(); // 底层是 Long 类型实现， size 为 64 的倍数
+        System.out.println("bit size = " + size);
+        for (int i = 0; i < array.length; i++) {
+            bitSet.set(array[i], true);
+        }
+        System.out.println(bitSet.size());
+        for (int i = 0; i < bitSet.size(); i++) {
+            System.out.print(bitSet.get(i) ? 1 : 0);
+        }
+        System.out.println();
+
         System.out.println("\n************* 生成bitmap数据集合 ********************");
         storeMultiNum();
     }
@@ -36,7 +51,7 @@ public class BitMap {
         putNumToBitMap(a, 23);
         putNumToBitMap(a, 79);
         putNumToBitMap(a, 91);
-        putNumToBitMap(a, 23); // 这里 23 和之前的23重复了，所以从打印的bit看，只有4个数
+        putNumToBitMap(a, 23); // 这里 23 和之前的23重复了，所以从打印的bit看，只有4个数, 明显是一个比较好的去重方式，只要遍历一次数据即可
         putNumToBitMap(a, 50);
         System.out.println(Arrays.toString(a));
         String[] binaryStr = new String[a.length];
