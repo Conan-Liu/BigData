@@ -135,5 +135,7 @@ public class TestAPI {
         System.out.println(-1<<5);
         System.out.println(1<<5);
         System.out.println(-1^-1<<5);
+
+        System.out.println("c".getBytes().length);
     }
 }

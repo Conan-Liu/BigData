@@ -1,4 +1,4 @@
-package com.conan.bigdata.common.util;
+package com.conan.bigdata.common.algorithm;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;

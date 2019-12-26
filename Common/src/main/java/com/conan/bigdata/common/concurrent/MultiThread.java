@@ -1,6 +1,6 @@
 package com.conan.bigdata.common.concurrent;
 
-import com.conan.bigdata.common.util.SnowFlakeId;
+import com.conan.bigdata.common.algorithm.SnowFlakeId;
 
 /**
  * Created by Administrator on 2019/1/24.
