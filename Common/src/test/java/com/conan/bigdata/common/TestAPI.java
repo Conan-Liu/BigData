@@ -138,4 +138,11 @@ public class TestAPI {
 
         System.out.println("c".getBytes().length);
     }
+
+    @Test
+    public void test13(){
+        System.out.println(getClass().getName());
+        System.out.println(getClass().getSimpleName());
+        System.out.println(getClass().getCanonicalName());
+    }
 }
