@@ -137,6 +137,9 @@ public class TestAPI {
         System.out.println(-1^-1<<5);
 
         System.out.println("c".getBytes().length);
+
+        System.out.println(Integer.toBinaryString(Integer.MIN_VALUE));
+        System.out.println(Math.abs(Integer.MIN_VALUE));
     }
 
     @Test

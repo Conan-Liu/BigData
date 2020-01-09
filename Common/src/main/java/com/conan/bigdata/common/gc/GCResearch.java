@@ -1,6 +1,10 @@
 package com.conan.bigdata.common.gc;
 
 
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.lang.management.GarbageCollectorMXBean;
+import java.lang.management.ManagementFactory;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * -X 参数
  * 以这个开头的参数是非标准参数，也就是只能被部分VM识别，而不能被全部VM识别的参数
- * -Xms1024m  堆最小值        =  -XX:MaxHeapSize=1024m
+ * -Xms1024m  堆最小值        =  -XX:InitialHeapSize=1024m
  * -Xmx2048m  堆最大值        =  -XX:MaxHeapSize=2048m
  * -Xss10m    线程栈大小
  * -Xint      指定java解释执行代码, 样例： 执行java -Xint -version，可以看到interpreted mode
@@ -23,6 +27,7 @@ import java.util.concurrent.TimeUnit;
  * 格式： -XX:+ 或者 -XX:-  (+ 表示开启， - 表示关闭)
  * -XX:+PrintGCDetails  -XX:-PrintGCDetails  是否打印GC收集细节
  * -XX:+UseSerialGC     -XX:-UserSerialGC    是否使用串行垃圾收集器
+ * -XX:+UseG1GC
  */
 class Person {
     /**
@@ -37,10 +42,14 @@ class Person {
 
 public class GCResearch {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
-//        System.out.println("*************** 堆内存溢出示例 **************************");
-//        heapOutOfMemory();
+        // 控制台内容输出重定向
+        System.setOut(new PrintStream(new FileOutputStream("d:\\aaa.txt")));
+        System.setErr(new PrintStream(new FileOutputStream("d:\\aaa.txt")));
+
+        System.out.println("*************** 堆内存溢出示例 **************************");
+        heapOutOfMemory();
 
 //        System.out.println("*************** 栈内存溢出示例 **************************");
 //        stackOverFlow();
@@ -51,8 +60,8 @@ public class GCResearch {
 //        System.out.println("*************** 非JVM内存溢出示例 **************************");
 //        directOutOfMemory();
 
-        System.out.println("*************** 验证Java配置的opt参数示例 **************************");
-        checkJVMopts();
+//        System.out.println("*************** 验证Java配置的opt参数示例 **************************");
+//        checkJVMopts();
     }
 
     /**
@@ -65,10 +74,14 @@ public class GCResearch {
      * GC 机制就是针对 heap 的
      */
     private static void heapOutOfMemory() {
+        // 比较ParallelGC和G1GC， G1GC可以存储的实例更多
         List<Person> persons = new ArrayList<>();
         int counter = 0;
         while (true) {
             persons.add(new Person());
+            if (persons.size() >= 100000) {
+                persons.clear();
+            }
             System.out.println("Instance: " + (counter++));
         }
     }
@@ -144,6 +157,26 @@ public class GCResearch {
             TimeUnit.SECONDS.sleep(Integer.MAX_VALUE);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 调用 {@link java.lang.management.ManagementFactory} 工厂类来显示gc信息
+     */
+    private static void reportGC() {
+        long fullCount = 0;
+        long fullTime = 0;
+        long youngCount = 0;
+        long youngTime = 0;
+        List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
+        for (GarbageCollectorMXBean gcBean : garbageCollectorMXBeans) {
+            String gcName = gcBean.getName();
+            fullCount = gcBean.getCollectionCount();
+            fullTime = gcBean.getCollectionTime();
+            switch (gcName) {
+                // code
+            }
         }
     }
 }
