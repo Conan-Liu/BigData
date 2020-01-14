@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
  * -Xms1024m  堆最小值        =  -XX:InitialHeapSize=1024m
  * -Xmx2048m  堆最大值        =  -XX:MaxHeapSize=2048m
  * -Xss10m    线程栈大小
+ * -Xloggc:/tmp/gc.log    配合PrintGCDetails，把GC日志打印到这个指定的文件中
  * -Xint      指定java解释执行代码, 样例： 执行java -Xint -version，可以看到interpreted mode
  * -Xcomp     指定java编译代码， 样例： 执行java -Xcomp -version，可以看到compiled mode
  * -Xmixed    默认混合模式，先编译后执行， 执行java -version， 可以看到mixed mode
@@ -28,6 +29,8 @@ import java.util.concurrent.TimeUnit;
  * -XX:+PrintGCDetails  -XX:-PrintGCDetails  是否打印GC收集细节
  * -XX:+UseSerialGC     -XX:-UserSerialGC    是否使用串行垃圾收集器
  * -XX:+UseG1GC
+ * -XX:+HeapDumpOnOutOfMemoryError 当 OutOfMemoryError发生时自动生成 Heap Dump 文件，配合heapdump文件路劲使用
+ * -XX:HeapDumpPath   指定 dump文件存储路径，JVM生成 Heap Dump的时候，虚拟机是暂停一切服务的
  */
 class Person {
     /**
@@ -48,8 +51,8 @@ public class GCResearch {
         System.setOut(new PrintStream(new FileOutputStream("d:\\aaa.txt")));
         System.setErr(new PrintStream(new FileOutputStream("d:\\aaa.txt")));
 
-        System.out.println("*************** 堆内存溢出示例 **************************");
-        heapOutOfMemory();
+//        System.out.println("*************** 堆内存溢出示例 **************************");
+//        heapOutOfMemory();
 
 //        System.out.println("*************** 栈内存溢出示例 **************************");
 //        stackOverFlow();
@@ -60,8 +63,8 @@ public class GCResearch {
 //        System.out.println("*************** 非JVM内存溢出示例 **************************");
 //        directOutOfMemory();
 
-//        System.out.println("*************** 验证Java配置的opt参数示例 **************************");
-//        checkJVMopts();
+        System.out.println("*************** 验证Java配置的opt参数示例 **************************");
+        checkJVMopts();
     }
 
     /**

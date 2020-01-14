@@ -10,7 +10,7 @@ import java.util.List;
 public class CollectionExp {
 
     public static void main(String[] args) {
-        List<String> list = Collections.synchronizedList(new ArrayList<>());
+        List<String> list = Collections.synchronizedList(new ArrayList<String>());
         list.add("aaaa");
     }
 
