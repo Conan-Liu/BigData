@@ -11,7 +11,10 @@ import java.util.Arrays;
  */
 public class StringMatch {
 
-    private static final String STR = "这是字符串比较算法，包括BF,BM,Sunday，一个一个的举例子";
+//    private static final String STR = "这是字符串比较算法，包括BF,BM,Sunday，一个一个的举例子";
+    private static final String STR = "AAAAAAAAAAAA";
+//    private static final String PATTERN = "子";
+    private static final String PATTERN = "a";
 
     public static void main(String[] args) {
 
@@ -31,7 +34,7 @@ public class StringMatch {
      * 每次只移动一位， 效率低下
      */
     private static void bf() {
-        String pattern = "子".toUpperCase();
+        String pattern = PATTERN.toUpperCase();
         // String 类 contains 方法内部调用indexOf，就是暴力匹配的
         if (STR.contains(pattern.toUpperCase())) {
             System.out.println("已找到");

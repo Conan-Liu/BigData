@@ -3,9 +3,7 @@ package com.conan.bigdata.common.concurrent;
 import com.conan.bigdata.common.algorithm.SnowFlakeId;
 
 /**
- * Created by Administrator on 2019/1/24.
- *
- * 以多线程的方式来测试 雪花ID com.conan.bigdata.common.util.SnowFlakeId
+ * 以多线程的方式来测试 雪花ID {@link com.conan.bigdata.common.algorithm.SnowFlakeId}
  */
 public class MultiThread implements Runnable {
 

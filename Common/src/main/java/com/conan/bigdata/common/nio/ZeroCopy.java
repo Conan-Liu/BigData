@@ -9,6 +9,7 @@ import java.nio.channels.SocketChannel;
 /**
  * 零拷贝
  * {@link java.nio.channels.FileChannel}
+ * 这种操作系统层面的硬件操作，基本上都是调用 native 方法执行
  */
 public class ZeroCopy {
 
