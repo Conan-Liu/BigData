@@ -25,21 +25,6 @@
     </modules>
 
     <repositories>
-        <!--
-        <repository>
-             Maven 自带的中央仓库使用的Id为central 如果其他的仓库声明也是用该Id就会覆盖中央仓库的配置
-            <id>clojars</id>
-            <name>clojars</name>
-            <url>https://clojars.org/repo</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    -->
         <repository>
             <!-- Maven 自带的中央仓库使用的Id为central 如果其他的仓库声明也是用该Id就会覆盖中央仓库的配置 -->
             <id>maven2</id>

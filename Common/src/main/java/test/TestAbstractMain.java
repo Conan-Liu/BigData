@@ -1,7 +1,7 @@
 package test;
 
 /**
- * Created by Conan on 2019/4/21.
+ * 验证抽象类也可以写main方法
  */
 public abstract class TestAbstractMain {
     public static void main(String[] args) {

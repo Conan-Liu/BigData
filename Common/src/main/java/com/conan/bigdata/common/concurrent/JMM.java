@@ -16,14 +16,18 @@ public class JMM {
     private static final int NUM = 10000;
 
     public static void main(String[] args) throws Exception {
-        Thread thread = new Thread(() -> {
-            while (!isOver) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
 
-            }
-            System.out.println("线程已感知到 isOver 置为 true， 线程正常返回");
+                while (!isOver) {
 
-            for (int i = 0; i < NUM; i++) {
-                count--;
+                }
+                System.out.println("线程已感知到 isOver 置为 true， 线程正常返回");
+
+                for (int i = 0; i < NUM; i++) {
+                    count--;
+                }
             }
         });
         thread.start();

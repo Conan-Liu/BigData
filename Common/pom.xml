@@ -64,8 +64,7 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
-
-        <!-- impala jdbc start -->
+<!--
         <dependency>
             <groupId>com.cloudera.impala.jdbc</groupId>
             <artifactId>hive-metastore</artifactId>
@@ -95,7 +94,7 @@
             <artifactId>TCLIServiceClient</artifactId>
             <version>${impala.jdbc.version}</version>
         </dependency>
-
+-->
         <dependency>
             <groupId>org.apache.thrift</groupId>
             <artifactId>libfb303</artifactId>
@@ -158,7 +157,7 @@
                     <configuration>
                         <archive>
                             <manifest>
-                                <mainClass>com.conan.bigdata.common.util.ComputerEnvironment</mainClass>
+                                <mainClass>test.RemoteDebug</mainClass>
                             </manifest>
                         </archive>
                     </configuration>
