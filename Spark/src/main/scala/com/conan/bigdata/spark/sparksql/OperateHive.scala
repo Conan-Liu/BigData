@@ -2,9 +2,9 @@ package com.conan.bigdata.spark.sparksql
 
 import org.apache.spark.sql.{Row, SaveMode, SparkSession}
 
-case class Record(k: Int, v: String)
-
 object OperateHive {
+
+    case class Record(k: Int, v: String)
 
     def main(args: Array[String]): Unit = {
         val spark = SparkSession.builder()

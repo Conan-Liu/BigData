@@ -13,9 +13,10 @@ import org.apache.spark.{SparkConf, SparkContext}
   * 1::122::5::838985046
   * 1::185::5::838983525
   */
-case class Ratings(userId: Int, movieId: Int, score: Double)
 
 object MovieRecommendation {
+
+    case class Ratings(userId: Int, movieId: Int, score: Double)
 
     def main(args: Array[String]): Unit = {
         val sparkConf = new SparkConf().setAppName("").setMaster("local[4]")

@@ -1,15 +1,14 @@
 package com.conan.bigdata.spark.sparksql
 
-import com.conan.bigdata.spark.utils.Spark
+import com.conan.bigdata.spark.utils.SparkVariable
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 
 /**
   * json 格式
   * {"name":"liu","age":100,"hobby":{"f1":"666","f2":"厉害厉害","f3":"牛逼牛逼"}}
   */
-object ReadJson {
+object ReadJson extends SparkVariable{
     def main(args: Array[String]): Unit = {
-        val spark = Spark.getSparkSession("ReadJson")
         val schema = StructType(
             List(
                 StructField("mobile", StringType, true),

@@ -1,31 +1,30 @@
 package com.conan.bigdata.spark.ml
 
-import com.conan.bigdata.spark.utils.Spark
+import com.conan.bigdata.spark.utils.SparkVariable
 import org.apache.spark.ml.recommendation.ALS
 import org.apache.spark.sql.functions._
 
 /**
   */
 
-case class Customer(id: Int, name: String, address: String, nation: String, phone: String, mktSegment: String, comment: String)
+object FirstColleborativeFilter extends SparkVariable{
 
-case class Order(id: Int, customer: String, status: String, totalPrice: Double, date: String, priority: String, clerk: String, shipPriority: Double, comment: String)
+    case class Customer(id: Int, name: String, address: String, nation: String, phone: String, mktSegment: String, comment: String)
 
-case class LineItem(orders: Int, part: Int)
+    case class Order(id: Int, customer: String, status: String, totalPrice: Double, date: String, priority: String, clerk: String, shipPriority: Double, comment: String)
 
-object FirstColleborativeFilter {
+    case class LineItem(orders: Int, part: Int)
 
     def main(args: Array[String]): Unit = {
-        val sparkSession = Spark.getSparkSession("FirstColleborativeFilter")
 
-        import sparkSession.implicits._
-        val customerDF = sparkSession.sparkContext.textFile("").map(_.split("")).map(x => Customer(x(0).toInt, x(1), x(2), x(3), x(4), x(5), x(6))).toDF()
+        import spark.implicits._
+        val customerDF = spark.sparkContext.textFile("").map(_.split("")).map(x => Customer(x(0).toInt, x(1), x(2), x(3), x(4), x(5), x(6))).toDF()
         customerDF.createOrReplaceTempView("customer")
-        val orderDF = sparkSession.sparkContext.textFile("").map(_.split("")).map(x => Order(x(0).toInt, x(1), x(2), x(3).toDouble, x(4), x(5), x(6), x(7).toDouble, x(8))).toDF()
+        val orderDF = spark.sparkContext.textFile("").map(_.split("")).map(x => Order(x(0).toInt, x(1), x(2), x(3).toDouble, x(4), x(5), x(6), x(7).toDouble, x(8))).toDF()
         orderDF.createOrReplaceTempView("order")
 
         // 查询用户订单信息
-        val customerPartDF = sparkSession.sql(
+        val customerPartDF = spark.sql(
             """
               |SELECT
               |c.id customer,
@@ -50,6 +49,6 @@ object FirstColleborativeFilter {
         val predictions=model.transform(test)
         predictions.show(false)
 
-        sparkSession.stop()
+        spark.stop()
     }
 }

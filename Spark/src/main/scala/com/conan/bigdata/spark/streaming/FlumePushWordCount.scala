@@ -1,6 +1,5 @@
 package com.conan.bigdata.spark.streaming
 
-import com.conan.bigdata.spark.utils.Spark
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.flume.FlumeUtils
 import org.apache.spark.streaming.{Seconds, StreamingContext}

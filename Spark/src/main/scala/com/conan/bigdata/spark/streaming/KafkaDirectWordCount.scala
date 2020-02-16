@@ -1,6 +1,5 @@
 package com.conan.bigdata.spark.streaming
 
-import com.conan.bigdata.spark.utils.Spark
 import kafka.serializer.StringDecoder
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.kafka.KafkaUtils

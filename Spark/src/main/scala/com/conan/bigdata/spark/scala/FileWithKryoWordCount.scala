@@ -7,9 +7,9 @@ import org.apache.spark.{SparkConf, SparkContext}
   *
   * 使用较好的序列化方式， 虽然增加 CPU 的使用， 但是明显降低数据量， 利于集群内部网络传输和存储
   */
-case class LongPackageTuple(a: String, b: Int)
-
 object FileWithKryoWordCount {
+
+    case class LongPackageTuple(a: String, b: Int)
 
     def main(args: Array[String]): Unit = {
         val sparkConf = new SparkConf().setAppName("FileWithKryoWordCount")

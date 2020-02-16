@@ -1,13 +1,13 @@
 package com.conan.bigdata.spark.sparksql
 
-import com.conan.bigdata.spark.utils.Spark
-import org.apache.spark.{SparkConf, SparkContext}
+import com.conan.bigdata.spark.utils.SparkVariable
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.types._
+import org.apache.spark.{SparkConf, SparkContext}
 
 /**
   */
-object ReadText {
+object ReadText extends SparkVariable{
 
     /**
       * 样例数据
@@ -19,7 +19,7 @@ object ReadText {
     case class City(city_id: String, city_name: String)
 
     def main(args: Array[String]): Unit = {
-        val sparkSession = Spark.getSparkSession("aaa")
+
         val txtPath = "/user/hive/ext/aaa"
 
         // 下面有定义两种Schema的方法
@@ -40,12 +40,12 @@ object ReadText {
 
         val rowRDD_1 = txtDF.map(_.split("\\|")).map(p => Row(p: _*)) // _* 把p这个case class转变成序列， 传入到可变长数组参数
         val rowRDD_2 = txtDF.map(_.split("\\|")).map(p => Row(p(0), p(1)))
-        val data = Spark.getSparkSession("aaa").createDataFrame(rowRDD_2, schema_1)
+        val data = spark.createDataFrame(rowRDD_2, schema_1)
 
         // spark2 的隐式转换
         // 在使用一些特殊的操作时，一定要加上 import spark.implicits._ 不然toDF、toDS无法使用
         //        import sparkSession.sqlContext.implicits._
-        import sparkSession.implicits._
+        import spark.implicits._
         // 新版推荐
         val rowCase = txtDF.map(_.split("\\|")).map(p => City(p(0), p(1))).toDF()
         // 元组方式
@@ -60,7 +60,7 @@ object ReadText {
         rowCase.show(10)
 
         // 释放资源
-        sparkSession.stop()
+        spark.stop()
     }
 
 }

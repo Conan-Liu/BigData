@@ -7,7 +7,41 @@ import scala.util.control.Breaks._
 
 /**
   */
-object AAA {
+// 伴生类
+// 类后面使用小括号声明的参数列表，其实就是主构造函数的参数列表
+class ScalaAPI(a: Int, b: String) {
+    // 除了方法定义def， 其他的都属于主构造函数方法体，new的时候都会执行
+    // 如 try-catch 会执行
+    try {
+        throw new Exception("Exception ...")
+    } catch {
+        case e: Exception => e.printStackTrace()
+            println("a = " + a + ", b = " + b)
+    }
+    // 这也会执行
+    println("主构造函数，只要new，构造函数体就会执行...")
+
+    // 辅助构造函数，辅助构造函数一定要直接或者间接地调用主构造函数，因为主构造函数体不执行，类体就无法初始化
+    // 无参辅助够造函数
+    def this() {
+        this(111, "Fei")
+    }
+
+    // 主构造函数调用类的成员方法，也会执行
+    this.show()
+
+    def show(): Unit = {
+        println("这不会自动执行，属于成员方法，需要被调用才执行...")
+    }
+
+    // 此方法不是构造方法，是一个普通方法，只是巧了和类名一致
+    def AAA(): Unit = {
+        println("这不是构造方法，是一个普通方法...")
+    }
+}
+
+// 伴生对象
+object ScalaAPI {
 
     def apply(f: (Int) => String, v: Int): String = {
         return f(v + 12)
@@ -32,6 +66,12 @@ object AAA {
         for (m <- map) {
             println(m._1 + "\t" + m._2)
         }
+
+        // 使用Option类
+        // unbound placeholder parameter 注意，如果这里定义 _ 作为占位符，一定要是可变类型var，否则就会报前面的错
+        val isNull: String = null
+        val opNull = Option[String](isNull).getOrElse("*********")
+        println("Option例子：" + opNull)
     }
 
     def main(args: Array[String]): Unit = {
@@ -104,12 +144,29 @@ object AAA {
         //测试 redis 链接
         //        WordCountToMysql.createJedisConnection()
 
-        val strs="a,b,c,d,e".split(",")
+        val strs = "a,b,c,d,e".split(",")
         println(strs.take(3).mkString)
         println(strs.takeRight(3).mkString)
         println(strs.drop(2).mkString("-"))
         println(strs.dropRight(2).mkString)
 
+
+        // 测试伴生类
+        val aaa = new ScalaAPI(123, "Liu")
+        val bbb = new ScalaAPI()
+
+        // flatMap
+        var words = Set(List('s', 'c', 'd'), List('d', 'c'))
+        // flatMap 接受的是一个可迭代集合
+        val wordsFlatMap=words.flatMap(x => {
+            // 什么类型调用的flatMap方法，则返回的也是什么类型
+            // 所以这里返回是Set集合，有去重的效果，结果为Set(c, d)
+            // List(c, d)膨胀为 c和d，List(c)膨胀为c
+            // 最后得到结果是Set集合，Set(c,d)
+            println(x+"\t"+x.tail)
+            x.tail
+        })
+        println(wordsFlatMap)
     }
 
 }

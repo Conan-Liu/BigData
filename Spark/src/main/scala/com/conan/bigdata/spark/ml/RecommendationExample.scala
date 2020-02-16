@@ -2,6 +2,7 @@ package com.conan.bigdata.spark.ml
 
 import java.io.File
 
+import com.conan.bigdata.spark.utils.SparkVariable
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.mllib.recommendation.{ALS, MatrixFactorizationModel, Rating}
 import org.apache.spark.rdd.RDD
@@ -12,7 +13,7 @@ import org.apache.spark.{SparkConf, SparkContext}
   *
   * http://spark.apache.org/docs/2.3.0/mllib-collaborative-filtering.html
   */
-object RecommendationExample {
+object RecommendationExample extends SparkVariable{
 
     private val LATEST = "E:\\BigData\\Spark\\ml\\ml-latest\\ratings.csv"
     private val LATEST_SMALL = "E:\\BigData\\Spark\\ml\\ml-latest-small\\ratings.csv"
@@ -35,15 +36,6 @@ object RecommendationExample {
     }
 
     def main(args: Array[String]): Unit = {
-        //设置日志输出级别，省的控制台全是没用的日志
-        Logger.getLogger("org.apache.spark").setLevel(Level.WARN)
-        Logger.getLogger("java.lang").setLevel(Level.WARN)
-        Logger.getLogger("org.apache.hadoop").setLevel(Level.WARN)
-        Logger.getLogger("org.spark_project.jetty").setLevel(Level.WARN)
-
-        val sparkConf = new SparkConf().setAppName("RecommendationExample").setMaster("local[*]")
-        val sc = new SparkContext(sparkConf)
-
         val data = sc.textFile(LATEST_SMALL)
         data.take(10).foreach(println)
         println("总记录数: " + data.count())

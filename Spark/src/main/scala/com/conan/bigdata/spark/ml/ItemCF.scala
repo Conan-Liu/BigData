@@ -5,12 +5,6 @@ import org.apache.spark.rdd.RDD
 
 import scala.collection.mutable.ListBuffer
 
-case class ItemCFUser(user_id: String, user_name: String)
-
-case class ItemCFItem(item_id: String, item_name: String)
-
-case class ItemCFRating(user_id: String, item_id: String, rating: Double)
-
 /**
   * 参考 https://www.jianshu.com/p/27b1c035b693
   *
@@ -52,6 +46,12 @@ case class ItemCFRating(user_id: String, item_id: String, rating: Double)
   */
 object ItemCF extends SparkVariable {
 
+    case class ItemCFUser(user_id: String, user_name: String)
+
+    case class ItemCFItem(item_id: String, item_name: String)
+
+    case class ItemCFRating(user_id: String, item_id: String, rating: Double)
+
     /**
       * 2.相似度计算
       * 这是核心，相似度计算算法有很多，这里取 余弦相似度
@@ -90,7 +90,8 @@ object ItemCF extends SparkVariable {
 
     /**
       * 3.针对某个用户推荐
-      * 找到某个用户之前消费的物品，在相似度矩阵中找出这些物品的相似物品
+      * 找到某个用户之前消费的物品，在相似度矩阵中找出这些物品的相似物品，然后根据消费物品的评分*相似物品的相似度=用户对相似物品的感兴趣程度
+      * 相当于对相似物品加权计算用户的感兴趣程度
       * 某个用户之前消费的多个物品，很可能会与同一个物品相似，那么这个物品的相似度应该相加，提升这个物品相似度
       * 按相似度倒序，推荐TopN即可
       */
@@ -128,5 +129,7 @@ object ItemCF extends SparkVariable {
         println("**************************************")
         // 3.为指定用户推荐物品
         val recommItems = recommendItemsToUser(ratingRDD, simiRDD)
+
+        sc.stop()
     }
 }
