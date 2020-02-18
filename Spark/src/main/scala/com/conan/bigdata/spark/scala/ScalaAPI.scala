@@ -71,7 +71,9 @@ object ScalaAPI {
         // unbound placeholder parameter 注意，如果这里定义 _ 作为占位符，一定要是可变类型var，否则就会报前面的错
         val isNull: String = null
         val opNull = Option[String](isNull).getOrElse("*********")
-        println("Option例子：" + opNull)
+        println(s"Option例子: ${opNull}")
+        // 拋异常，不会自动转变成 null，下面代码不可执行
+        // println(s"测试拋异常: ${Option[Int]("abc".toInt).getOrElse(0)}")
     }
 
     def main(args: Array[String]): Unit = {

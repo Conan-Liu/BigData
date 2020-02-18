@@ -1,10 +1,10 @@
-package com.conan.bigdata.common.algorithm;
+package com.conan.bigdata.datamine.cf;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ItemCF {
+public class ItemCF1 {
 
     // 余弦相似度计算物品之间的相似度
     private static double[][] getCosSimilarity(int[][] source) {
