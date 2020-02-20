@@ -160,15 +160,26 @@ object ScalaAPI {
         // flatMap
         var words = Set(List('s', 'c', 'd'), List('d', 'c'))
         // flatMap 接受的是一个可迭代集合
-        val wordsFlatMap=words.flatMap(x => {
+        val wordsFlatMap = words.flatMap(x => {
             // 什么类型调用的flatMap方法，则返回的也是什么类型
             // 所以这里返回是Set集合，有去重的效果，结果为Set(c, d)
             // List(c, d)膨胀为 c和d，List(c)膨胀为c
             // 最后得到结果是Set集合，Set(c,d)
-            println(x+"\t"+x.tail)
+            println(x + "\t" + x.tail)
             x.tail
         })
         println(wordsFlatMap)
-    }
 
+        // 模式匹配，如下两种写法效果一样，同一种语法的两种写法，第二种写法是匿名函数
+        val arrPatternMatch = Array(1, 2, 4, 2, 5, 10)
+        arrPatternMatch.map { x => x match {
+            case 1 => 1*100
+            case _ => println("other");0
+        }
+        }
+        arrPatternMatch.map {
+            case 1 => 1*100
+            case _ => println("other");0
+        }
+    }
 }

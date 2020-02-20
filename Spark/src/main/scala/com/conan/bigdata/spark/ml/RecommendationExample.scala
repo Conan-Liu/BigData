@@ -58,7 +58,7 @@ object RecommendationExample extends SparkVariable{
         // 多次循环计算模型，得到一个MSE评分最佳的模型
         // 有时并不能得到最佳模型， 只需要满足收敛条件即可
         for (i <- iteration; l <- lambda) {
-
+            // ratings 这个RDD最好持久化起来，打断依赖，加快执行速度
             val model = ALS.train(ratings, rank, i, l)
             // 评估模型
             val predictions = model.predict(userProducts).map(x => ((x.user, x.product), x.rating))

@@ -33,13 +33,16 @@ object ALSCF extends SparkVariable {
         println(s"记录数: ${ratingsRDD.count()}")
         val distinctUsers = ratingsRDD.map(_.user).distinct().count()
         val distinctMovies = ratingsRDD.map(_.product).distinct().count()
-        println(s"不重复用户数:${distinctUsers}   不重复电影数:${distinctMovies}")
+        val distinctUsersMovies = ratingsRDD.map(x => (x.user, x.product)).distinct().count()
+        println(s"不重复用户数:${distinctUsers}\n不重复电影数:${distinctMovies}\n不重复用户电影数:${distinctUsersMovies}")
 
 
         // 可以分割成训练集和测试集，训练集用于训练模型，测试集用于验证推荐结果准确性
+        // 避免过拟合，验证模型泛化能力
         println("***********划分训练集和测试集************")
         val Array(trainRDD, testRDD) = ratingsRDD.randomSplit(Array(0.8, 0.2))
         println(s"训练集总数: ${trainRDD.count()}， 测试集总数: ${testRDD.count()}")
+        println(s"****${testRDD.map(x => (x.user, x.product)).distinct().count()}")
 
 
         // 调用ALS算法训练数据，属于显示评分训练
@@ -50,8 +53,9 @@ object ALSCF extends SparkVariable {
         // iterations: 对应运行时的迭代次数。ALS能确保每次迭代都能降低评级矩阵的重建误
         //     差，但一般经少数次迭代后ALS模型便已能收敛为一个比较合理的好模型。这样大部分情况下都没必要迭代太多次（10次左右一般就挺好）
         // lambda: 该参数控制模型的正则化过程，从而控制模型的过拟合情况。其值越高，正则化越严厉
+        // seed: 用来控制ALS随即初始化矩阵的值
         // 可以用多级循环来不停的计算参数，比较MSE和RMSE的大小，得到一个比较好的模型
-        val alsModel: MatrixFactorizationModel = ALS.train(ratingsRDD, 8, 10, 0.01)
+        val alsModel: MatrixFactorizationModel = ALS.train(trainRDD, 8, 10, 0.01)
 
 
         // 模型评估 MSE RMSE 评估
@@ -61,8 +65,9 @@ object ALSCF extends SparkVariable {
         // 根据这个数据集的两个评分计算 MSE和 RMSE，用来评估该模型的好坏，越接近0越佳
         // 这两个评分集也可以是 testRDD的真实评分和trainRDD对应的预测评分
         println("**************模型评估************************")
-        val actualRatings = ratingsRDD.map(x => ((x.user, x.product), x.rating))
-        val predictRatings = alsModel.predict(ratingsRDD.map(x => (x.user, x.product))).map(x => ((x.user, x.product), x.rating))
+        val actualRatings = testRDD.map(x => ((x.user, x.product), x.rating))
+        val predictRatings = alsModel.predict(testRDD.map(x => (x.user, x.product))).map(x => ((x.user, x.product), x.rating))
+        println(s"真实用户物品评分总数: ${actualRatings.count()}\n预测用户物品评分总数: ${predictRatings.count()}")
         val predictAndActual: RDD[((Int, Int), (Double, Double))] = actualRatings.join(predictRatings)
         println(s"样例数据: \n${predictAndActual.take(5).mkString(",")}\n")
         val evalModel = new RegressionMetrics(predictAndActual.map(_._2))
@@ -99,7 +104,7 @@ object ALSCF extends SparkVariable {
         // 为所有用户推荐电影，这将耗费大量内存
         println("为所有用户推荐四部电影如下:")
         val rmdMoviesForUsers = alsModel.recommendProductsForUsers(4)
-        println(rmdMoviesForUsers.mapValues(_.mkString("[",",","]")).take(5).mkString(","))
+        println(rmdMoviesForUsers.mapValues(_.mkString("[", ",", "]")).take(5).mkString(","))
 
         // 保存模型，以便后期加载使用进行推荐
         // alsModel.save(sc, "")

@@ -18,7 +18,7 @@ trait SparkVariable {
     // 它可以被复制，但是用户不能修改，Spark不支持在程序运行的时候修改参数
     val sparkConf = new SparkConf().setAppName(getClass.getName)
     if (!"yarn".equalsIgnoreCase(sparkConf.get("spark.master", "")))
-    sparkConf.setMaster("local[*]")
+        sparkConf.setMaster("local[*]")
     val sc = SparkContext.getOrCreate(sparkConf)
     // sc.setLogLevel("WARN")
     // 这里SparkSession的初始化会使用之前定义的SparkContext，不会再重新创建，也就是会先判断上下文有没有SparkContext
