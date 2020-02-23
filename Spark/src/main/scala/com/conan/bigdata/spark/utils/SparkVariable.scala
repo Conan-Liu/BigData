@@ -16,8 +16,10 @@ trait SparkVariable {
 
     // SparkConf的指定必须在SparkContext初始化之前执行
     // 它可以被复制，但是用户不能修改，Spark不支持在程序运行的时候修改参数
-    val sparkConf = new SparkConf().setAppName(getClass.getName)
-    if (!"yarn".equalsIgnoreCase(sparkConf.get("spark.master", "")))
+    val sparkConf = new SparkConf()
+    if ("".equals(sparkConf.get("spark.app.name","")))
+        sparkConf.setAppName(getClass.getName)
+    if ("".equals(sparkConf.get("spark.master","")))
         sparkConf.setMaster("local[*]")
     val sc = SparkContext.getOrCreate(sparkConf)
     // sc.setLogLevel("WARN")

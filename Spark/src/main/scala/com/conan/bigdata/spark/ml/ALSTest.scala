@@ -18,7 +18,7 @@ object ALSTest extends SparkVariable {
         println(s"总记录数: ${source.count()}")
 
         val ratingsRDD = source.map(x => {
-            val Array(userId, movieId, rating, _) = x.split("::")
+            val Array(userId, movieId, rating, _) = x.split(",")
             try {
                 Rating(userId.toInt, movieId.toInt, rating.toDouble)
             } catch {
@@ -31,10 +31,9 @@ object ALSTest extends SparkVariable {
         val alsModel: MatrixFactorizationModel = ALS.train(ratingsRDD, 8, 10, 0.01)
         alsModel.save(sc, s"hdfs://nameservice1/tmp/hive/hive/test/model/${System.currentTimeMillis()}")
 
-        // 为所有用户推荐电影，这将耗费大量内存
         println("为所有用户推荐四部电影如下:")
         val rmdMoviesForUsers = alsModel.recommendProductsForUsers(4)
-        rmdMoviesForUsers.saveAsTextFile("hdfs://nameservice1/tmp/hive/hive/test/rmd/")
+        rmdMoviesForUsers.mapValues(_.mkString("[", ",", "]")).saveAsTextFile("hdfs://nameservice1/tmp/hive/hive/test/rmd/")
 
         sc.stop()
     }

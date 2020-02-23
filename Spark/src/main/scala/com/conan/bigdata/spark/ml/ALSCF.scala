@@ -1,13 +1,9 @@
 package com.conan.bigdata.spark.ml
 
-import java.io.{File, PrintWriter}
-
 import com.conan.bigdata.spark.utils.SparkVariable
 import org.apache.spark.mllib.evaluation.RegressionMetrics
 import org.apache.spark.mllib.recommendation.{ALS, MatrixFactorizationModel, Rating}
 import org.apache.spark.rdd.RDD
-
-import scala.io.Source
 
 /**
   */
@@ -52,18 +48,17 @@ object ALSCF extends SparkVariable {
         //     和物品很多的时候。因此实践中该参数常作为训练效果与系统开销之间的调节参数。通常其合理取值为10到200
         // iterations: 对应运行时的迭代次数。ALS能确保每次迭代都能降低评级矩阵的重建误
         //     差，但一般经少数次迭代后ALS模型便已能收敛为一个比较合理的好模型。这样大部分情况下都没必要迭代太多次（10次左右一般就挺好）
-        // lambda: 该参数控制模型的正则化过程，从而控制模型的过拟合情况。其值越高，正则化越严厉
-        // seed: 用来控制ALS随即初始化矩阵的值
+        // lambda: 该参数控制模型的正则化过程，从而控制模型的过拟合情况。其值越高，正则化越严厉，默认0.01
+        // seed: 用来控制ALS随即初始化矩阵的值，默认System.nanoTime()
         // 可以用多级循环来不停的计算参数，比较MSE和RMSE的大小，得到一个比较好的模型
         val alsModel: MatrixFactorizationModel = ALS.train(trainRDD, 8, 10, 0.01)
 
 
         // 模型评估 MSE RMSE 评估
-        // 根据源数据得到 真实评分((user, product), rating))
-        // 根据模型计算 预测评分((user, product), rating))
+        // 根据测试集数据得到的 真实评分((user, product), rating))
+        // 根据模型计算测试集的 预测评分((user, product), rating))
         // 两个关联得到一个数据集，记录了用户产品对的实际评分和预测评分
         // 根据这个数据集的两个评分计算 MSE和 RMSE，用来评估该模型的好坏，越接近0越佳
-        // 这两个评分集也可以是 testRDD的真实评分和trainRDD对应的预测评分
         println("**************模型评估************************")
         val actualRatings = testRDD.map(x => ((x.user, x.product), x.rating))
         val predictRatings = alsModel.predict(testRDD.map(x => (x.user, x.product))).map(x => ((x.user, x.product), x.rating))
@@ -101,13 +96,15 @@ object ALSCF extends SparkVariable {
         rmdMovies.foreach(println)
 
 
-        // 为所有用户推荐电影，这将耗费大量内存
+        // 为所有用户推荐电影，经运行，并不会消耗多长时间和内存
+        // 推荐结果可以保存为文件供Hive查询，也可以写入RDBMS
         println("为所有用户推荐四部电影如下:")
         val rmdMoviesForUsers = alsModel.recommendProductsForUsers(4)
         println(rmdMoviesForUsers.mapValues(_.mkString("[", ",", "]")).take(5).mkString(","))
+        // rmdMoviesForUsers.mapValues(_.mkString("[", ",", "]")).saveAsTextFile("hdfs路径")
 
-        // 保存模型，以便后期加载使用进行推荐
-        // alsModel.save(sc, "")
+        // 保存模型，以便后期加载使用进行推荐，必须是不存在的目录
+        // alsModel.save(sc, "hdfs路径")
 
         // 重新加载之前保存的模型，用于推荐
         // val loadAlsModel = MatrixFactorizationModel.load(sc, "")
