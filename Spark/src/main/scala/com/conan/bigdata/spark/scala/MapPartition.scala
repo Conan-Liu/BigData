@@ -14,6 +14,8 @@ import scala.collection.mutable.ArrayBuffer
   * 数据样例
   * 小表： gender, gender_name     1 男， 2 女
   * 大表： user_id, gender         1234, 2   21,1
+  *
+  * 该类给出了mapPartitions的低效和高效的用法
   */
 object MapPartition extends SparkVariable {
 
@@ -46,7 +48,7 @@ object MapPartition extends SparkVariable {
             arrayBuffer.iterator
         })
 
-        // for的守卫机制也可以实现
+        // for的守卫机制也可以实现，这种可能会造成内存溢出
         val res2 = large.mapPartitions(iter => {
             val smallMap = smallBC.value
             for ((userId, gender) <- iter)
@@ -58,5 +60,42 @@ object MapPartition extends SparkVariable {
         val fs = FileSystem.get(sc.hadoopConfiguration)
         fs.delete(new Path("/backup/mapjoin/d1"),true)
         res1.saveAsTextFile("/backup/mapjoin/d2")
+
+
+        // mapPartitions 可能会造成内存溢出加用起来不方便， 下面给出相对高效的用法
+        // mapPartitions中套map，可能无法关闭数据库等耗资源的链接
+        val niubi1=large.mapPartitions(x=>{
+            println("连接数据库或者是获取一个广播变量")
+            val bc = smallBC.value
+            val res=x.map(y=>{
+                println("处理每一条数据")
+                (y._1,bc.getOrElse(y._1,""),y._2)
+            })
+            res
+        })
+
+        // 自定义迭代器，实现可以关闭耗资源的链接，无需缓存数据，就不会内存溢出
+        val niubi2=large.mapPartitions(x=>{
+            println("连接数据库或者其它耗资源的链接")
+            val bc = smallBC.value
+            // createDatabaseConnector()
+            new Iterator[(String,String,String)]{
+                // 判断是否还有数据，如果没有则关闭资源使用
+                override def hasNext: Boolean ={
+                    if(x.hasNext){
+                        true
+                    }else{
+                        println("关闭数据库")
+                        // closeDatabaseConnector()
+                        false
+                    }
+                }
+
+                override def next(): (String, String,String) ={
+                    // 具体的数据处理逻辑，处理每一条数据
+                    (x.next._1,bc.getOrElse(x.next._1,""),x.next._2)
+                }
+            }
+        })
     }
 }

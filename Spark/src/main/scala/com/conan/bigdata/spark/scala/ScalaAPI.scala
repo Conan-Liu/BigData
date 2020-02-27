@@ -169,6 +169,9 @@ object ScalaAPI {
             x.tail
         })
         println(wordsFlatMap)
+        // 注意 String 类型其实是一个字符序列，所以"abc"字符串会被拆分成a b c,然后在膨胀
+        val strsFlatMap=Array("abc","xyz","opq")
+        strsFlatMap.flatMap(x=>x).foreach(println)
 
         // 模式匹配，如下两种写法效果一样，同一种语法的两种写法，第二种写法是匿名函数
         val arrPatternMatch = Array(1, 2, 4, 2, 5, 10)
