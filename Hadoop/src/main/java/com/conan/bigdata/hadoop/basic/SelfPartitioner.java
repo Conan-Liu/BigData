@@ -2,9 +2,6 @@ package com.conan.bigdata.hadoop.basic;
 
 import org.apache.hadoop.mapreduce.Partitioner;
 
-/**
- * Created by Administrator on 2019/6/19.
- */
 public class SelfPartitioner<K, V> extends Partitioner<K, V> {
 
     /**

@@ -1,8 +1,5 @@
 package com.conan.bigdata.common.generic;
 
-/**
- * Created by Administrator on 2019/4/9.
- */
 // 定义一个泛型接口
 interface Generator<T> {
     T next();

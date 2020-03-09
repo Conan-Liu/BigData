@@ -12,9 +12,6 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Administrator on 2017/3/29.
- */
 public class TestUDTF extends GenericUDTF {
     @SuppressWarnings("deprecation")
     @Override

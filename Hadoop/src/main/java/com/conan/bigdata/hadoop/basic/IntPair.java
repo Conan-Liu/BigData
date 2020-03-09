@@ -7,8 +7,6 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 /**
- * Created by Administrator on 2019/6/26.
- * <p>
  * 自定义Key实现二次排序
  */
 public class IntPair implements WritableComparable<IntPair> {

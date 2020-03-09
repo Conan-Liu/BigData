@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Administrator on 2018/8/8.
  * 获取接口或抽象类的具体实现类
+ * 接口：List Map
+ * 抽象类 InputStream OutputStream
  */
 public class GetSpecifiedImplClass {
 

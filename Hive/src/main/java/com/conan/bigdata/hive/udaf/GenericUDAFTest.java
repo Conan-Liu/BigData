@@ -13,8 +13,6 @@ import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.io.IntWritable;
 
 /**
- * Created by Administrator on 2017/7/6.
- * <p/>
  * 该类的功能： 第一列的值大于第二列则计数加 1
  */
 public class GenericUDAFTest extends AbstractGenericUDAFResolver {

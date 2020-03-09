@@ -8,25 +8,26 @@ import java.util.concurrent.TimeUnit;
  * Join方法等待
  * 通过 Callable 接口实现：通过FutureTask Or 线程池获取线程返回值
  */
-class Simple implements Runnable {
-    private String value;
+public class ThreadWithReturn {
 
-    @Override
-    public void run() {
-        try {
-            value = "this is example";
-            TimeUnit.SECONDS.sleep(1);
-        } catch (Exception e) {
-            e.printStackTrace();
+    private static class Simple implements Runnable {
+        private String value;
+
+        @Override
+        public void run() {
+            try {
+                value = "this is example";
+                TimeUnit.SECONDS.sleep(1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        public String getValue() {
+            return this.value;
         }
     }
 
-    public String getValue() {
-        return this.value;
-    }
-}
-
-public class ThreadWithReturn {
     public static void main(String[] args) throws Exception {
         Simple s = new Simple();
         Thread t = new Thread(s);
@@ -41,7 +42,7 @@ public class ThreadWithReturn {
 
         /**
          * Callable 接口参考
-         * {@link CallableExecutor}
+         * {@link com.conan.bigdata.common.concurrent.CallableExecutor}
          */
         System.out.println("value : " + s.getValue());
     }

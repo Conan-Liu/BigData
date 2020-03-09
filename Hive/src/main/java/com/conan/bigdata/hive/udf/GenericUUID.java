@@ -10,9 +10,6 @@ import org.apache.hadoop.io.Text;
 
 import java.util.UUID;
 
-/**
- * Created by Administrator on 2017/7/27.
- */
 // 一定要加上下面这段注解， rand()函数也有这个， 否则得到的所有记录数将是一样的UUID
 @UDFType(deterministic = false)
 public class GenericUUID extends GenericUDF {

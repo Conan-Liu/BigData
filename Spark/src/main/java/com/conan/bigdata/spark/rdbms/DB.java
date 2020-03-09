@@ -2,9 +2,6 @@ package com.conan.bigdata.spark.rdbms;
 
 import java.util.Properties;
 
-/**
- * Created by Administrator on 2018/9/14.
- */
 public enum DB {
 
     MYSQL_TEST_19_6("10.0.19.6", 30242, "business_olap", "pd_test_dev", "VFR5rgdf");

@@ -12,9 +12,6 @@ import org.apache.hadoop.mapred.Reporter;
 
 import java.io.IOException;
 
-/**
- * Created by Administrator on 2018/8/11.
- */
 public class ParquetWriter {
     public static void main(String[] args) throws IOException {
         ParquetHiveSerDe parquetHiveSerDe=new ParquetHiveSerDe();

@@ -4,9 +4,6 @@ import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 
-/**
- * Created by Administrator on 2018/7/25.
- */
 public class Mail {
     private static final String SERVER = "smtp.exmail.qq.com";
     private static final String ACCOUNT = "big.data@puscene.com";

@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Administrator on 2019/5/21.
- *
  * 这个是flume的拦截器， 对应的应用程序
  * com.conan.bigdata.spark.streaming.mwee.buriedpoint.DataCleaning
  * 这是埋点日志数据的拦截器
@@ -37,7 +35,7 @@ import java.util.Map;
 
  * #配置source1拦截器：
  * agent1.sources.source1.interceptors = i1
- * agent1.sources.source1.interceptors.i1.type = com.mzj.customInterceptor.CustomDynamicFileNameInterceptor$Builder
+ * agent1.sources.source1.interceptors.i1.type = com.conan.bigdata.flume.interceptor.CustomDynamicFileNameInterceptor$Builder
 
 
  * #配置channel1：
@@ -63,7 +61,7 @@ import java.util.Map;
  * 数据存到hdfs上文件名样例， 上面的sink， 定义了文件大小和时间来切分文件， 128MB一个文件， 或半小时一个
  * /meimeng/activity/2019/05/13/meimeng.1558425412806
  *
- * 如果要发射自定定义的Event， 可以使用 [[org.apache.flume.event.SimpleEvent]] 类
+ * 如果要发射自定定义的Event， 可以使用 {@link org.apache.flume.event.SimpleEvent}类
  */
 public class CustomDynamicFileNameInterceptor implements Interceptor {
 

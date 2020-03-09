@@ -1,10 +1,5 @@
 package com.conan.bigdata.common.util;
 
-/**
- * Created by Administrator on 2019/3/6.
- * 一致性hash算法
- */
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -13,29 +8,30 @@ import java.util.*;
  * 实现一致性Hash算法中使用的哈希函数，使用MD5算法保证一致性哈希的平衡性
  * 这里可以参考网上一些其它的方法
  */
-class HashFunction {
-    private MessageDigest md5 = null;
-
-    public long hash(String key) {
-        if (md5 == null) {
-            try {
-                md5 = MessageDigest.getInstance("MD5");
-            } catch (NoSuchAlgorithmException e) {
-                throw new IllegalStateException("no md5 algrithm found");
-            }
-        }
-
-        md5.reset();
-        md5.update(key.getBytes());
-
-        byte[] md5Key = md5.digest();
-        long result = ((long) (md5Key[3] & 0xFF) << 24) | ((long) (md5Key[2] & 0xFF) << 16) | ((long) (md5Key[1] & 0xFF) << 8) | ((long) (md5Key[0] & 0xFF));
-
-        return result & 0xFFFFFFFFL;
-    }
-}
-
 public class ConsistentHash<T> {
+
+    // 一致性hash算法
+    private static class HashFunction {
+        private MessageDigest md5 = null;
+
+        public long hash(String key) {
+            if (md5 == null) {
+                try {
+                    md5 = MessageDigest.getInstance("MD5");
+                } catch (NoSuchAlgorithmException e) {
+                    throw new IllegalStateException("no md5 algrithm found");
+                }
+            }
+
+            md5.reset();
+            md5.update(key.getBytes());
+
+            byte[] md5Key = md5.digest();
+            long result = ((long) (md5Key[3] & 0xFF) << 24) | ((long) (md5Key[2] & 0xFF) << 16) | ((long) (md5Key[1] & 0xFF) << 8) | ((long) (md5Key[0] & 0xFF));
+
+            return result & 0xFFFFFFFFL;
+        }
+    }
 
     private final HashFunction hashFunction;
     // 服务器节点的复制因子， 虚拟节点个数 = 实际节点个数 * numOfReplicas

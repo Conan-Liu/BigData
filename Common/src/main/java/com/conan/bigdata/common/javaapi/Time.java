@@ -4,9 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-/**
- * Created by Administrator on 2017/4/18.
- */
 public class Time {
     private static Calendar c1 = Calendar.getInstance();
     private static Calendar c2 = Calendar.getInstance();

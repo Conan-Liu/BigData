@@ -8,9 +8,6 @@ import org.apache.hadoop.util.ToolRunner;
 
 import java.util.Map;
 
-/**
- * Created by Administrator on 2018/9/3.
- */
 public class GetConfiguration extends Configured implements Tool {
 
     @Override

@@ -20,9 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by Administrator on 2017/5/23.
- */
 @Description(name = "median", value = "_FUNC_(x) return the median number of a number array. eg:median(x)")
 // 这个类也不推荐使用了， 也不说用哪个来代替
 @SuppressWarnings("deprecation")

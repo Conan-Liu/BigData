@@ -6,9 +6,6 @@ import org.apache.commons.pool2.impl.DefaultPooledObject;
 
 import java.util.Random;
 
-/**
- * Created by Administrator on 2019/5/6.
- */
 public class ConnectionFactory implements PooledObjectFactory<Connection> {
 
     @Override

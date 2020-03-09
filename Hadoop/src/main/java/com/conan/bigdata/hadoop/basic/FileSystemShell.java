@@ -15,9 +15,6 @@ import org.apache.hadoop.util.ToolRunner;
 
 import java.io.*;
 
-/**
- * Created by Administrator on 2017/3/25.
- */
 public class FileSystemShell extends Configured implements Tool {
     public static void main(String[] args) {
         try {

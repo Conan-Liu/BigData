@@ -6,9 +6,6 @@ import org.apache.commons.pool2.impl.DefaultPooledObject;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Created by Administrator on 2019/5/6.
- */
 public class ConnectionFactory extends BasePooledObjectFactory<Connection> {
 
     private AtomicInteger id=new AtomicInteger(1);

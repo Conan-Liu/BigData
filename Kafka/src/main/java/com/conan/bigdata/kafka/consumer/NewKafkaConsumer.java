@@ -8,9 +8,6 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import java.util.Arrays;
 import java.util.Properties;
 
-/**
- * Created by Administrator on 2017/1/12.
- */
 public class NewKafkaConsumer {
     public static void main(String[] args) {
         System.out.println("begin consumer");
@@ -25,6 +22,7 @@ public class NewKafkaConsumer {
         properties.put("enable.auto.commit", "true");
         properties.put("auto.commit.interval.ms", "1000");
         properties.put("session.timeout.ms", "30000");
+        properties.put("max.poll.records", "30000"); // 消费者一次性poll的条数,默认Integer.MAX_VALUE
         properties.put("key.deserializer", "org.apache.kafka.common.serialization.IntegerDeserializer");
         properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 

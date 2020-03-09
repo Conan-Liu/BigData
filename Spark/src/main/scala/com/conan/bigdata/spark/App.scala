@@ -6,7 +6,6 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 /**
   * Hello world!
-  *
   */
 object App {
     def main(args: Array[String]): Unit = {

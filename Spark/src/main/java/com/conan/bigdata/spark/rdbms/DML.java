@@ -6,9 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Conan on 2019/5/11.
- */
 public class DML {
     public static List<String> getAllBlackListData(Connection conn, String tableName) throws SQLException {
         List<String> list = new ArrayList<>();

@@ -13,9 +13,6 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.io.LongWritable;
 
-/**
- * Created by Administrator on 2017/4/23.
- */
 public class ExampleUDAF implements GenericUDAFResolver2 {
     public GenericUDAFEvaluator getEvaluator(GenericUDAFParameterInfo info) throws SemanticException {
         TypeInfo[] parameters = info.getParameters();

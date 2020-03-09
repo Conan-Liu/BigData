@@ -3,6 +3,7 @@ package com.conan.bigdata.common.concurrent;
 /**
  * Java 内存模型， Java 内存结构是两个不同的概念
  * JMM Java Memory Model  来屏蔽掉各层硬件和操作系统的内存访问差异，以实现让 Java 程序在各种平台下都能达到一致的内存访问效果
+ * 主要是描述java程序中线程共享变量的访问规则
  */
 public class JMM {
 

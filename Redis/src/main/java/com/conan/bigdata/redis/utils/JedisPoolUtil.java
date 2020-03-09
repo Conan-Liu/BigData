@@ -3,9 +3,6 @@ package com.conan.bigdata.redis.utils;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
-/**
- * Created by Administrator on 2019/5/6.
- */
 public class JedisPoolUtil {
 
     //最大连接数

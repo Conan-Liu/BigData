@@ -2,9 +2,6 @@ package com.conan.bigdata.hive.jdbc;
 
 import java.sql.*;
 
-/**
- * Created by Administrator on 2018/8/2.
- */
 public class Hive1 {
     public static Connection conn=null;
 

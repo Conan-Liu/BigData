@@ -19,9 +19,6 @@ import org.apache.hadoop.util.ToolRunner;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-/**
- * Created by Administrator on 2019/6/21.
- */
 public class WordCount extends Configured implements Tool {
 
     public static class WordCountMapper extends Mapper<LongWritable, Text, Text, IntWritable> {

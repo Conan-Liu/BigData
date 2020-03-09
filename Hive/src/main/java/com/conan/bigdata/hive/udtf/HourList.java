@@ -17,9 +17,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by Administrator on 2017/4/16.
- */
 public class HourList extends GenericUDTF {
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");

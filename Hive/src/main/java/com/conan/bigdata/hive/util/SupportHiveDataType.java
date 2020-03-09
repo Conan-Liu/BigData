@@ -1,8 +1,5 @@
 package com.conan.bigdata.hive.util;
 
-/**
- * Created by Administrator on 2018/8/2.
- */
 public enum SupportHiveDataType {
     TINYINT,
     SMALLINT,

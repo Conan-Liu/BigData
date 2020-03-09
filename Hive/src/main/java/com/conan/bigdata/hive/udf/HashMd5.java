@@ -5,8 +5,6 @@ import org.apache.hadoop.hive.ql.exec.UDF;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/**
- */
 public class HashMd5 extends UDF {
     private static MessageDigest sha1 = null;
 

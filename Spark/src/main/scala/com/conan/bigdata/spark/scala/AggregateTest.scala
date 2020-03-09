@@ -1,6 +1,8 @@
-package com.conan.bigdata.spark.scala.example
+package com.conan.bigdata.spark.scala
 
 /**
+  * 实现 "1,2,3" 这种字符串的数据，按位置相加，返回字符串
+  * 如: "1,2,3" + "1,2,5" + "5,6,1" = "7,10,9"
   */
 object AggregateTest {
 
@@ -12,7 +14,7 @@ object AggregateTest {
             val resSeq = for (i <- 0 until s1.length) yield (s1(i).toInt + s2(i).toInt).toString
             resSeq.mkString(",")
         }
-        val res = seq.aggregate("0,0,0")((x, y) => getAddition(x, y._2._2), (x, y) => getAddition(x, y))
+        val res = seq.aggregate[String]("0,0,0")((x, y) => getAddition(x, y._2._2), (x, y) => getAddition(x, y))
         println(res)
     }
 
@@ -31,7 +33,7 @@ object AggregateTest {
     }
 
     def main(args: Array[String]): Unit = {
-        testAggregate1
+        testAggregate1()
         testAggregate2()
     }
 

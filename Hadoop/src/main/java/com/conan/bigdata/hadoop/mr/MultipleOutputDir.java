@@ -22,8 +22,6 @@ import org.apache.hadoop.util.ToolRunner;
 import java.io.IOException;
 
 /**
- * Created by Administrator on 2019/7/3.
- * <p>
  * hadoop 任务输出到多个目录里面, 默认是一个输出目录
  */
 public class MultipleOutputDir extends Configured implements Tool {

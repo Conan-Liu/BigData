@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Conan on 2019/4/30.
- */
 public class MyZookeeper {
 
     public static final String HOST_NAME = "CentOS";

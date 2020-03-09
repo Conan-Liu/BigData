@@ -2,10 +2,9 @@ package com.conan.bigdata.common.javaapi;
 
 import java.io.*;
 
-/**
- * Created by Administrator on 2019/6/5.
- */
-class Customer implements Serializable {
+
+
+public class TestSerializable {
 
     /**
      * 刚开始只定义name age字段， 进行序列化， 如果不加上这个serialVersionUID， 在修改字段属性后， 反序列化会失败, 报版本不对应的错
@@ -13,48 +12,49 @@ class Customer implements Serializable {
      *
      * 序列化会把bean类的全路径，字段属性和值全部序列化起来， 用于网络传输和磁盘存储
      */
-    private static final long serialVersionUID = -5182532647273106745L;
-    private String name;
-    private int age;
+    private static class Customer implements Serializable {
 
-    private double hight;
+        private static final long serialVersionUID = -5182532647273106745L;
+        private String name;
+        private int age;
 
-    public Customer(String name, int age) {
-        this.name = name;
-        this.age = age;
+        private double hight;
+
+        public Customer(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+
+        public double getHight() {
+            return hight;
+        }
+
+        public void setHight(double hight) {
+            this.hight = hight;
+        }
+
+        @Override
+        public String toString() {
+            return "name=" + name + ", age=" + age + ", hight=" + hight;
+        }
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public double getHight() {
-        return hight;
-    }
-
-    public void setHight(double hight) {
-        this.hight = hight;
-    }
-
-    @Override
-    public String toString() {
-        return "name=" + name + ", age=" + age + ", hight=" + hight;
-    }
-}
-
-public class TestSerializable {
 
     private static void serializeObject() throws IOException {
         Customer customer = new Customer("hahaha", 25);
@@ -73,8 +73,8 @@ public class TestSerializable {
     }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-//        serializeObject();
-        Customer customer = deserializeObject();
-        System.out.println(customer);
+        serializeObject();
+//        Customer customer = deserializeObject();
+//        System.out.println(customer);
     }
 }

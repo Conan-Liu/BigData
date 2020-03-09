@@ -5,13 +5,12 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.streaming.{Seconds, StreamingContext, Time}
 
-/**
-  */
-case class Word(word: String, cnt: Int)
-
 object SparkSqlWordCount {
+
+    case class Word(word: String, cnt: Int)
+
     def main(args: Array[String]): Unit = {
-        val sparkConf = new SparkConf().setAppName("UpdateStateWordCount").setMaster("local[2]")
+        val sparkConf = new SparkConf().setAppName("SparkSqlWordCount").setMaster("local[2]")
         val ssc = new StreamingContext(sparkConf, Seconds(5))
         ssc.sparkContext.setLogLevel("WARN")
 

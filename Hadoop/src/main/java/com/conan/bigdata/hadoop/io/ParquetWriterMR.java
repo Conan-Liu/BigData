@@ -23,8 +23,6 @@ import org.apache.parquet.hadoop.example.GroupWriteSupport;
 import java.io.IOException;
 
 /**
- * Created by Administrator on 2018/9/6.
- * <p>
  * https://blog.csdn.net/csdnmrliu/article/details/86505386
  */
 public class ParquetWriterMR extends Configured implements Tool {
@@ -47,7 +45,7 @@ public class ParquetWriterMR extends Configured implements Tool {
     }
 
     /**
-     * 大部分情况下， Combine 和 Reducer 都可以雷同， 前提是 输入的KV数据类型， 要和输出的KV数据类型一致才行
+     * 大部分情况下， Combine 和 Reducer 都可以雷同， 前提是输入的KV数据类型， 要和输出的KV数据类型一致才行
      * 这里Combine 为了减少数据量， 所以输入输出都是Text, IntWritable
      * 但是Reducer 输出到HDFS上的输出是Void, Group
      * 两者不一样， 所以单独写

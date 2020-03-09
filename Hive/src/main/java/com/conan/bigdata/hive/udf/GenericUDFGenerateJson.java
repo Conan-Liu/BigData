@@ -11,9 +11,6 @@ import org.apache.hadoop.io.Text;
 
 import java.util.Arrays;
 
-/**
- * Created by Administrator on 2018/8/7.
- */
 @Description(
         name="GenerateJson",    // 函数的名称
         value = "_FUNC_(string...) - even number of string arguments, return json",   // 该函数在  DESCRIBE FUNCTION ... 时 显示的提示

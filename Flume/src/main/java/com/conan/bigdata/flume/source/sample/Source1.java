@@ -6,11 +6,12 @@ import org.apache.flume.conf.Configurable;
 import org.apache.flume.source.AbstractSource;
 
 /**
- * Created by Administrator on 2017/6/9.
- *
  * 事件驱动
  * EventDrivenSource是需要触发一个调用机制，即被动等待
- * 例子： ExecSource, SpoolDirectorySource
+ * 例子
+ * {@link org.apache.flume.source.AvroSource}
+ * {@link org.apache.flume.source.ExecSource},
+ * {@link org.apache.flume.source.SpoolDirectorySource}
  */
 public class Source1 extends AbstractSource implements EventDrivenSource, Configurable {
     public void configure(Context context) {

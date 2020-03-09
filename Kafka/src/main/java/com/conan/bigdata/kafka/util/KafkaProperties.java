@@ -1,8 +1,5 @@
 package com.conan.bigdata.kafka.util;
 
-/**
- * Created by Conan on 2019/4/21.
- */
 public class KafkaProperties {
 
     public static final String ZOOKEEPER = "CentOS:2181";

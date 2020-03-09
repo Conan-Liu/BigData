@@ -15,7 +15,6 @@ import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.util.StringUtils;
 
 /**
- * Created by Administrator on 2017/4/18.
  * 主要作用是实现参数类型检查和操作符重载。可以为同一个函数实现不同入参的版本
  */
 public class TotalNumOfLettersGenericUDAF extends AbstractGenericUDAFResolver {

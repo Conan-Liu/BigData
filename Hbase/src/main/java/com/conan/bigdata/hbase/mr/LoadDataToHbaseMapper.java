@@ -12,9 +12,6 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.UUID;
 
-/**
- * Created by admin on 2017/1/6.
- */
 //public class LoadDataToHbaseMapper extends Mapper<LongWritable,Text,ImmutableBytesWritable,Put>{
 public class LoadDataToHbaseMapper extends Mapper<LongWritable, Text, Text, Text> {
     //map

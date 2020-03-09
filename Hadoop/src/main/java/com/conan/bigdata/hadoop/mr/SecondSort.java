@@ -22,10 +22,8 @@ import org.apache.hadoop.util.ToolRunner;
 import java.io.IOException;
 
 /**
- * Created by Administrator on 2019/6/26.
- * <p>
  * 二次排序
- */
+         */
 public class SecondSort extends Configured implements Tool {
 
     public static void main(String[] args) throws Exception {

@@ -4,8 +4,6 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 
 /**
- * Created by Administrator on 2019/1/24.
- * <p>
  * 实现递增的唯一键， 数字类型， 比UUID占用较少的空间， 生成速度快， 还不能做到指定自增步长
  */
 public class SnowFlakeId {

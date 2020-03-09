@@ -8,12 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Administrator on 2019/1/11.
- */
 public class TestFastJson {
 
-    static class Person {
+    private static class Person {
         private String id;
         private String name;
         private int age;

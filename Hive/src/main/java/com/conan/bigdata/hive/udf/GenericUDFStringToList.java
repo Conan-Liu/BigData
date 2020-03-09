@@ -13,9 +13,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by Administrator on 2017/4/18.
- */
 public class GenericUDFStringToList extends GenericUDF {
 
     private static int mapTasks = 0;

@@ -12,9 +12,6 @@ import org.apache.hadoop.hive.serde2.objectinspector.StructObjectInspector;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by Administrator on 2018/8/1.
- */
 public class OrcReader {
     public static void main(String[] args) throws IOException {
         orcFile_Reader();

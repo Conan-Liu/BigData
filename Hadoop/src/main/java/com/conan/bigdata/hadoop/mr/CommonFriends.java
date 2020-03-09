@@ -57,7 +57,7 @@ public class CommonFriends extends Configured implements Tool {
             fs.delete(out1, true);
         }
         Job job1 = Job.getInstance(conf);
-        job1.setJobName(TopN1.class.getName() + "-1");
+        job1.setJobName(TopN.class.getName() + "-1");
         job1.setJarByClass(CommonFriends.class);
         job1.setMapperClass(CommonFriendsMapper1.class);
         job1.setReducerClass(CommonFriendsReducer1.class);
@@ -80,7 +80,7 @@ public class CommonFriends extends Configured implements Tool {
             fs.delete(out2, true);
         }
         Job job2 = Job.getInstance(conf);
-        job2.setJobName(TopN1.class.getName() + "-2");
+        job2.setJobName(TopN.class.getName() + "-2");
         job2.setJarByClass(CommonFriends.class);
         job2.setMapperClass(CommonFriendsMapper2.class);
         job2.setReducerClass(CommonFriendsReducer2.class);

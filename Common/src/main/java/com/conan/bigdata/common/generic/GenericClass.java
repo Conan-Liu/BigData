@@ -1,8 +1,5 @@
 package com.conan.bigdata.common.generic;
 
-/**
- * Created by Administrator on 2019/4/9.
- */
 // 泛型类
 // 如果有多个泛型类型的字段， 写法如下
 // GenericClass<T1,T2>

@@ -35,7 +35,7 @@ class ScalaAPI(a: Int, b: String) {
     }
 
     // 此方法不是构造方法，是一个普通方法，只是巧了和类名一致
-    def AAA(): Unit = {
+    def ScalaAPI(): Unit = {
         println("这不是构造方法，是一个普通方法...")
     }
 }
@@ -44,11 +44,11 @@ class ScalaAPI(a: Int, b: String) {
 object ScalaAPI {
 
     def apply(f: (Int) => String, v: Int): String = {
-        return f(v + 12)
+        f(v + 12)
     }
 
     def f(v: Int): String = {
-        return "[" + v + "]"
+        "[" + v + "]"
     }
 
     def fun(name: String): Unit = {

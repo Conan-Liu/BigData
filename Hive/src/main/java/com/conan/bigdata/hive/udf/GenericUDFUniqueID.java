@@ -9,9 +9,6 @@ import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
 import org.apache.hadoop.io.Text;
 
-/**
- * Created by Administrator on 2017/7/25.
- */
 @UDFType(deterministic = false, stateful = true)
 public class GenericUDFUniqueID extends GenericUDF {
 

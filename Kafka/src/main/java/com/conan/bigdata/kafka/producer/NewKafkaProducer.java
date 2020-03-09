@@ -6,9 +6,6 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 
 import java.util.Properties;
 
-/**
- * Created by Administrator on 2017/1/12.
- */
 public class NewKafkaProducer {
 
     public static void main(String[] args) {

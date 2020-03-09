@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * Created by Administrator on 2019/6/5.
- * <p>
  * 用户Source读取events发送到Sink的时候，在events header中加入一些有用的信息，或者对events的内容进行过滤，完成初步的数据清洗。
  */
 public class FilterWordInterceptor implements Interceptor {

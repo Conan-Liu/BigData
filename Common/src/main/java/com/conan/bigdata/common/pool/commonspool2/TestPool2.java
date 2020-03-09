@@ -2,10 +2,7 @@ package com.conan.bigdata.common.pool.commonspool2;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
-/**
- * Created by Administrator on 2019/5/6.
- */
-public class TestPool1 {
+public class TestPool2 {
 
     public static void main(String[] args) throws Exception {
         ConnectionFactory factory = new ConnectionFactory();

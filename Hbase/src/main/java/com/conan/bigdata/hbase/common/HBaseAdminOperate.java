@@ -1,19 +1,15 @@
 package com.conan.bigdata.hbase.common;
 
-import com.conan.bigdata.hadoop.util.HadoopConf;
 import com.conan.bigdata.hbase.util.HBaseUtils;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.*;
-import org.apache.hadoop.hbase.client.Admin;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
+import org.apache.hadoop.hbase.HColumnDescriptor;
+import org.apache.hadoop.hbase.HRegionInfo;
+import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.TableName;
 
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by Administrator on 2018/8/28.
- */
+
 public class HBaseAdminOperate {
 
     public static boolean createTable(String tableName, byte[][] splitKeys) {

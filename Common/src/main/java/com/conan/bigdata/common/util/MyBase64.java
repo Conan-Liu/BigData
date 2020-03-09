@@ -4,9 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Base64;
 
-/**
- * Created by Administrator on 2018/11/26.
- */
 public class MyBase64 {
 
     public static void main(String[] args) throws UnsupportedEncodingException {

@@ -21,35 +21,33 @@ import java.util.concurrent.TimeUnit;
  * -Xcomp     指定java编译代码， 样例： 执行java -Xcomp -version，可以看到compiled mode
  * -Xmixed    默认混合模式，先编译后执行， 执行java -version， 可以看到mixed mode
  * <p>
- * <p>
- * <p>
  * -XX 参数
  * 以这个开头的参数是非稳定参数，随时可能被修改或者移除
  * 格式： -XX:+ 或者 -XX:-  (+ 表示开启， - 表示关闭)
  * -XX:+PrintGCDetails  -XX:-PrintGCDetails  是否打印GC收集细节
  * -XX:+UseSerialGC     -XX:-UserSerialGC    是否使用串行垃圾收集器
- * -XX:+UseG1GC
+ * -XX:+UseG1GC 这是目前大堆环境下推荐的收集器
  * -XX:+HeapDumpOnOutOfMemoryError 当 OutOfMemoryError发生时自动生成 Heap Dump 文件，配合heapdump文件路劲使用
  * -XX:HeapDumpPath   指定 dump文件存储路径，JVM生成 Heap Dump的时候，虚拟机是暂停一切服务的
  */
-class Person {
-    /**
-     * 作为对象来测试内存存储情况
-     */
-    private int id;
-    private String name;
-    private double height;
-    private double weight;
-    private char gender;
-}
-
 public class GCResearch {
+
+    private static class Person {
+        /**
+         * 作为对象来测试内存存储情况
+         */
+        private int id;
+        private String name;
+        private double height;
+        private double weight;
+        private char gender;
+    }
 
     public static void main(String[] args) throws Exception {
 
         // 控制台内容输出重定向
-        System.setOut(new PrintStream(new FileOutputStream("d:\\aaa.txt")));
-        System.setErr(new PrintStream(new FileOutputStream("d:\\aaa.txt")));
+        // System.setOut(new PrintStream(new FileOutputStream("d:\\aaa.txt")));
+        // System.setErr(new PrintStream(new FileOutputStream("d:\\aaa.txt")));
 
 //        System.out.println("*************** 堆内存溢出示例 **************************");
 //        heapOutOfMemory();

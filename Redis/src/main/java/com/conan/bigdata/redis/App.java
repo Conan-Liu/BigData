@@ -5,9 +5,6 @@ import redis.clients.jedis.Jedis;
 import java.util.Iterator;
 import java.util.Set;
 
-/**
- * Created by Administrator on 2018/11/9.
- */
 public class App {
 
     public static void main(String[] args) {

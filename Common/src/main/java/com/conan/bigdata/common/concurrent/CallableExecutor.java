@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.concurrent.*;
 
 /**
- * 通过 Callable 接口实现：通过FutureTask Or 线程池获取线程返回值
+ * 1. 实现Callable接口，通过FutureTask来获取线程返回值
+ * 2. 线程池提交程序，返回Future
  */
 public class CallableExecutor implements Callable<String> {
     private int id;
@@ -15,7 +16,7 @@ public class CallableExecutor implements Callable<String> {
     }
 
     /**
-     * 会启动部分线程来执行这个任务,  for循环启动了10次任务, 但是线程可以重复利用, 所以, 线程数可以不是10个
+     * 线程池调用例子中, for循环启动了10次任务, 但是线程可以重复利用, 所以, 线程数可以不是10个
      *
      * @return
      * @throws Exception
@@ -25,7 +26,7 @@ public class CallableExecutor implements Callable<String> {
         System.out.println("call() 方法被自动调用！！！" + Thread.currentThread().getName());
 
         // 该返回结果将被 Future 的get方法得到
-        return "call()方法被自动调用， 任务结果返回: " + id + " = " + Thread.currentThread().getName();
+        return "call() 方法被自动调用， 任务结果返回: " + id + " = " + Thread.currentThread().getName();
     }
 
     public static void main(String[] args) throws Exception {
@@ -49,8 +50,6 @@ public class CallableExecutor implements Callable<String> {
                 while (!future.isDone()) ;
                 System.out.println(future.get());
             } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
                 e.printStackTrace();
             } finally {
                 executorService.shutdown();

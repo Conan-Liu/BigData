@@ -1,8 +1,5 @@
 package com.conan.bigdata.common.generic;
 
-/**
- * Created by Administrator on 2019/4/9.
- */
 // 泛型方法
 public class GenericMethod {
 

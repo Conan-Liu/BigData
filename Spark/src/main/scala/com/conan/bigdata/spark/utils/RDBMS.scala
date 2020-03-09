@@ -4,8 +4,6 @@ import java.util.Properties
 
 import org.apache.spark.sql.SparkSession
 
-/**
-  */
 object RDBMS {
     val tableName = "order_search_statistic"
 

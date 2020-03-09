@@ -9,7 +9,7 @@ import org.apache.spark.launcher.{SparkAppHandle, SparkLauncher}
 /**
   * 代码提交Spark任务，实现spark-submit的功能
   *
-  * 官网推荐使用org.apache.spark.launcher.SparkLauncher，该类还是调用spark-submit脚本
+  * 官网推荐使用[[org.apache.spark.launcher.SparkLauncher]]，该类还是调用spark-submit脚本
   * 所以和使用spark-submit传入一样的参数，线上环境需要添加SparkLauncher的依赖jar包
   *
   * spark-submit使用类[[org.apache.spark.deploy.SparkSubmit]]来提交任务
@@ -17,6 +17,8 @@ import org.apache.spark.launcher.{SparkAppHandle, SparkLauncher}
   * SparkSubmit类使用
   * [[org.apache.spark.deploy.yarn.Client]]提交任务到Yarn上
   * [[org.apache.spark.deploy.Client]]提交任务到Standalone上
+  *
+  * 还有一种方式,利用提供的 restful api 来提交,可以参考网络
   */
 object CodeSubmitJob {
 

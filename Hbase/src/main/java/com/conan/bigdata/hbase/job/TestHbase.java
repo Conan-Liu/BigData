@@ -1,21 +1,13 @@
-package com.conan.bigdata.hbase.mwee;
+package com.conan.bigdata.hbase.job;
 
-import com.conan.bigdata.hadoop.util.HadoopConf;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.Cell;
-import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.apache.hadoop.security.UserGroupInformation;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
-/**
- * Created by Administrator on 2018/11/5.
- */
 public class TestHbase {
 
     private static Configuration hbaseConf = null;

@@ -5,8 +5,6 @@ import org.apache.spark.sql.Row
 import org.apache.spark.sql.types._
 import org.apache.spark.{SparkConf, SparkContext}
 
-/**
-  */
 object ReadText extends SparkVariable{
 
     /**
@@ -15,7 +13,6 @@ object ReadText extends SparkVariable{
       * 19|北京
       * 46|广州
       */
-
     case class City(city_id: String, city_name: String)
 
     def main(args: Array[String]): Unit = {

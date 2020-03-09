@@ -4,9 +4,6 @@ import org.apache.hadoop.conf.Configuration;
 
 import java.util.Map;
 
-/**
- * Created by Administrator on 2018/8/2.
- */
 public class HadoopConf {
 
     private static Configuration conf = null;

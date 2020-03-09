@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * Created by Administrator on 2018/8/7.
+ * java 提交 Linux管道命令
  */
 public class PipeCommand {
     public static void main(String[] args) {

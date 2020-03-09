@@ -11,9 +11,6 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
 
-/**
- * Created by Administrator on 2018/8/28.
- */
 public class HBaseUtils {
 
     private static Configuration hbaseConf = null;

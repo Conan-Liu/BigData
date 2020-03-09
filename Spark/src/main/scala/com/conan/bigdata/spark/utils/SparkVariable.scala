@@ -4,8 +4,6 @@ import org.apache.log4j.{Level, Logger}
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}
 
-/**
-  */
 trait SparkVariable {
 
     // 这个放前面写，SparkContext SparkSession初始化会有很多日志，提前关闭

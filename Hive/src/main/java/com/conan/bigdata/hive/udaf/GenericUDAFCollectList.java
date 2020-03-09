@@ -12,8 +12,6 @@ import org.apache.hadoop.io.Text;
 import java.util.*;
 
 /**
- * Created by Administrator on 2017/5/27.
- * <p/>
  * 解析器和计算器。解析器负责UDAF的参数检查，操作符的重载以及对于给定的一组参数类型来查找正确的计算器
  */
 public class GenericUDAFCollectList extends AbstractGenericUDAFResolver {

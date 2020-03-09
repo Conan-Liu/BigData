@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by Conan on 2019/5/11.
- */
 public class FileOperate {
 
     private static List<FileStatus> listFile = new ArrayList<>();

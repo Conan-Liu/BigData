@@ -19,10 +19,6 @@ import parquet.hadoop.api.ReadSupport;
 
 import java.io.IOException;
 
-
-/**
- * Created by admin on 2017/1/5.
- */
 public class LoadDataToHbaseDriver extends Configured implements Tool {
 
     public static void main(String[] args) {

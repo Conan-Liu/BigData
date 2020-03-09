@@ -6,11 +6,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 
-/**
- * Created by Administrator on 2017/4/25.
- */
 public class AAA {
 
+    // 可变长参数
     public static void printStrings(String... args) {
         for (String arg : args) {
             System.out.println(arg);
@@ -26,7 +24,9 @@ public class AAA {
         System.out.println(URLEncoder.encode("%{module}", "UTF-8"));
 
         // UUID 唯一标识符， 目前全球通用的是微软（GUID）的 8-4-4-4-12 的标准, 占36个字符
-        System.out.println(UUID.randomUUID().toString().getBytes().length);
+        String uuid=UUID.randomUUID().toString();
+        System.out.println(uuid);
+        System.out.println(uuid.getBytes().length);
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         System.out.println(format.parse("2019-01-01").getTime());

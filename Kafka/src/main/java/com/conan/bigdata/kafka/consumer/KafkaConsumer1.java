@@ -1,4 +1,4 @@
-package com.conan.bigdata.kafka.example.consumer;
+package com.conan.bigdata.kafka.consumer;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -9,9 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-/**
- * Created by Administrator on 2017/4/6.
- */
 public class KafkaConsumer1 {
 
     // Automatic Offset Committing

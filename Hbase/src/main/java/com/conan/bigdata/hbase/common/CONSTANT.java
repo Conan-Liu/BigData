@@ -1,8 +1,5 @@
 package com.conan.bigdata.hbase.common;
 
-/**
- * Created by admin on 2017/1/5.
- */
 public class CONSTANT {
 
     public static final String JOB_NAME = "USER_ACTION_TO_HBASE";

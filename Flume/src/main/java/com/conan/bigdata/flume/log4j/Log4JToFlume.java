@@ -4,9 +4,6 @@ import org.apache.log4j.Logger;
 
 import java.util.Date;
 
-/**
- * Created by Administrator on 2017/7/12.
- */
 public class Log4JToFlume {
     private static Logger LOG = Logger.getLogger(Log4JToFlume.class);
 

@@ -25,19 +25,18 @@ import org.apache.spark.{SparkConf, SparkContext}
   *
   * 可以使用二次排序， 如果Key比较均匀， 可以直接groupbyKey， 然后mapValue
   */
+object SecondSort {
 
-class SecondSortKey(val first: String, val second: Int) extends Ordered[SecondSortKey] with Serializable {
-    override def compare(that: SecondSortKey): Int = {
-        // 升序
-        if (this.first.compareTo(that.first) != 0) {
-            this.first.compareTo(that.first)
-        } else {
-            this.second - that.second
+    class SecondSortKey(val first: String, val second: Int) extends Ordered[SecondSortKey] with Serializable {
+        override def compare(that: SecondSortKey): Int = {
+            // 升序
+            if (this.first.compareTo(that.first) != 0) {
+                this.first.compareTo(that.first)
+            } else {
+                this.second - that.second
+            }
         }
     }
-}
-
-object SecondSort {
 
     def main(args: Array[String]): Unit = {
         val conf = new SparkConf().setAppName("SecondSort").setMaster("local[2]")

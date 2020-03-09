@@ -11,7 +11,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Created by Conan on 2019/5/3.
  * HBase 操作工具类
  */
 public class HbaseUtils {
@@ -92,7 +91,7 @@ public class HbaseUtils {
     public void put(String tableName, String rowKey, String familyName, String columnName, String value) {
         HTable table = getTable(tableName);
         Put put = new Put(Bytes.toBytes(rowKey));
-        put.add(Bytes.toBytes(familyName), Bytes.toBytes(columnName), Bytes.toBytes(value));
+        put.addColumn(Bytes.toBytes(familyName), Bytes.toBytes(columnName), Bytes.toBytes(value));
         try {
             table.put(put);
         } catch (IOException e) {

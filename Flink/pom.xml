@@ -47,6 +47,14 @@
             <version>${flink.version}</version>
         </dependency>
 
+        <!-- 本地运行调试 -->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>${hadoop.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

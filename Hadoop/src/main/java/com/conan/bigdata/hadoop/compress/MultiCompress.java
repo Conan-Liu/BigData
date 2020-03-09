@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Administrator on 2019/1/14.
  * Usage Example:
  * hadoop jar hadoop-1.0-SNAPSHOT.jar com.conan.bigdata.hadoop.compress.MultiCompress compress org.apache.hadoop.io.compress.GzipCodec /tmp/repository/compress/2018.12.24.log log gz
  */

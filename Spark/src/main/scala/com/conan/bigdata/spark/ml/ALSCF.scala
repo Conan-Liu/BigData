@@ -9,12 +9,12 @@ import org.apache.spark.rdd.RDD
   */
 object ALSCF extends SparkVariable {
 
-    val ratingsPath: String = "E:\\Apache\\Spark\\ml\\ml-1m\\ratings.dat"
+    val ratingsPath: String = "E:\\BigData\\Spark\\ml\\ml-10m\\ratings.dat"
 
     def main(args: Array[String]): Unit = {
 
         // 最好使用Kryo序列化，注册下序列化的类
-        sc.getConf.registerKryoClasses(Array(classOf[Rating]))
+        // sc.getConf.registerKryoClasses(Array(classOf[Rating]))
 
         // 等到用户对电影的评分矩阵，生成Rating对象
         val source = sc.textFile(ratingsPath)
@@ -33,7 +33,7 @@ object ALSCF extends SparkVariable {
         println(s"不重复用户数:${distinctUsers}\n不重复电影数:${distinctMovies}\n不重复用户电影数:${distinctUsersMovies}")
 
 
-        // 可以分割成训练集和测试集，训练集用于训练模型，测试集用于验证推荐结果准确性
+        // 可以分割成训练集和测试集，训练集用于训练模型，测试集用于验证模型的好坏和推荐结果准确性
         // 避免过拟合，验证模型泛化能力
         println("***********划分训练集和测试集************")
         val Array(trainRDD, testRDD) = ratingsRDD.randomSplit(Array(0.8, 0.2))
@@ -43,20 +43,20 @@ object ALSCF extends SparkVariable {
 
         // 调用ALS算法训练数据，属于显示评分训练
         // rank: 这里rank特征值不好理解，对应到数据上来看，就是大矩阵拆分成小矩阵R(m*n) = X(m*k) * Y(k*n)的那个中间纬度k
-        //     对应ALS模型中的因子个数，也就是在低阶近似矩阵中的隐含特征个数。因子个
-        //     数一般越多越好。但它也会直接影响模型训练和保存时所需的内存开销，尤其是在用户
-        //     和物品很多的时候。因此实践中该参数常作为训练效果与系统开销之间的调节参数。通常其合理取值为10到200
+        //     对应ALS模型中的因子个数，也就是在低阶近似矩阵中的隐含特征个数,特征向量纬度
+        //     这个值太小拟合的就会不够,误差就很大,如果这个值很大,就会导致模型大泛化能力较差,造成过拟合问题
+        //     通常其合理取值为10到200
         // iterations: 对应运行时的迭代次数。ALS能确保每次迭代都能降低评级矩阵的重建误
         //     差，但一般经少数次迭代后ALS模型便已能收敛为一个比较合理的好模型。这样大部分情况下都没必要迭代太多次（10次左右一般就挺好）
-        // lambda: 该参数控制模型的正则化过程，从而控制模型的过拟合情况。其值越高，正则化越严厉，默认0.01
+        // lambda: 该参数控制模型的正则化过程，从而控制模型的过拟合情况。其值越高,正则化越严厉,越能防止过拟合问题,默认0.01
         // seed: 用来控制ALS随即初始化矩阵的值，默认System.nanoTime()
         // 可以用多级循环来不停的计算参数，比较MSE和RMSE的大小，得到一个比较好的模型
         val alsModel: MatrixFactorizationModel = ALS.train(trainRDD, 8, 10, 0.01)
 
 
-        // 模型评估 MSE RMSE 评估
-        // 根据测试集数据得到的 真实评分((user, product), rating))
-        // 根据模型计算测试集的 预测评分((user, product), rating))
+        // 利用测试集来对模型评估,评估方法是MSE RMSE
+        // 测试集数据得到的 真实评分((user, product), rating))
+        // 模型计算测试集的 预测评分((user, product), rating))
         // 两个关联得到一个数据集，记录了用户产品对的实际评分和预测评分
         // 根据这个数据集的两个评分计算 MSE和 RMSE，用来评估该模型的好坏，越接近0越佳
         println("**************模型评估************************")
@@ -89,12 +89,15 @@ object ALSCF extends SparkVariable {
         val predictRating: Double = alsModel.predict(user1, movie1)
         println(s"预测用户${user1}对电影${movie1}的评分: ${predictRating}")
 
-
-        // 为某一个用户推荐五部电影
+        // 为某一个用户推荐5部电影
         val rmdMovies = alsModel.recommendProducts(user1, 5)
         println(s"为用户${user1}推荐五部电影如下:")
         rmdMovies.foreach(println)
 
+        // 为某一部电影推荐可能对它感兴趣的5个用户
+        val rmdUsers=alsModel.recommendUsers(movie1,5)
+        println(s"为电影${movie1}推荐5个可能对它感兴趣的用户")
+        rmdUsers.foreach(println)
 
         // 为所有用户推荐电影，经运行，并不会消耗多长时间和内存
         // 推荐结果可以保存为文件供Hive查询，也可以写入RDBMS

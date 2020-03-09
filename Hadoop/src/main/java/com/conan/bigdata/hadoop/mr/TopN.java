@@ -23,11 +23,9 @@ import java.util.Comparator;
 import java.util.TreeSet;
 
 /**
- * Created by Administrator on 2019/6/20.
- * <p>
  * 使用TreeSet的排序功能实现TopN
  */
-public class TopN1 extends Configured implements Tool {
+public class TopN extends Configured implements Tool {
 
     private static class TopN1Mapper extends Mapper<LongWritable, Text, LongWritable, NullWritable> {
         // 默认升序排, 需要重定义排序方法，降序取TopN名
@@ -96,8 +94,8 @@ public class TopN1 extends Configured implements Tool {
         String path = URLDecoder.decode(HadoopConf.class.getProtectionDomain().getCodeSource().getLocation().getFile(), "UTF-8");
         System.out.println(path);
         Job job = Job.getInstance(conf);
-        job.setJobName(TopN1.class.getName());
-        job.setJarByClass(TopN1.class);
+        job.setJobName(TopN.class.getName());
+        job.setJarByClass(TopN.class);
         job.setMapperClass(TopN1Mapper.class);
         job.setReducerClass(TopN1Reducer.class);
         // 想做到全部数据的TopN， 只能是一个Reduce去计算， 才能保证
@@ -124,7 +122,7 @@ public class TopN1 extends Configured implements Tool {
         // 有这个类， 导致， 我在代码里面修改这个类， 搞了一头的汗， 运行的时候并没有效果， 只因为自己之前打包的时候， 把这个类打包
         // 放线上了， 且这个jar包包含这个类， classpath 优先级高， 所以，每次都是加载线上老的jar包， 我自己打包的工作jar包， 一直不生效
         // 可以打印这个类的全路径和这个类运行时所在的jar包，查看具体加载的类， 定位错误
-        int result = ToolRunner.run(HadoopConf.getInstance(), new TopN1(), args);
+        int result = ToolRunner.run(HadoopConf.getInstance(), new TopN(), args);
         System.exit(result);
     }
 }

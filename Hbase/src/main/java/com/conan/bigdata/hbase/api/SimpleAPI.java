@@ -2,14 +2,12 @@ package com.conan.bigdata.hbase.api;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.conan.bigdata.hbase.common.CONSTANT;
 import com.conan.bigdata.hbase.util.HBaseUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.HRegionInfo;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
-import org.apache.hadoop.hbase.filter.PageFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.File;
@@ -21,7 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Administrator on 2018/9/3.
+ * {@link org.apache.hadoop.hbase.Cell} 是底层的存储单元接口
+ * {@link org.apache.hadoop.hbase.KeyValue} 这个实现了Cell接口，是数据存储的底层实现类，核心的存储结构
+ * 官方推荐使用 Cell 接口来对返回数据进行处理
  */
 public class SimpleAPI {
 
@@ -29,11 +29,18 @@ public class SimpleAPI {
 
     public static void getResult(TableName tableName, String rowKey) throws IOException {
         Get get = new Get(Bytes.toBytes(rowKey));
+        get.setMaxVersions();
         Table table = HBaseUtils.getConnection().getTable(tableName);
         long start = System.currentTimeMillis();
         Result result = table.get(get);
 
         System.out.println("返回记录数: " + result.size());
+        /**
+         * 由listCells()可知，一个rowkey对应的行记录可能包含多个单元格
+         * 每个单元格都有具体的(rowkey,column family,column qualifier,timestamp,value)
+         * 所以，如果一个hbase表，rowkey很长，列族和列标识符都很长，就会大大减少空间利用率
+         * 内存中存储的有效数据就会减少，降低性能
+         */
         for (Cell cell : result.listCells()) {
             System.out.println(Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength()));
         }

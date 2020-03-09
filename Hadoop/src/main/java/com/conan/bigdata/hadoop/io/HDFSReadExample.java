@@ -24,9 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-/**
- *
- */
 public class HDFSReadExample {
 
     // 老版 InputFormat 读取 Parquet MapredParquetInputFormat

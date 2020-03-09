@@ -5,9 +5,6 @@ import com.conan.bigdata.hbase.util.HBaseUtils;
 
 import java.io.IOException;
 
-/**
- * Created by Administrator on 2018/8/28.
- */
 public class BasicMethod {
 
     private static final String TABLE_NAME = "user_action";

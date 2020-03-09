@@ -92,7 +92,8 @@ public class GetIpAttr extends UDF {
         return result;
     }
 
-    //把IP地址转换成long数值
+    // 把IP地址转换成long数值
+    // 这个转换就是把普通ip用二进制表示，然后把这32位的二进制数转换成对应的十进制
     private static long convertIP(String ipStr) {
         try {
             long[] ipLongs = new long[4];
@@ -129,53 +130,23 @@ public class GetIpAttr extends UDF {
         return "*\t*\t*";
     }
 
-//    public static void main(String[] args) throws Exception{
 
-        /*
-         select yanfa.migu_getipattr('222.053.252.001','/user/hadoop/msc/ip_attribute/import_day=20171101/mydata4vipday2_20171101.txt');
-         select yanfa.migu_getipattr('222.053.252.001','/user/hadoop/msc/ip_attribute/import_day=20161228/mydata4vipday2_20161228.txt');
-         */
-//        String filePath = "C:\\Users\\shemin\\Desktop\\cmcc_ip_new_20180202.txt";
-//        Map<String, String> map = new HashMap<String, String>();
-//        BufferedReader br = new BufferedReader(new FileReader(filePath));
-//        String tempLine;
-//        int line=0;
-//        while (null != (tempLine = br.readLine())) {
-//            String[] fileds = tempLine.split("\t");
-//            if(fileds[2].equals("中国")) {
-//                map.put(fileds[0],tempLine);
-//                line++;
-//            }
-//        }
-//
-//        String filePath2 = "C:\\Users\\shemin\\Desktop\\cmcc_ip_new_20180202.txt";
-//        Map<String, String> map2 = new HashMap<String, String>();
-//        BufferedReader br2 = new BufferedReader(new FileReader(filePath2));
-//        String tempLine2;
-//        int line2=0;
-//        while (null != (tempLine2 = br2.readLine())) {
-//            String[] fileds = tempLine2.split("\t");
-//            map2.put(fileds[0], tempLine2);
-//            line++;
-//        }
-//
-//
-//
-//        for(Map.Entry<String, String> entry : map.entrySet()) {
-//            if(!map2.containsKey(entry.getKey())) {
-//                System.out.println(entry.getKey() + "\t" + entry.getValue());
-//            }
-//
-//        }
-//
-//        System.out.println(line);
-//        System.out.println(line2);
-//        Text ip=new Text();
-//        ip.set("8.8.8.8");
-//
-//        migu_new_getcmccipattr udf =new migu_new_getcmccipattr();
-//        udf.evaluate(ip,"C:\\Users\\shemin\\Desktop\\cmcc_ip_new_20180202.txt");
-//        System.out.println(udf.getAttrByIp("8.8.8.8"));
-//    }
+    public static void main(String[] args) {
+        String ip1 = "192.168.1.101";
+        String ip2 = "10.0.1.101";
+        String ip3 = "192.168.100.101";
+
+        long ip1Long = convertIP(ip1);
+        long ip2Long = convertIP(ip2);
+        long ip3Long = convertIP(ip3);
+
+        System.out.println("ip1 = " + ip1Long);
+        System.out.println("ip2 = " + ip2Long);
+        System.out.println("ip3 = " + ip3Long);
+
+        System.out.println("ip1 binary = " + Long.toBinaryString(ip1Long));
+        System.out.println("ip2 binary = " + Long.toBinaryString(ip2Long));
+        System.out.println("ip3 binary = " + Long.toBinaryString(ip3Long));
+    }
 
 }

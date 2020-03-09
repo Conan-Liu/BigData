@@ -6,9 +6,6 @@ import org.apache.hadoop.security.UserGroupInformation;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-/**
- * Created by Administrator on 2018/8/1.
- */
 public class Hive2 {
 
     public static Connection conn = null;

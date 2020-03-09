@@ -1,13 +1,12 @@
-package com.conan.bigdata.spark.scala
+package com.conan.bigdata.spark.job
 
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
-  *
   * 使用较好的序列化方式， 虽然增加 CPU 的使用， 但是明显降低数据量， 利于集群内部网络传输和存储
   */
-object FileWithKryoWordCount {
+object SparkSerializer {
 
     case class LongPackageTuple(a: String, b: Int)
 
@@ -21,7 +20,8 @@ object FileWithKryoWordCount {
         val lines = sc.textFile("file:\\D:\\Tools\\spark\\dataworks.sql")
         val words = lines.flatMap(_.split(" "))
         // 使用默认序列化格式
-        // 就算指定Kryo来序列化和注册String类， 内存占用也不减少， 说明spark已经对基本数据类型String默认使用了Kryo来序列化， 也注册了该类， 所以，这种情况下，就不需要特别指定了
+        // 就算指定Kryo来序列化和注册String类， 内存占用也不减少
+        // 说明spark已经对基本数据类型String默认使用了Kryo来序列化， 也注册了该类， 所以，这种情况下，就不需要特别指定了
         words.persist(StorageLevel.MEMORY_ONLY_SER)
 
         val wordsCnt1 = words.map(x => (x, 1))

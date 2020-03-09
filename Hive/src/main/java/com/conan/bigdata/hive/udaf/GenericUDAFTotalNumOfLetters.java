@@ -14,9 +14,6 @@ import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
 import org.apache.hadoop.io.IntWritable;
 
-/**
- * Created by Administrator on 2017/7/7.
- */
 @Description(name = "letters", value = "_FUNC_(expr) - 返回该列中所有字符串的字符总数")
 public class GenericUDAFTotalNumOfLetters extends AbstractGenericUDAFResolver {
 

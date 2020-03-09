@@ -1,8 +1,5 @@
 package com.conan.bigdata.common.pool.commonspool1;
 
-/**
- * Created by Administrator on 2019/5/6.
- */
 public class Connection {
 
     private static int id = 0;

@@ -8,9 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Administrator on 2018/8/2.
- */
 public class OrcWriter {
     public static void main(String[] args) {
         Map<String, String> columns = new HashMap<String, String>();

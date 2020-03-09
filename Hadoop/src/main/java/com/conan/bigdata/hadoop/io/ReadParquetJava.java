@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Created by Administrator on 2019/6/21.
  * com.twitter.parquet-hadoop  这个包是老版本的jar
  * org.apache.parquet-hadoop   parquet从1.7.0开始，重构了包名， 也就是说这个是新的
  * <p>

@@ -6,9 +6,6 @@ import org.apache.flume.PollableSource;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.source.AbstractSource;
 
-/**
- * Created by Administrator on 2017/6/9.
- */
 public class CustomSource extends AbstractSource implements Configurable, PollableSource {
 
     private String myProp;

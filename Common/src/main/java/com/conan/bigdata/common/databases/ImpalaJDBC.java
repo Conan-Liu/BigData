@@ -3,7 +3,6 @@ package com.conan.bigdata.common.databases;
 import java.sql.*;
 
 /**
- * Created by Administrator on 2018/9/14.
  */
 public class ImpalaJDBC {
     private static Connection conn = null;

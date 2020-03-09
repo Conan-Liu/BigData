@@ -1,7 +1,7 @@
 package com.conan.bigdata.spark.streaming
 
 import org.apache.spark.SparkConf
-import org.apache.spark.streaming.{Seconds, StreamingContext}
+import org.apache.spark.streaming.{Seconds, State, StateSpec, StreamingContext}
 
 /**
   *
@@ -9,23 +9,28 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
   * 累计的状态checkpoint到了指定目录
   * 状态统计
   */
-object UpdateStateWordCount {
+object StateWordCount {
+
+    val host = "192.168.1.8"
+    val port = 9999
 
     def main(args: Array[String]): Unit = {
 
         val sparkConf = new SparkConf().setAppName("UpdateStateWordCount").setMaster("local[2]")
         val ssc = new StreamingContext(sparkConf, Seconds(5))
-        ssc.sparkContext.setLogLevel("WARN")
+        ssc.sparkContext.setLogLevel("warn")
 
         // 使用updateStateByKey 算子， 一定要使用checkpoint保存下来
         // 生产环境上， 建议checkpoint到HDFS上， 这个例子保存到当前路径
         // 如果Streaming程序的代码改变了，重新打包执行就会出现反序列化异常的问题, checkpoint 不推荐使用
         ssc.checkpoint("E:\\Temp\\spark\\UpdateStateWordCount")
 
-        val lines = ssc.socketTextStream("CentOS", 9999)
+        val lines = ssc.socketTextStream(host, port)
         val result = lines.flatMap(x => x.split("\\s+")).map(x => (x, 1))
+        //
+        val state1 = result.mapWithState(StateSpec.function(mapState _).timeout(Seconds(30)))
 
-        val state = result.updateStateByKey[Int](updateStateFunc _)
+        val state = result.updateStateByKey[Int]((x, y) => updateState(x, y))
         state.print
 
         ssc.start
@@ -33,10 +38,27 @@ object UpdateStateWordCount {
     }
 
 
-    def updateStateFunc(currentValues: Seq[Int], stateValues: Option[Int]): Option[Int] = {
+    def updateState(currentValues: Seq[Int], stateValues: Option[Int]): Option[Int] = {
         val current = currentValues.sum
         val pre = stateValues.getOrElse(0)
 
         Option(current + pre)
     }
+
+    /**
+      * 下面演示 mapWithState方法使用
+      */
+    def mapState(word: String, option: Option[Int], state: State[Int]): (String, Int) = {
+        if (state.isTimingOut()) {
+            println(s"${word} is timeout")
+            (word, 0)
+        } else {
+            // 获取当前值 + 历史值
+            val sum = option.getOrElse(0) + state.getOption().getOrElse(0)
+            // 更新状态
+            state.update(sum)
+            (word, sum)
+        }
+    }
+
 }

@@ -8,7 +8,6 @@ import java.util.*;
 import java.util.Date;
 
 /**
- * Created by Administrator on 2018/9/14.
  */
 public class JDBC {
     private static Connection conn = null;

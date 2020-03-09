@@ -25,8 +25,6 @@ import org.apache.parquet.hadoop.example.GroupReadSupport;
 import java.io.IOException;
 
 /**
- * Created by Administrator on 2018/9/6.
- * <p>
  * https://blog.csdn.net/csdnmrliu/article/details/86505386
  */
 public class ParquetReaderMR extends Configured implements Tool {
