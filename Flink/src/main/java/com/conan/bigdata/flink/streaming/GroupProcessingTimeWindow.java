@@ -58,17 +58,7 @@ public class GroupProcessingTimeWindow {
                 accumulator.put(value.f0,value.f1);
                 return accumulator;
             }
-        }).addSink(new SinkFunction<HashMap<String, Integer>>() {
-            @Override
-            public void invoke(HashMap<String, Integer> value, Context context) throws Exception {
-                System.out.println(value.values().stream().mapToInt(new ToIntFunction<Integer>() {
-                    @Override
-                    public int applyAsInt(Integer value) {
-                        return value;
-                    }
-                }).sum());
-            }
-        });
+        }).addSink(null);
         // 样例 Sink 数据输出
         // Flink是DAG的处理模式，数据源和业务逻辑只是用来画DAG，然后execute时，是根据DAG来执行的
         // 也就是说这里的 ds.addSink 在DAG里面是比较靠前的，紧跟着数据源的ds，上面的addSink在DAG上是比较靠后的

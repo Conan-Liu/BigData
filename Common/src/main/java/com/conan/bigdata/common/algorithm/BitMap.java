@@ -40,7 +40,7 @@ public class BitMap {
         for (int i = 0; i < bitSet.size(); i++) {
             System.out.print(bitSet.get(i) ? 1 : 0);
         }
-        System.out.println();
+        System.out.println("\n总共有多少数字 = " + bitSet.cardinality());
 
         System.out.println("\n************* 生成bitmap数据集合 ********************");
         storeMultiNum();

@@ -99,7 +99,7 @@ object ALSCF extends SparkVariable {
         println(s"为电影${movie1}推荐5个可能对它感兴趣的用户")
         rmdUsers.foreach(println)
 
-        // 为所有用户推荐电影，经运行，并不会消耗多长时间和内存
+        // 为所有用户推荐电影，底层是笛卡儿积的实现，经运行，并不会消耗多长时间和内存
         // 推荐结果可以保存为文件供Hive查询，也可以写入RDBMS
         println("为所有用户推荐四部电影如下:")
         val rmdMoviesForUsers = alsModel.recommendProductsForUsers(4)

@@ -31,8 +31,6 @@ object ReadText extends SparkVariable{
         val colNames = Array[String]("city_id", "city_name")
         val schema_2 = StructType(colNames.map(fieldName => StructField(fieldName, StringType)))
 
-
-        val sc = new SparkContext(new SparkConf())
         val txtDF = sc.textFile(txtPath)
 
         val rowRDD_1 = txtDF.map(_.split("\\|")).map(p => Row(p: _*)) // _* 把p这个case class转变成序列， 传入到可变长数组参数
