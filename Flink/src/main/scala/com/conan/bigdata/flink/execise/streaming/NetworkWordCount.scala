@@ -19,9 +19,9 @@ object NetworkWordCount {
         val env = StreamExecutionEnvironment.getExecutionEnvironment
         val text = env.socketTextStream(host, port)
         // 这里有个TypeInformation的隐式转换
+        // keyBy()可以支持多个字段汇总，也就是说和sql一样groupby多个字段，不需要再像spark样，把所有groupby的字段封装成一个k
         val counts = text.flatMap(_.toLowerCase.split("\\s+"))
             .map((_, 1)).keyBy(0).timeWindow(Time.seconds(1)).sum(1)
-
 
         counts.print()
         env.execute(getClass.getName)

@@ -1,12 +1,11 @@
-package com.conan.bigdata.spark.ml
+package com.conan.bigdata.spark.ml.recommendation
 
 import java.io.File
 
 import com.conan.bigdata.spark.utils.SparkVariable
-import org.apache.log4j.{Level, Logger}
+import org.apache.spark.SparkContext
 import org.apache.spark.mllib.recommendation.{ALS, MatrixFactorizationModel, Rating}
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{SparkConf, SparkContext}
 
 /**
   * MLlib包下面的ALS实现推荐算法

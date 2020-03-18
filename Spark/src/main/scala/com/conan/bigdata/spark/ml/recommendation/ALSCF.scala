@@ -1,4 +1,4 @@
-package com.conan.bigdata.spark.ml
+package com.conan.bigdata.spark.ml.recommendation
 
 import com.conan.bigdata.spark.utils.SparkVariable
 import org.apache.spark.mllib.evaluation.RegressionMetrics
@@ -6,6 +6,7 @@ import org.apache.spark.mllib.recommendation.{ALS, MatrixFactorizationModel, Rat
 import org.apache.spark.rdd.RDD
 
 /**
+  * mllib包下面的ALS使用的是 ml包的ALS，所以推荐直接使用 ml包
   */
 object ALSCF extends SparkVariable {
 
@@ -51,6 +52,8 @@ object ALSCF extends SparkVariable {
         // lambda: 该参数控制模型的正则化过程，从而控制模型的过拟合情况。其值越高,正则化越严厉,越能防止过拟合问题,默认0.01
         // seed: 用来控制ALS随即初始化矩阵的值，默认System.nanoTime()
         // 可以用多级循环来不停的计算参数，比较MSE和RMSE的大小，得到一个比较好的模型
+        // ALS.train() 该方法最终还是调用 ml 包，可以参考ALS类的import部分
+        // import org.apache.spark.ml.recommendation.{ALS => NewALS}
         val alsModel: MatrixFactorizationModel = ALS.train(trainRDD, 8, 10, 0.01)
 
 

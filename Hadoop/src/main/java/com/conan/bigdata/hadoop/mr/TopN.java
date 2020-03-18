@@ -29,6 +29,7 @@ public class TopN extends Configured implements Tool {
 
     private static class TopN1Mapper extends Mapper<LongWritable, Text, LongWritable, NullWritable> {
         // 默认升序排, 需要重定义排序方法，降序取TopN名
+        // 注意这里的TreeSet是去重的，如果有重复的最大值，那就丢失数据了，所以最好是自己封装一个排序数据结构，如大根堆
         private TreeSet<Long> topn = new TreeSet<>(new Comparator<Long>() {
             @Override
             public int compare(Long o1, Long o2) {

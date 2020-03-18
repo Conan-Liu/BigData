@@ -212,6 +212,13 @@
             <artifactId>RoaringBitmap</artifactId>
         </dependency>
 
+        <!-- 线性代数常用库 -->
+        <dependency>
+            <groupId>org.jblas</groupId>
+            <artifactId>jblas</artifactId>
+            <version>1.2.4</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.flume.flume-ng-clients</groupId>
             <artifactId>flume-ng-log4jappender</artifactId>

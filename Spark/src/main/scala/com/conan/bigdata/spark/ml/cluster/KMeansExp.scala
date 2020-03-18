@@ -1,7 +1,7 @@
-package com.conan.bigdata.spark.ml
+package com.conan.bigdata.spark.ml.cluster
 
 import com.conan.bigdata.spark.utils.SparkVariable
-import org.apache.spark.mllib.clustering.{KMeans, KMeansModel}
+import org.apache.spark.mllib.clustering.KMeans
 import org.apache.spark.mllib.linalg.Vectors
 
 /**
@@ -14,7 +14,7 @@ import org.apache.spark.mllib.linalg.Vectors
   *
   * 所以综上所述：该算法的难度在于如何将要聚类的对象进行向量化，其它的都是套路编程
   */
-object SimpleKMeans extends SparkVariable {
+object KMeansExp extends SparkVariable {
 
     val PATH = "E:\\BigData\\Spark\\ml\\customers_data.csv"
 
@@ -47,9 +47,10 @@ object SimpleKMeans extends SparkVariable {
             .setK(K)
             .setMaxIterations(iterations)
             .setEpsilon(0.5) // 迭代过程中，质心不停的变化，当变化幅度小于给定值时，表示已经收敛，迭代结束
-            .setInitializationMode("k-means||") // 默认是K-means||， 这是优化的k-means，能防止选择的质心集中在一起，增加迭代次数
+            .setInitializationMode("k-means||") // 默认是K-means||， 这是优化的k-means，能防止选择的质心集中在一起，影响最终聚类的质量，其思想是令初始聚类中心尽可能的互相远离
             .run(dataRDD)
         // 直接调用伴生对象的方法来创建模型，底层还是调用的new KMeans方法，和上面效果相同
+        // 新版的KMeans已经不再使用train方法， 直接new
         val model = KMeans.train(trainingRDD, K, iterations)
         val centers = model.clusterCenters
         // 注意 质心 可以是虚拟点，只要能把点分成几类即可，该点可以不存在

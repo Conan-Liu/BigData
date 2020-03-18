@@ -1,4 +1,4 @@
-package com.conan.bigdata.spark.ml
+package com.conan.bigdata.spark.ml.recommendation
 
 import com.conan.bigdata.spark.utils.SparkVariable
 import org.apache.spark.ml.recommendation.ALS

@@ -1,4 +1,4 @@
-package com.conan.bigdata.spark.ml
+package com.conan.bigdata.spark.ml.recommendation
 
 import org.apache.spark.{SparkConf, SparkContext}
 

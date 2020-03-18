@@ -1,4 +1,4 @@
-package com.conan.bigdata.spark.ml
+package com.conan.bigdata.spark.ml.cluster
 
 import com.conan.bigdata.spark.utils.SparkVariable
 import org.apache.spark.mllib.clustering.KMeans
