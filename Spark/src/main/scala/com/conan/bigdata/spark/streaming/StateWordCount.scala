@@ -1,9 +1,11 @@
 package com.conan.bigdata.spark.streaming
 
 import org.apache.spark.SparkConf
-import org.apache.spark.streaming.{Seconds, State, StateSpec, StreamingContext}
+import org.apache.spark.streaming.{Seconds, State, StreamingContext}
 
 /**
+  * 无状态的：当前批次处理完之后，数据只与当前批次有关
+  * 有状态的：前后批次的数据处理完之后，之间是有关系的
   *
   * 该类，记录了从运行时刻， 单词统计的历史记录， 计数， 是从最开始， 一直往后累计的功能
   * 累计的状态checkpoint到了指定目录
@@ -22,13 +24,14 @@ object StateWordCount {
 
         // 使用updateStateByKey 算子， 一定要使用checkpoint保存下来
         // 生产环境上， 建议checkpoint到HDFS上， 这个例子保存到当前路径
-        // 如果Streaming程序的代码改变了，重新打包执行就会出现反序列化异常的问题, checkpoint 不推荐使用
-        ssc.checkpoint("E:\\Temp\\spark\\UpdateStateWordCount")
+        // 如果Streaming程序的代码改变了，重新打包执行就会出现反序列s化异常的问题
+        // 这里如果window环境，需要winutils.exe，否则NPE
+        ssc.checkpoint("/user/root/temp/spark/checkpoint/statewordcount")
 
         val lines = ssc.socketTextStream(host, port)
         val result = lines.flatMap(x => x.split("\\s+")).map(x => (x, 1))
         //
-        val state1 = result.mapWithState(StateSpec.function(mapState _).timeout(Seconds(30)))
+        //        val state1 = result.mapWithState(StateSpec.function(mapState _).timeout(Seconds(30)))
 
         val state = result.updateStateByKey[Int]((x, y) => updateState(x, y))
         state.print
