@@ -1,4 +1,4 @@
-package com.conan.bigdata.spark.streaming.api
+package com.conan.bigdata.spark.utils
 
 import java.net.URL
 

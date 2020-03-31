@@ -17,6 +17,11 @@ public class MultiThread implements Runnable {
     public void run() {
         for (int i = 0; i < 10; i++) {
             long id = idWorker.nextId();
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+
+            }
             System.out.println(Thread.currentThread().getName() + ": " + id + " = " + Long.toBinaryString(id));
         }
     }

@@ -48,12 +48,13 @@ object BasicStatisticsExp extends SparkVariable {
         println(s"列平均值 = ${summary.mean}")
         println(s"列方差 = ${summary.variance}")
         println(s"列非0个数 = ${summary.numNonzeros}")
+        // 欧几里得范数(Euclidean norm) == 欧式长度 = L2 范数 == L2距离
         println(s"列L2标准 = ${summary.normL2}")
     }
 
     /**
       * 向量或两个序列，计算向量之间，序列之间的相关系数
-      * 向量之间的相关系数构成的是相关矩阵
+      * 矩阵可以看成若干个行向量，向量之间的相关系数构成的是相关矩阵
       * 相关矩阵也叫相关系数矩阵，是由矩阵各列间的相关系数构成的。也就是说，相关矩阵第i行第j列的元素是原矩阵第i列和第j列的相关系数
       */
     def correlations(series1: RDD[Double], series2: RDD[Double], vector: RDD[SparkVector]): Unit = {

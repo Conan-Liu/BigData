@@ -51,9 +51,14 @@ object ALSExp extends SparkVariable {
         val userFeatures = model.userFactors
         val itemFeatures = model.itemFactors
         itemFeatures.show(10, false)
-        // 根据物品的特征矩阵计算物品的相似度
-        // 注意，如果要实现全量的物品相似度，那么需要笛卡儿积
-        // 这里自己与自己笛卡儿积，字段名会重复，使用会报错，所以重命名一下
+
+        /**
+          * 基于物品的协同过滤
+          * 协同过滤和最小交替二乘法ALS是两种不同的推荐算法
+          * 根据物品的特征矩阵计算物品的相似度
+          * 注意，如果要实现全量的物品相似度，那么需要笛卡儿积
+          * 这里自己与自己笛卡儿积，字段名会重复，使用会报错，所以重命名一下
+          */
         val itemCross = itemFeatures.crossJoin(itemFeatures).toDF("id1", "feature1", "id2", "feature2")
         val simDF = itemCross.map(x => {
             val id1 = x.getAs[Int]("id1")

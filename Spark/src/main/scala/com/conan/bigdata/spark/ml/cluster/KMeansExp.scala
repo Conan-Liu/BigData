@@ -1,8 +1,10 @@
 package com.conan.bigdata.spark.ml.cluster
 
 import com.conan.bigdata.spark.utils.SparkVariable
+import org.apache.spark.SparkContext
 import org.apache.spark.mllib.clustering.KMeans
 import org.apache.spark.mllib.linalg.Vectors
+import org.apache.spark.mllib.util.KMeansDataGenerator
 
 /**
   * 1、首先确定一个k值，即我们希望将数据集经过聚类得到k个集合
@@ -19,6 +21,8 @@ object KMeansExp extends SparkVariable {
     val PATH = "E:\\BigData\\Spark\\ml\\customers_data.csv"
 
     def main(args: Array[String]): Unit = {
+
+        generateData(sc)
 
         val sourceRDD = sc.textFile(PATH)
         val dataRDD = sourceRDD.map(_.split(",")).filter(_.length == 8).map(x => Vectors.dense(x.map(_.toDouble)))
@@ -76,4 +80,13 @@ object KMeansExp extends SparkVariable {
         // println(kMeansModel.predict(Vectors.dense(1, 1, 1)))
     }
 
+    /**
+      * 调用自带工具，生成样本数据
+      * @param sc
+      */
+    def generateData(sc:SparkContext): Unit ={
+        val randomKMeansData=KMeansDataGenerator.generateKMeansRDD(sc,100,6,4,1.0,2)
+        println(s"总数: ${randomKMeansData.count()}")
+        randomKMeansData.take(5).foreach(x=>println(x.mkString(",")))
+    }
 }

@@ -1,7 +1,7 @@
 package com.conan.bigdata.spark.streaming
 
 import org.apache.spark.SparkConf
-import org.apache.spark.streaming.{Seconds, State, StreamingContext}
+import org.apache.spark.streaming.{Seconds, State, StateSpec, StreamingContext}
 
 /**
   * 无状态的：当前批次处理完之后，数据只与当前批次有关
@@ -18,7 +18,7 @@ object StateWordCount {
 
     def main(args: Array[String]): Unit = {
 
-        val sparkConf = new SparkConf().setAppName("UpdateStateWordCount").setMaster("local[2]")
+        val sparkConf = new SparkConf().setAppName("UpdateStateWordCount")
         val ssc = new StreamingContext(sparkConf, Seconds(5))
         ssc.sparkContext.setLogLevel("warn")
 
@@ -30,11 +30,29 @@ object StateWordCount {
 
         val lines = ssc.socketTextStream(host, port)
         val result = lines.flatMap(x => x.split("\\s+")).map(x => (x, 1))
-        //
-        //        val state1 = result.mapWithState(StateSpec.function(mapState _).timeout(Seconds(30)))
 
+        // 假设一个RDD之前的依赖很长，计算很耗时，如果任务出错，又得根据血缘关系从头恢复，耗时耗资源
+        // cache和persist都可以打断依赖，RDD缓存在内存中，但是依旧存在内存缓存数据丢失的风险
+        // 那么就可以使用RDD.checkpoint来把RDD保存到hdfs上，checkpoint
+        // result.cache().checkpoint(这个参数还不理解)
+
+
+        // 比updateStateByKey保存更多的Key，更低的延时
+        // mapStateFun _  表示方法转函数， 注意函数是继承自Function类，而方法是每个类几乎都有的代码块
+        // 从界面打印结果来看，是增量的形式累加
+        // 这里设置了过期时间，如果超过了这个时间，该Key一直没有更新，value就会就被重置为0，如果有更新的话，就会重置计时
+        val mapState = result.mapWithState(StateSpec.function(mapStateFun _).timeout(Seconds(30)))
+        //  mapState.print
+
+        // 这个带状态的算子，会随着程序从启动开始计算，一直运行下去
+        // 这是个全局的概念，无论Key有没有更新，都会执行一遍更新操作，效率低，所以不大适用
         val state = result.updateStateByKey[Int]((x, y) => updateState(x, y))
-        state.print
+        //  state.print
+
+        // 常用的是Window算子，可以限定时间段
+        val windowWordCount = result.window(Seconds(600), Seconds(20)).reduceByKey(_ + _)
+        result
+        windowWordCount.print
 
         ssc.start
         ssc.awaitTermination
@@ -44,19 +62,23 @@ object StateWordCount {
     def updateState(currentValues: Seq[Int], stateValues: Option[Int]): Option[Int] = {
         val current = currentValues.sum
         val pre = stateValues.getOrElse(0)
-
-        Option(current + pre)
+        // 返回None的情况下，会删除状态里面对应的Key，这里演示的是这个Batch如果单个单词总数超过5个，就删除
+        if (current >= 5)
+            None
+        else
+            Option(current + pre)
     }
 
     /**
       * 下面演示 mapWithState方法使用
       */
-    def mapState(word: String, option: Option[Int], state: State[Int]): (String, Int) = {
+    def mapStateFun(word: String, option: Option[Int], state: State[Int]): (String, Int) = {
         if (state.isTimingOut()) {
             println(s"${word} is timeout")
+            // value重置为0
             (word, 0)
         } else {
-            // 获取当前值 + 历史值
+            // 获取 历史值 + 当前值
             val sum = option.getOrElse(0) + state.getOption().getOrElse(0)
             // 更新状态
             state.update(sum)
