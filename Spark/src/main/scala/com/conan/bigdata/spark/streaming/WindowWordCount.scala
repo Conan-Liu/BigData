@@ -35,5 +35,6 @@ object WindowWordCount {
 
         ssc.start()
         ssc.awaitTermination()
+        ssc.stop(false,true)
     }
 }
