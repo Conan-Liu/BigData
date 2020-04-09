@@ -33,6 +33,7 @@ public class CallableExecutor implements Callable<String> {
         // FutureTask 获取线程返回值
         FutureTask<String> task = new FutureTask<String>(new CallableExecutor(1000));
         new Thread(task).start();
+        // 注意这里主线程无法知道子线程执行情况，是通过轮询的方式来获取子线程的执行状态
         while (!task.isDone()) ;
         System.out.println(task.get());
 

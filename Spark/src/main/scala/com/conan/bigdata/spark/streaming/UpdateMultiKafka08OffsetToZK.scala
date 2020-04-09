@@ -72,7 +72,7 @@ object UpdateMultiKafka08OffsetToZK {
 
         //  ===========================这是代码上的一个分水岭========================
         //  任务启动的时候， 代码回去保存 offset 的 ZK 中查找一次， 来确定开始消费的 offset
-        //  一旦正常运行后， 以后的每个批次就不再去 ZK 中拿offset， 因为正常运行的时候， kafka和streaming 应该是自己维护具体的消费 offset，
+        //  一旦正常运行后， 以后的每个批次就不再去 ZK 中拿offset， 因为正常运行的时候， kafka通过元数据Topic(__consumer_offsets)来维护offset，
         //  所以， 只要永远不挂机或重启， 一直消费下去， offset永远不会有问题， 但是一旦出现死机或重启， 这个维护的offset就丢了
         //  启动的时候， 会重新去 ZK 中获取 offset， 所以才需要没消费一个批次， 就保存一次offset， 避免发生意外情况重启重复消费
         //  以上的代码， 只会在启动的时候执行一次，  下面的代码在每个批次的时候重复执行， 无限循环
@@ -81,7 +81,6 @@ object UpdateMultiKafka08OffsetToZK {
         //  代码每消费一个批次，都要保存offset， 虽然正常运行时， 这个ZK中的offset用不上，
         //  但是如果出现意外的时候， 就可能从记录的offset地方开始启动消费
         //  这才是 ZK 保存 offset 的用途所在, 其它第三方保存offset， 也是这个道理
-
 
         var offsetRanges = Array[OffsetRange]()
         val transformStream: DStream[(String, String)] = kafkaStream.transform(rdd => {

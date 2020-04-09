@@ -12,10 +12,16 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.regex.Pattern;
 
-/**
- * Created by Administrator on 2019/3/30.
- */
 public class TestAPI {
+
+    /**
+     * kafka 消费者组对应到 __consumer_offsets 的分区信息
+     */
+    @Test
+    public void kafkaPartitionId(){
+        int i=Math.abs("meimeng_spark_20190102".hashCode()) % 50;
+        System.out.println(i);
+    }
 
     @Test
     public void test1() {

@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-public class KafkaConsumer1 {
+public class MyKafkaConsumer {
 
     // Automatic Offset Committing
     public void autoOffset() {
@@ -21,6 +21,7 @@ public class KafkaConsumer1 {
         props.put("auto.commit.interval.ms", "1000");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);    // diamond 类型
         consumer.subscribe(Arrays.asList("foo", "bar"));
         while (true) {
@@ -50,6 +51,7 @@ public class KafkaConsumer1 {
             if (buffer.size() >= minBatchSize) {
 //                insertIntoDb(buffer);
                 consumer.commitSync();
+                consumer.commitAsync();
                 buffer.clear();
             }
         }
