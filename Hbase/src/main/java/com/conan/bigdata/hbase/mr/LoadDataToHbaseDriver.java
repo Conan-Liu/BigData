@@ -51,7 +51,7 @@ public class LoadDataToHbaseDriver extends Configured implements Tool {
         System.out.println("temp jars is : " + conf.get("tmpjars"));
 
         HBaseUtils.deleteDir(CONSTANT.OUTPUT_PATH);
-        job.setMapperClass(TestParquetMapper.class);
+        // job.setMapperClass(TestParquetMapper.class);
         job.setMapOutputKeyClass(LongWritable.class);
         job.setMapOutputValueClass(Text.class);
 

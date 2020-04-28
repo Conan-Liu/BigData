@@ -139,7 +139,7 @@ public class UserCF {
      * 集合排序
      * order  1 正序    -1 倒序
      */
-    private static void sortCollection(List<List<Object>> list, int order) {
+    private static void sortCollection(List<List<Object>> list, final int order) {
         Collections.sort(list, new Comparator<List<Object>>() {
             @Override
             public int compare(List<Object> o1, List<Object> o2) {

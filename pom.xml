@@ -98,7 +98,7 @@
         <flink.version>1.8.0</flink.version>
         <flume.version>1.6.0-cdh5.10.0</flume.version>
         <zookeeper.version>3.4.5-cdh5.10.0</zookeeper.version>
-        <kafka.version>1.0.0</kafka.version>
+        <kafka.version>1.1.0</kafka.version>
         <parquet.version>1.5.0-cdh5.10.0</parquet.version>
         <junit.test>4.12</junit.test>
         <self.scope>compile</self.scope>
@@ -257,6 +257,10 @@
                 <!--<version>1.2.17</version>-->
             <!--</dependency>-->
 
+            <!--
+            slf4j-api是一个日志标准的接口，log4j是日志的具体实现
+            两个整合到一起就是slf4j-log4j，这是slf4j的log4j具体实现
+            -->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>

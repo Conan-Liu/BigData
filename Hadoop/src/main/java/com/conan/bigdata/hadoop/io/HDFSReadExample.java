@@ -1,7 +1,6 @@
 package com.conan.bigdata.hadoop.io;
 
 
-import com.conan.bigdata.hadoop.util.HadoopConf;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -12,11 +11,13 @@ import org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe;
 import org.apache.hadoop.hive.serde2.SerDeException;
 import org.apache.hadoop.hive.serde2.objectinspector.StructField;
 import org.apache.hadoop.hive.serde2.objectinspector.StructObjectInspector;
-import org.apache.hadoop.io.ArrayWritable;
-import org.apache.hadoop.io.IOUtils;
-import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.mapreduce.TaskAttemptID;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.parquet.hadoop.ParquetInputFormat;
 
 import java.io.IOException;
@@ -25,6 +26,26 @@ import java.util.List;
 import java.util.Properties;
 
 public class HDFSReadExample {
+
+    public static void readText(Configuration conf) throws IOException, InterruptedException {
+        // 定义任务上下文
+        Job job=Job.getInstance(conf,"readText");
+        org.apache.hadoop.mapreduce.lib.input.FileInputFormat.addInputPath(job,new Path("/user/mw/mr/wordcount/in/*"));
+        // 获取文件输入类
+        org.apache.hadoop.mapreduce.InputFormat<LongWritable,Text> in=new TextInputFormat();
+        // 获取文件的输入分片
+        List<org.apache.hadoop.mapreduce.InputSplit> splits = in.getSplits(job);
+        // 遍历分片，一行一行读取
+        for(org.apache.hadoop.mapreduce.InputSplit split:splits){
+            TaskAttemptContext taskAttemptContext = new TaskAttemptContextImpl(job.getConfiguration(), new TaskAttemptID());
+            org.apache.hadoop.mapreduce.RecordReader<LongWritable, Text> recordReader = in.createRecordReader(split, taskAttemptContext);
+            recordReader.initialize(split,taskAttemptContext);
+            while (recordReader.nextKeyValue()){
+                System.out.println(recordReader.getCurrentKey().get()+" -- "+recordReader.getCurrentValue().toString());
+            }
+            recordReader.close();
+        }
+    }
 
     // 老版 InputFormat 读取 Parquet MapredParquetInputFormat
     public static void read1(Configuration conf) throws IOException {
@@ -145,8 +166,9 @@ public class HDFSReadExample {
     }
 
     public static void main(String[] args) throws Exception {
-        Configuration conf = HadoopConf.getHAInstance();
-        read11(conf);
+        // Configuration conf = HadoopConf.getHAInstance();
+        Configuration conf=new Configuration();
+        readText(conf);
 
 //        read2(conf);
     }

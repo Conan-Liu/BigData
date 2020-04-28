@@ -25,7 +25,8 @@ import java.io.IOException;
  * 这种方法，明显有问题， 如果数据分布很不均匀， 就导致数据倾斜很严重, 所以重点在于如何实现一个 RangePartitioner
  * 能均匀的把数据发送到对应的reducer， 且在范围之间是有序的
  * 参考 Spark sortByKey 方法， 底层就是RangePartitioner实现
- * <p>
+ * hadoop 使用 {@link org.apache.hadoop.mapreduce.lib.partition.InputSampler} 来抽样，具体实现参考{@link AllDataSortWithSampler}
+ *
  * 下面就是按第 2 步的例子
  */
 public class AllDataSort extends Configured implements Tool {

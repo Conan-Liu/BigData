@@ -37,10 +37,16 @@
             <artifactId>hadoop-common</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-mapreduce-examples</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+
         <!-- 这个是老版本的parquet-hadoop， 两个放在一起，下面的那个依赖被忽略了，注释掉 -->
         <!--<dependency>-->
-            <!--<groupId>com.twitter</groupId>-->
-            <!--<artifactId>parquet-hadoop</artifactId>-->
+        <!--<groupId>com.twitter</groupId>-->
+        <!--<artifactId>parquet-hadoop</artifactId>-->
         <!--</dependency>-->
 
         <dependency>
@@ -58,6 +64,16 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -65,6 +81,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <!-- 排除资源文件
+        <configuration>
+            <excludes>
+                <exclude>*</exclude>
+            </excludes>
+        </configuration>
+-->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
