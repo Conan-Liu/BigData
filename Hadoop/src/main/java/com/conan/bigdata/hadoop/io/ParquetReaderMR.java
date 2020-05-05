@@ -19,7 +19,6 @@ import org.apache.parquet.example.data.Group;
 import org.apache.parquet.hadoop.ParquetInputFormat;
 import org.apache.parquet.hadoop.api.DelegatingReadSupport;
 import org.apache.parquet.hadoop.api.InitContext;
-import org.apache.parquet.hadoop.api.ReadSupport;
 import org.apache.parquet.hadoop.example.GroupReadSupport;
 
 import java.io.IOException;

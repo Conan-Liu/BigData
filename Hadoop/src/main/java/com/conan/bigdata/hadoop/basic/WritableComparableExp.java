@@ -1,5 +1,6 @@
 package com.conan.bigdata.hadoop.basic;
 
+import com.conan.bigdata.hadoop.mr.SelfDataTypeAndSecondSort;
 import org.apache.hadoop.io.WritableComparable;
 
 import java.io.DataInput;
@@ -8,17 +9,22 @@ import java.io.IOException;
 
 /**
  * 自定义Key实现二次排序
+ * hadoop 的数据类型都需要实现Writable接口来序列化
+ * 特别要注意的是，K 是特殊的数据类型，在shuffle阶段需要参与排序，所以 K 的数据类型需要实现Comparable接口
+ * hadoop提供排序和序列化整合的接口WritableComparable
+ *
+ * MapReduce参考 {@link SelfDataTypeAndSecondSort}
  */
-public class IntPair implements WritableComparable<IntPair> {
+public class WritableComparableExp implements WritableComparable<WritableComparableExp> {
 
     private int first;
     private int second;
 
-    public IntPair() {
+    public WritableComparableExp() {
 
     }
 
-    public IntPair(int first, int second) {
+    public WritableComparableExp(int first, int second) {
         set(first, second);
     }
 
@@ -45,7 +51,7 @@ public class IntPair implements WritableComparable<IntPair> {
 
     // 对象比较大小， 排序
     @Override
-    public int compareTo(IntPair o) {
+    public int compareTo(WritableComparableExp o) {
         if (this.first != o.first) {
             // 表示 K 升序
             return this.first > o.first ? 1 : -1;
@@ -82,8 +88,8 @@ public class IntPair implements WritableComparable<IntPair> {
             return false;
         } else if (this == obj) {
             return true;
-        } else if (obj instanceof IntPair) {
-            IntPair pair = (IntPair) obj;
+        } else if (obj instanceof WritableComparableExp) {
+            WritableComparableExp pair = (WritableComparableExp) obj;
             return this.first == pair.first && this.second == pair.second;
         } else {
             return false;
@@ -92,6 +98,6 @@ public class IntPair implements WritableComparable<IntPair> {
 
     @Override
     public String toString() {
-        return "[" + this.first + "\t" + this.second + "]";
+        return "K[cityid=" + this.first + ",id=" + this.second + "]";
     }
 }

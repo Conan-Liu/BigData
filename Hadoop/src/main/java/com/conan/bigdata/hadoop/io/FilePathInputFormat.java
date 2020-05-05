@@ -1,4 +1,4 @@
-package com.conan.bigdata.hadoop.mr;
+package com.conan.bigdata.hadoop.io;
 
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
@@ -49,7 +49,7 @@ public class FilePathInputFormat extends FileInputFormat<Text, Text> {
 
         @Override
         public float getProgress() throws IOException, InterruptedException {
-            return 0;
+            return lineRecordReader.getProgress();
         }
 
         @Override
@@ -65,8 +65,6 @@ public class FilePathInputFormat extends FileInputFormat<Text, Text> {
 
     @Override
     public RecordReader<Text, Text> createRecordReader(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {
-        FilePathRecordReader filePathRecordReader = new FilePathRecordReader();
-        filePathRecordReader.initialize(split, context);
-        return filePathRecordReader;
+        return new FilePathRecordReader();
     }
 }

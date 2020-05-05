@@ -4,6 +4,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.parquet.column.ColumnDescriptor;
 import org.apache.parquet.example.data.Group;
+import org.apache.parquet.example.data.GroupFactory;
+import org.apache.parquet.example.data.simple.SimpleGroupFactory;
 import org.apache.parquet.format.converter.ParquetMetadataConverter;
 import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.ParquetReader;
@@ -68,12 +70,19 @@ public class ReadParquetJava {
         }
     }
 
+    // 写parquet
+    private static void writeParquet(String path) throws IOException{
+        GroupFactory group =new SimpleGroupFactory(messageType());
+        group.newGroup().add("provinceid",12);
+    }
+
     // 构建 MessageType
-    public static void messageType(){
+    public static MessageType messageType(){
         MessageType schema= Types.buildMessage().required(PrimitiveType.PrimitiveTypeName.INT32).named("cityid")
                 .required(PrimitiveType.PrimitiveTypeName.INT64).named("provinceid")
                 .required(PrimitiveType.PrimitiveTypeName.BINARY).as(OriginalType.UTF8).named("province")
                 .named("example"); // 这个example， 就相当于表的名称， 之前定义的字段就是表的field
         System.out.println(schema);
+        return schema;
     }
 }

@@ -1,6 +1,7 @@
 package com.conan.bigdata.hadoop.io;
 
 
+import com.conan.bigdata.hadoop.util.HadoopConf;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -18,7 +19,9 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
+import org.apache.parquet.example.data.Group;
 import org.apache.parquet.hadoop.ParquetInputFormat;
+import org.apache.parquet.hadoop.example.GroupReadSupport;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,19 +32,27 @@ public class HDFSReadExample {
 
     public static void readText(Configuration conf) throws IOException, InterruptedException {
         // 定义任务上下文
-        Job job=Job.getInstance(conf,"readText");
-        org.apache.hadoop.mapreduce.lib.input.FileInputFormat.addInputPath(job,new Path("/user/mw/mr/wordcount/in/*"));
+        Job job = Job.getInstance(conf, "readText");
+        org.apache.hadoop.mapreduce.lib.input.FileInputFormat.addInputPath(job, new Path("/user/mw/mr/wordcount/in/*"));
         // 获取文件输入类
-        org.apache.hadoop.mapreduce.InputFormat<LongWritable,Text> in=new TextInputFormat();
+        org.apache.hadoop.mapreduce.InputFormat<LongWritable, Text> in = new TextInputFormat();
         // 获取文件的输入分片
         List<org.apache.hadoop.mapreduce.InputSplit> splits = in.getSplits(job);
         // 遍历分片，一行一行读取
-        for(org.apache.hadoop.mapreduce.InputSplit split:splits){
+        for (org.apache.hadoop.mapreduce.InputSplit split : splits) {
             TaskAttemptContext taskAttemptContext = new TaskAttemptContextImpl(job.getConfiguration(), new TaskAttemptID());
             org.apache.hadoop.mapreduce.RecordReader<LongWritable, Text> recordReader = in.createRecordReader(split, taskAttemptContext);
-            recordReader.initialize(split,taskAttemptContext);
-            while (recordReader.nextKeyValue()){
-                System.out.println(recordReader.getCurrentKey().get()+" -- "+recordReader.getCurrentValue().toString());
+            recordReader.initialize(split, taskAttemptContext);
+            int cnt = 0;
+            while (recordReader.nextKeyValue()) {
+                cnt++;
+                /**
+                 * 从打印结果来看 {@link TextInputFormat} 返回的key是字节偏移量
+                 * 单个文件不同的block上，偏移量是递增的，并不是从0开始重新计算
+                 */
+                if (cnt <= 10) {
+                    System.out.println(recordReader.getCurrentKey().get() + " -- " + recordReader.getCurrentValue().toString());
+                }
             }
             recordReader.close();
         }
@@ -75,7 +86,7 @@ public class HDFSReadExample {
 
     // 老版 InputFormat 读取 Parquet MapredParquetInputFormat
     public static void read11(Configuration conf) throws IOException, SerDeException {
-        conf.set("parquet.block.size","134217728");
+        conf.set("parquet.block.size", "134217728");
         JobConf jobConf = new JobConf(conf);
         InputFormat<Void, ArrayWritable> in = new MapredParquetInputFormat();
         ParquetHiveSerDe serde = new ParquetHiveSerDe();
@@ -103,7 +114,7 @@ public class HDFSReadExample {
             // 这里hadoop读取数据，一定要注意hadoop的版本问题， datax里读取parquet，有个小问题困扰了三天
             // 本地代码能正确访问parquet文件，但是datax不能正确访问， 线上是hadoop2.6.0， 而datax是2.7.1， 大版本可能会更新很多代码
             // 把jar替换成和线上版本一致，及解决问题
-            // TODO 大数据写代码，一定要注意和集群的版本一致，不然出问题， 你特么都不知道怎么回事
+            // TODO 一定要注意和集群的版本一致，不然容易出问题
             RecordReader reader = in.getRecordReader(split, jobConf, Reporter.NULL);
             Object K = reader.createKey();
             Object V = reader.createValue();
@@ -127,26 +138,28 @@ public class HDFSReadExample {
     }
 
     // 新版 InputFormat 读取 Parquet ParquetInputFormat
-    public static void read2(Configuration conf) throws IOException, InterruptedException {
-        Job job = Job.getInstance(conf);
-        org.apache.hadoop.mapreduce.InputFormat in = new ParquetInputFormat();
-        ParquetInputFormat.addInputPath(job, new Path("/user/hive/warehouse/ods.db/resta_shoptable/*"));
+    public static void readParquetWithNewAPI(Configuration conf) throws IOException, InterruptedException {
+        Job job = Job.getInstance(conf, "readParquetWithNewAPI");
+        org.apache.hadoop.mapreduce.InputFormat<Void, Group> in = new ParquetInputFormat<>();
+        ParquetInputFormat.addInputPath(job, new Path("/user/mw/parquet/"));
+        ParquetInputFormat.setReadSupportClass(job, GroupReadSupport.class);
         List<org.apache.hadoop.mapreduce.InputSplit> splits = in.getSplits(job);
         for (org.apache.hadoop.mapreduce.InputSplit split : splits) {
-            org.apache.hadoop.mapreduce.RecordReader reader = in.createRecordReader(split, null);
-            Object K = reader.getCurrentKey();
-            Object V = reader.getCurrentValue();
-            int n = 0;
+            TaskAttemptContext taskAttemptContext = new TaskAttemptContextImpl(job.getConfiguration(), new TaskAttemptID());
+            org.apache.hadoop.mapreduce.RecordReader<Void, Group> reader = in.createRecordReader(split, taskAttemptContext);
+            reader.initialize(split, taskAttemptContext);
+            Group V;
+            int cnt = 0;
             while (reader.nextKeyValue()) {
-                n++;
-                Writable[] vs = ((ArrayWritable) V).get();
-                String shopId = String.valueOf(vs[0]);
-                String shopName = String.valueOf(vs[9]);
-                System.out.println(shopId + "\t" + shopName);
-                if (n >= 30) {
-                    break;
+                cnt++;
+                if (cnt <= 10) {
+                    V = reader.getCurrentValue();
+                    int f1 = V.getInteger("f1", 0);
+                    String f2 = V.getString("f2", 0);
+                    System.out.println(f1 + " -- " + f2);
                 }
             }
+            System.out.println("行数: " + cnt);
         }
     }
 
@@ -166,10 +179,8 @@ public class HDFSReadExample {
     }
 
     public static void main(String[] args) throws Exception {
-        // Configuration conf = HadoopConf.getHAInstance();
-        Configuration conf=new Configuration();
-        readText(conf);
-
-//        read2(conf);
+//        Configuration conf = HadoopConf.getHAInstance();
+        Configuration conf = new Configuration();
+        readParquetWithNewAPI(conf);
     }
 }

@@ -1,6 +1,5 @@
 package com.conan.bigdata.hadoop.mr;
 
-import com.conan.bigdata.hadoop.basic.IntPair;
 import com.conan.bigdata.hadoop.util.HadoopConf;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.io.IntWritable;

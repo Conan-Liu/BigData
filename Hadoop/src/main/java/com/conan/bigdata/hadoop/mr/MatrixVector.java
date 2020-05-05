@@ -73,7 +73,7 @@ public class MatrixVector extends Configured implements Tool {
         // V 对应矩阵每个元素和列向量每个元素的乘积
         private IntWritable V = new IntWritable();
         private static int i = 0;
-        //        private final static int[] vector = {2, 3, 4};
+        // private final static int[] vector = {2, 3, 4};
         private final static List<Integer> vector = new ArrayList<>();
 
         @Override
