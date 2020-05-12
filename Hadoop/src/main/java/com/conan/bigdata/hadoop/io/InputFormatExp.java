@@ -52,9 +52,9 @@ public class InputFormatExp extends FileInputFormat<IntWritable,IntWritable> {
     }
 
 
-    public static class RecordReaderExp extends RecordReader<IntWritable, IntWritable> {
+    private static class RecordReaderExp extends RecordReader<IntWritable, IntWritable> {
 
-        public static final String KEYVALUE_SEPERATOR = "keyvalue.separator";
+        public static final String KEYVALUE_SEPERATOR = "keyvalue.input.separator";
         // 对于一般的文件操作，重用LineRecordReader即可
         private LineRecordReader reader;
         private String separator;

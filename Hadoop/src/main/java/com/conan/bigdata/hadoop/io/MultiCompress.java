@@ -1,4 +1,4 @@
-package com.conan.bigdata.hadoop.compress;
+package com.conan.bigdata.hadoop.io;
 
 import com.conan.bigdata.hadoop.util.HadoopConf;
 import org.apache.hadoop.conf.Configuration;
@@ -6,6 +6,7 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.compress.CompressionCodec;
+import org.apache.hadoop.io.compress.CompressionCodecFactory;
 import org.apache.hadoop.io.compress.CompressionInputStream;
 import org.apache.hadoop.io.compress.CompressionOutputStream;
 import org.apache.hadoop.util.*;
@@ -17,7 +18,7 @@ import java.util.List;
 
 /**
  * Usage Example:
- * hadoop jar hadoop-1.0-SNAPSHOT.jar com.conan.bigdata.hadoop.compress.MultiCompress compress org.apache.hadoop.io.compress.GzipCodec /tmp/repository/compress/2018.12.24.log log gz
+ * hadoop jar hadoop-1.0-SNAPSHOT.jar com.conan.bigdata.hadoop.io.MultiCompress compress org.apache.hadoop.io.compress.GzipCodec /tmp/repository/compress/2018.12.24.log log gz
  */
 public class MultiCompress extends Configured implements Tool {
 
@@ -78,7 +79,8 @@ public class MultiCompress extends Configured implements Tool {
 
     public static void main(String[] args) {
         try {
-            int result = ToolRunner.run(HadoopConf.getHAInstance(), new MultiCompress(), args);
+            Configuration conf = new Configuration();
+            int result = ToolRunner.run(conf, new MultiCompress(), args);
             System.exit(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,11 +104,6 @@ public class MultiCompress extends Configured implements Tool {
     public int run(String[] args) throws Exception {
         Configuration conf = getConf();
         String[] argsSplit = new GenericOptionsParser(conf, args).getRemainingArgs();
-//        String optType = argsSplit[0];
-//        String codeClass = argsSplit[1];
-//        String sourceDir = argsSplit[2];
-//        String sourceType = argsSplit[3];
-//        String targetType = argsSplit[4];
         String year = argsSplit[0];
         String month = argsSplit[1];
         String day = argsSplit[2];
@@ -125,6 +122,7 @@ public class MultiCompress extends Configured implements Tool {
 //            }
             return 0;
         } else if ("uncompress".equals(optType)) {
+            readCompressFile(conf,new Path(sourceDir));
             return 0;
         } else {
             throw new Exception("该命令操作类型不对，只能compress或uncompress !");
@@ -162,7 +160,7 @@ public class MultiCompress extends Configured implements Tool {
 
 //        for (HdfsFile file : listFiles) {
 //            Path targetPath = new Path(String.format("%s/%s/%s.gz", targetDir, file.getFileDate(), file.getFileName()));
-//            compressFile(file.getPath(), targetPath, fs, codec, conf, file.getFileType(), targetType);
+//            writeCompressFile(file.getPath(), targetPath, fs, codec, conf, file.getFileType(), targetType);
 //        }
 
         // 合并固定大小的文件
@@ -184,7 +182,8 @@ public class MultiCompress extends Configured implements Tool {
         }
     }
 
-    private void compressFile(Path inPath, Path outPath, FileSystem fs, CompressionCodec codec, Configuration conf, String sourceType, String targetType) {
+    // 压缩文件
+    private void writeCompressFile(Path inPath, Path outPath, FileSystem fs, CompressionCodec codec, Configuration conf, String sourceType, String targetType) {
         if (inPath.getName().indexOf(sourceType) > 0) {
             FSDataInputStream input = null;
             CompressionOutputStream compressOut = null;
@@ -228,20 +227,29 @@ public class MultiCompress extends Configured implements Tool {
     }
 
     private void mergeCompressFile(FileSystem fs, CompressionCodec codec, List<HdfsFile> sourceFileList, Path targetFile) {
-        CompressionOutputStream compressOut = null;
+        CompressionOutputStream compressOutput = null;
         try {
             System.out.println(String.format("开始生成合并文件: [%s]", targetFile.toString()));
             FSDataOutputStream output = fs.create(targetFile, true, 8192);
-            compressOut = codec.createOutputStream(output);
+            compressOutput = codec.createOutputStream(output);
             for (HdfsFile file : sourceFileList) {
                 FSDataInputStream input = fs.open(file.getPath());
-                IOUtils.copyBytes(input, compressOut, 8192, false);
+                IOUtils.copyBytes(input, compressOutput, 8192, false);
                 input.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            IOUtils.closeStream(compressOut);
+            IOUtils.closeStream(compressOutput);
         }
+    }
+
+    // 读取压缩文件
+    private void readCompressFile(Configuration conf, Path source) throws IOException {
+        FileSystem fs = FileSystem.get(conf);
+        CompressionCodec codec = new CompressionCodecFactory(conf).getCodec(source);
+        FSDataInputStream input =fs.open(source);
+        CompressionInputStream compressInput=codec.createInputStream(input);
+        IOUtils.copyBytes(compressInput,System.out,4096,true);
     }
 }
