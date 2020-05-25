@@ -4,9 +4,15 @@ import org.apache.hadoop.conf.Configuration;
 
 import java.util.Map;
 
+/**
+ * 单例模式返回 Hadoop Configuration
+ *
+ * volatile + 双重检查锁 实现
+ */
 public class HadoopConf {
 
-    private static Configuration conf = null;
+    // volatile 防止指令重排序
+    private static volatile Configuration conf = null;
 
     private static void init() {
         conf = new Configuration();
@@ -35,14 +41,22 @@ public class HadoopConf {
 
     public static Configuration getInstance() {
         if (conf == null) {
-            init();
+            synchronized (HadoopConf.class) {
+                if (conf == null) {
+                    init();
+                }
+            }
         }
         return conf;
     }
 
     public static Configuration getHAInstance() {
         if (conf == null) {
-            initHA();
+            synchronized (HadoopConf.class) {
+                if (conf == null) {
+                    initHA();
+                }
+            }
         }
         return conf;
     }

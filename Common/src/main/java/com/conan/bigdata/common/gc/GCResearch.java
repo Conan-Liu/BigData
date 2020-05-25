@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
  * -XX:+UseSerialGC     -XX:-UserSerialGC    是否使用串行垃圾收集器
  * -XX:+UseG1GC 这是目前大堆环境下推荐的收集器
  * -XX:+HeapDumpOnOutOfMemoryError 当 OutOfMemoryError发生时自动生成 Heap Dump 文件，配合heapdump文件路劲使用
- * -XX:HeapDumpPath   指定 dump文件存储路径，JVM生成 Heap Dump的时候，虚拟机是暂停一切服务的
+ * -XX:HeapDumpPath=/path.hprof   指定 dump文件存储路径，JVM生成 Heap Dump的时候，虚拟机是暂停一切服务的
  */
 public class GCResearch {
 

@@ -28,6 +28,23 @@ public class ThreadWithReturn {
         }
     }
 
+    private static int sum = 0;
+    private static volatile boolean isTrue = false;
+
+    private static class WhileBreak implements Runnable {
+
+        @Override
+        public void run() {
+            for (int i = 0; i < 1000; i++) {
+                sum++;
+                if (sum >= 100) {
+                    isTrue = true;
+                    break;
+                }
+            }
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         Simple s = new Simple();
         Thread t = new Thread(s);
@@ -45,5 +62,13 @@ public class ThreadWithReturn {
          * {@link com.conan.bigdata.common.concurrent.CallableExecutor}
          */
         System.out.println("value : " + s.getValue());
+
+
+        Thread tt=new Thread(new WhileBreak(),"tt");
+        tt.start();
+        // 利用线程标记位来获取返回值
+        // while (!isTrue) ;
+        tt.join();
+        System.out.println("sum = " + sum);
     }
 }

@@ -1,6 +1,7 @@
 package com.conan.bigdata.common.concurrent;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -29,23 +30,45 @@ public class ReadWriteLockExp {
 
     // ReetrantReadWriteLock 可重入的读写锁,可重入锁，就是说一个线程在获取某个锁后，还可以继续获取该锁，即允许一个线程多次获取同一个锁
     // 两个线程可以一起读， 效率高
+    // 实现机制复杂，适用场景读操作多，
     public static void readWriteLockMethod(Thread thread) {
-        ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+        ReadWriteLock lock = new ReentrantReadWriteLock();
         lock.readLock().lock();
-        long start = System.nanoTime();
-        System.out.println("start time:" + start);
-        for (int i = 0; i < 5; i++) {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-                System.out.println(thread.getName() + " : 正在进行读操作......");
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            long start = System.nanoTime();
+            System.out.println("start time:" + start);
+            for (int i = 0; i < 5; i++) {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                    System.out.println(thread.getName() + " : 正在进行读操作......");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            long end = System.nanoTime();
+            System.out.println("end time:" + end);
+            System.out.println("used time:" + (end - start));
+        } finally {
+            // readLock 返回显示锁，写在finally块中防止锁泄漏
+            lock.readLock().unlock();
+        }
+    }
+
+    /**
+     * volatile 的可见性，配合synchronized的原子性，实现一个简易版的读写锁
+     */
+    public static class Counter {
+        private volatile long count = 0;
+
+        public long getCount() {
+            return this.count;
+        }
+
+        public void increment() {
+            synchronized (this) {
+                count++;
             }
         }
-        long end = System.nanoTime();
-        System.out.println("end time:" + end);
-        System.out.println("used time:" + (end - start));
-        lock.readLock().unlock();
     }
 
     public static void main(String[] args) {

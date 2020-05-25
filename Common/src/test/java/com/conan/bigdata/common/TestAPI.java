@@ -154,4 +154,9 @@ public class TestAPI {
         System.out.println(getClass().getSimpleName());
         System.out.println(getClass().getCanonicalName());
     }
+
+    @Test
+    public void test14(){
+        System.out.println(Runtime.getRuntime().availableProcessors());
+    }
 }

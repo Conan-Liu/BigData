@@ -43,7 +43,7 @@ public class HiveInputFormatExp extends TextInputFormat {
          * 先使用LineRecordReader对象给K，V填充上数据，然后再对V进行字符串替换
          * 最后该自定义的RecordReader返回K，V给hive框架使用
          *
-         * 这个顺序不能错，如过像注释一样，顺序颠倒，那么达不到想要的效果
+         * 这个顺序不能错，如果像注释一样，顺序颠倒，那么达不到想要的效果
          */
         @Override
         public boolean next(LongWritable key, Text value) throws IOException {
@@ -60,7 +60,7 @@ public class HiveInputFormatExp extends TextInputFormat {
             // 这里顺序不对，没起到替换的效果
             // String ss = value.toString().replaceAll(",", "\\|");
             // value.set(ss);
-            // reader.next(key,value);
+            // return reader.next(key,value);
         }
 
         @Override
