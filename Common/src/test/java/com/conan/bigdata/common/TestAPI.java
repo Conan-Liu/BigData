@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 public class TestAPI {
@@ -158,5 +159,29 @@ public class TestAPI {
     @Test
     public void test14(){
         System.out.println(Runtime.getRuntime().availableProcessors());
+        System.out.println(Integer.MAX_VALUE);
+        Executors.newSingleThreadExecutor();
+    }
+
+    /**
+     * 字符串存储详解
+     */
+    @Test
+    public void test15(){
+        String s1 = "hello";
+        String s2 = "hello";
+        String s3 = "he" + "llo";
+        String s4 = "hel" + new String("lo");
+        String s5 = new String("hello");
+        String s6 = s5.intern();
+        String s7 = "h";
+        String s8 = "ello";
+        String s9 = s7 + s8;
+        System.out.println(s1==s2);//true  可以看到字符串常量共享了常量池
+        System.out.println(s1==s3);//true  JVM的优化，共享常量池
+        System.out.println(s1==s4);//false
+        System.out.println(s1==s9);//false
+        System.out.println(s4==s5);//false
+        System.out.println(s1==s6);//true
     }
 }

@@ -1,21 +1,25 @@
-package com.conan.bigdata.common.concurrent;
+package com.conan.bigdata.common.concurrent.thread;
 
 /**
  * 多线程环境下的单例演示，兼顾性能
+ * 1. 饿汉模式
+ * 2. 双重检验锁 + volatile
  */
 public class SingletonExp {
 
     private static volatile SingletonExp INSTANCE = null;
     // static 关键字能保证当类初始化时，能给予初始值，而不是默认值（null），且保证这个对象已经完全初始化完毕
-    private static SingletonExp INSTANCE1=new SingletonExp();
+    private static final SingletonExp INSTANCE1=new SingletonExp();
 
     // 私有构造方法，用于内部创建实例
     private SingletonExp() {
 
     }
 
+    // 立即加载
     /**
-     * 该实例是随着类加载是一起初始化的，属于立即加载
+     * 饿汉模式
+     * 该实例是随着类加载是一起初始化的，属于立即加载，只能是使用私有构造方法
      * 注意这种机制的前提是不能被某个线程修改，如果有修改的必要，同样需要加锁或者volatile
      */
     public static SingletonExp getInstance(){

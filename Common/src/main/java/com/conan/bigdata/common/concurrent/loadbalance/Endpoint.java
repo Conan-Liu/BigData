@@ -1,7 +1,7 @@
 package com.conan.bigdata.common.concurrent.loadbalance;
 
 /**
- * 提供服务的下游节点，可能服务还在线，可能已经挂了
+ * 提供服务的下游节点，可能服务还在线，可能已经挂了，对节点的抽象
  */
 public class Endpoint {
 
@@ -9,17 +9,17 @@ public class Endpoint {
     private int port;
     private int weight;
     // 定义 volatile 变量来确认节点是否有效，可见性，保证集群内的节点能及时感知到该机器是否有效
-    private volatile boolean isOnline=true;
+    private volatile boolean isOnline = true;
 
-    public Endpoint(String host,int port){
-        this.host=host;
-        this.port=port;
+    public Endpoint(String host, int port) {
+        this.host = host;
+        this.port = port;
         // 默认权重， 先不考虑这个
-        this.weight=5;
+        this.weight = 5;
     }
 
     public String getHost() {
-        return host;
+        return this.host;
     }
 
     public void setHost(String host) {
@@ -27,7 +27,7 @@ public class Endpoint {
     }
 
     public int getPort() {
-        return port;
+        return this.port;
     }
 
     public void setPort(int port) {
@@ -35,7 +35,7 @@ public class Endpoint {
     }
 
     public int getWeight() {
-        return weight;
+        return this.weight;
     }
 
     public void setWeight(int weight) {
@@ -43,20 +43,20 @@ public class Endpoint {
     }
 
     public boolean isOnline() {
-        return isOnline;
+        return this.isOnline;
     }
 
     public void setOnline(boolean online) {
-        isOnline = online;
+        this.isOnline = online;
     }
 
     @Override
     public String toString() {
         return "Endpoint{" +
-                "host='" + host + '\'' +
-                ", port=" + port +
-                ", weight=" + weight +
-                ", isOnline=" + isOnline +
+                "host='" + this.host + '\'' +
+                ", port=" + this.port +
+                ", weight=" + this.weight +
+                ", isOnline=" + this.isOnline +
                 '}';
     }
 

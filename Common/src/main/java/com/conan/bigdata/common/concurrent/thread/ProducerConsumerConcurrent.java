@@ -1,4 +1,4 @@
-package com.conan.bigdata.common.concurrent;
+package com.conan.bigdata.common.concurrent.thread;
 
 /**
  * 线程互斥同步

@@ -59,7 +59,7 @@ public class ThreadWithReturn {
 
         /**
          * Callable 接口参考
-         * {@link com.conan.bigdata.common.concurrent.CallableExecutor}
+         * {@link ThreadPoolExecutorExp}
          */
         System.out.println("value : " + s.getValue());
 

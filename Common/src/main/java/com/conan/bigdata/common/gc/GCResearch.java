@@ -52,8 +52,8 @@ public class GCResearch {
 //        System.out.println("*************** 堆内存溢出示例 **************************");
 //        heapOutOfMemory();
 
-//        System.out.println("*************** 栈内存溢出示例 **************************");
-//        stackOverFlow();
+        System.out.println("*************** 栈内存溢出示例 **************************");
+        stackOverFlow();
 
 //        System.out.println("*************** 方法区内存溢出示例 **************************");
 //        constantOutOfMemory();
@@ -61,8 +61,9 @@ public class GCResearch {
 //        System.out.println("*************** 非JVM内存溢出示例 **************************");
 //        directOutOfMemory();
 
-        System.out.println("*************** 验证Java配置的opt参数示例 **************************");
-        checkJVMopts();
+//        System.out.println("*************** 验证Java配置的opt参数示例 **************************");
+//        checkJVMopts();
+
     }
 
     /**
@@ -93,7 +94,7 @@ public class GCResearch {
      * 每个线程有自己的线程私有区， stack就是线程私有的
      * 为了演示，这个值设置的很小，编译尽早报内存溢出的错误， 注意内存溢出是 Error 类型的， 不是Exception异常
      * JVM参数
-     * -verbose:gc -Xss110k -XX:MaxDirectMemorySize=5m -XX:+PrintGCDetails
+     * -verbose:gc -Xss200k -XX:MaxDirectMemorySize=5m -XX:+PrintGCDetails
      */
     private static int counter = 0;
 

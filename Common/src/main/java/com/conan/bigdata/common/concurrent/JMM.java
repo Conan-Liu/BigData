@@ -63,7 +63,7 @@ public class JMM {
         return _instance;
     }
 
-    // 或者二次检查
+    // 二次检查配合volatile来确保单例的实现
     public static JMM getInstance2() {
         if (_instance == null) {
             synchronized (JMM.class) {
