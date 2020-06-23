@@ -64,37 +64,37 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
-<!--
-        <dependency>
-            <groupId>com.cloudera.impala.jdbc</groupId>
-            <artifactId>hive-metastore</artifactId>
-            <version>${impala.jdbc.version}</version>
-        </dependency>
+        <!--
+                <dependency>
+                    <groupId>com.cloudera.impala.jdbc</groupId>
+                    <artifactId>hive-metastore</artifactId>
+                    <version>${impala.jdbc.version}</version>
+                </dependency>
 
-        <dependency>
-            <groupId>com.cloudera.impala.jdbc</groupId>
-            <artifactId>hive-service</artifactId>
-            <version>${impala.jdbc.version}</version>
-        </dependency>
+                <dependency>
+                    <groupId>com.cloudera.impala.jdbc</groupId>
+                    <artifactId>hive-service</artifactId>
+                    <version>${impala.jdbc.version}</version>
+                </dependency>
 
-        <dependency>
-            <groupId>com.cloudera.impala.jdbc</groupId>
-            <artifactId>ImpalaJDBC41</artifactId>
-            <version>${impala.jdbc.version}</version>
-        </dependency>
+                <dependency>
+                    <groupId>com.cloudera.impala.jdbc</groupId>
+                    <artifactId>ImpalaJDBC41</artifactId>
+                    <version>${impala.jdbc.version}</version>
+                </dependency>
 
-        <dependency>
-            <groupId>com.cloudera.impala.jdbc</groupId>
-            <artifactId>ql</artifactId>
-            <version>${impala.jdbc.version}</version>
-        </dependency>
+                <dependency>
+                    <groupId>com.cloudera.impala.jdbc</groupId>
+                    <artifactId>ql</artifactId>
+                    <version>${impala.jdbc.version}</version>
+                </dependency>
 
-        <dependency>
-            <groupId>com.cloudera.impala.jdbc</groupId>
-            <artifactId>TCLIServiceClient</artifactId>
-            <version>${impala.jdbc.version}</version>
-        </dependency>
--->
+                <dependency>
+                    <groupId>com.cloudera.impala.jdbc</groupId>
+                    <artifactId>TCLIServiceClient</artifactId>
+                    <version>${impala.jdbc.version}</version>
+                </dependency>
+        -->
         <dependency>
             <groupId>org.apache.thrift</groupId>
             <artifactId>libfb303</artifactId>
@@ -145,50 +145,93 @@
     </dependencies>
 
     <build>
-        <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
-            <plugins>
-                <plugin>
-                    <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.0.0</version>
-                </plugin>
-                <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
-                <plugin>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.0.2</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.7.0</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.20.1</version>
-                </plugin>
-                <plugin>
-                    <!--
-                    java -[classpath|cp] $CLASSPATH:commons-lang3-3.4.jar:common-1.0-SNAPSHOT.jar com.conan.bigdata.common.util.ComputerEnvironment
-                    执行该ComputerEnvironment类时， 需要引入commons-lang3-3.4.jar包， 通过这种方式引入
-                    这是后，配置的主类就不起效果了， 项目的jar包以普通jar的形式添加的classpath中即可
-                     -->
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <configuration>
-                        <archive>
-                            <manifest>
-                                <mainClass>test.RemoteDebug</mainClass>
-                            </manifest>
-                        </archive>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-install-plugin</artifactId>
-                    <version>2.5.2</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.8.2</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <plugins>
+            <plugin>
+                <!--
+                java -[classpath|cp] $CLASSPATH:commons-lang3-3.4.jar:common-1.0-SNAPSHOT.jar com.conan.bigdata.common.util.ComputerEnvironment
+                执行该ComputerEnvironment类时， 需要引入commons-lang3-3.4.jar包， 通过这种方式引入
+                这是后，配置的主类就不起效果了， 项目的jar包以普通jar的形式添加的classpath中即可
+                 -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.conan.bigdata.common.util.Tools</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!-- 可能会找不到jar包，打包依赖，执行jar包的命令：  java -Djava.ext.dirs=./lib -jar hive-1.0-SNAPSHOT.jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/lib</outputDirectory>
+                            <excludeTransitive>false</excludeTransitive>
+                            <stripVersion>true</stripVersion>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <!-- 是否使用变量值替换properties文件中的占位符el表达式 -->
+                <!-- <filtering>true</filtering> -->
+                <excludes>
+                    <exclude>dev/*</exclude>
+                    <exclude>prod/*</exclude>
+                </excludes>
+            </resource>
+            <!-- 注意，要想配置文件打包在classpath的跟路径下，必须这么写 -->
+            <resource>
+                <directory>src/main/resources/${prop.env}</directory>
+            </resource>
+        </resources>
+
     </build>
+
+
+    <!-- 这里可以默认，也可以编译的时候传参数 mvn clean package -P ${prop.env} -DskipTests=true -->
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <prop.env>dev</prop.env>
+            </properties>
+            <!-- 开发环境，默认激活 -->
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
+        <!-- 测试环境 -->
+        <profile>
+            <id>test</id>
+            <properties>
+                <prop.env>test</prop.env>
+            </properties>
+        </profile>
+
+        <!-- 生产环境 -->
+        <profile>
+            <id>prod</id>
+            <properties>
+                <prop.env>prod</prop.env>
+            </properties>
+        </profile>
+    </profiles>
 </project>

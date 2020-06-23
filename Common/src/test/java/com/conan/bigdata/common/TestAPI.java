@@ -3,14 +3,10 @@ package com.conan.bigdata.common;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.sql.SQLException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 public class TestAPI {
@@ -19,8 +15,8 @@ public class TestAPI {
      * kafka 消费者组对应到 __consumer_offsets 的分区信息
      */
     @Test
-    public void kafkaPartitionId(){
-        int i=Math.abs("meimeng_spark_20190102".hashCode()) % 50;
+    public void kafkaPartitionId() {
+        int i = Math.abs("meimeng_spark_20190102".hashCode()) % 50;
         System.out.println(i);
     }
 
@@ -138,10 +134,10 @@ public class TestAPI {
     }
 
     @Test
-    public void test12(){
-        System.out.println(-1<<5);
-        System.out.println(1<<5);
-        System.out.println(-1^-1<<5);
+    public void test12() {
+        System.out.println(-1 << 5);
+        System.out.println(1 << 5);
+        System.out.println(-1 ^ -1 << 5);
 
         System.out.println("c".getBytes().length);
 
@@ -150,24 +146,27 @@ public class TestAPI {
     }
 
     @Test
-    public void test13(){
+    public void test13() {
         System.out.println(getClass().getName());
         System.out.println(getClass().getSimpleName());
         System.out.println(getClass().getCanonicalName());
     }
 
     @Test
-    public void test14(){
+    public void test14() {
         System.out.println(Runtime.getRuntime().availableProcessors());
         System.out.println(Integer.MAX_VALUE);
-        Executors.newSingleThreadExecutor();
+        System.out.println((int) (4 / 0.75));
+        Integer i=null;
+        Integer y=i+1;
+        System.out.println(y);
     }
 
     /**
      * 字符串存储详解
      */
     @Test
-    public void test15(){
+    public void test15() {
         String s1 = "hello";
         String s2 = "hello";
         String s3 = "he" + "llo";
@@ -177,11 +176,33 @@ public class TestAPI {
         String s7 = "h";
         String s8 = "ello";
         String s9 = s7 + s8;
-        System.out.println(s1==s2);//true  可以看到字符串常量共享了常量池
-        System.out.println(s1==s3);//true  JVM的优化，共享常量池
-        System.out.println(s1==s4);//false
-        System.out.println(s1==s9);//false
-        System.out.println(s4==s5);//false
-        System.out.println(s1==s6);//true
+        System.out.println(s1 == s2);//true  可以看到字符串常量共享了常量池
+        System.out.println(s1 == s3);//true  JVM的优化，共享常量池
+        System.out.println(s1 == s4);//false
+        System.out.println(s1 == s9);//false
+        System.out.println(s4 == s5);//false
+        System.out.println(s1 == s6);//true
+    }
+
+    @Test
+    public void test16() throws Exception{
+        System.out.println(0.2f == 0.2);
+
+        // URL 编码屏蔽特殊字符
+        System.out.println(URLEncoder.encode("%{module}", "UTF-8"));
+
+        // UUID 唯一标识符， 目前全球通用的是微软（GUID）的 8-4-4-4-12 的标准, 占36个字符
+        String uuid = UUID.randomUUID().toString();
+        System.out.println(uuid);
+        System.out.println(uuid.getBytes().length);
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println(format.parse("2019-01-01").getTime());
+
+        System.out.println(-1 ^ (-1 << 12));
+
+        System.out.println(Math.pow(2, -2));
+
+        System.out.println(100 / 200 / 365);  // 0
     }
 }
