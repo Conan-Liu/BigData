@@ -1,4 +1,4 @@
-package com.conan.bigdata.common.util;
+package com.conan.bigdata.common.algorithm;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

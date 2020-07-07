@@ -4,7 +4,9 @@ package com.conan.bigdata.hadoop.io;
 import com.conan.bigdata.hadoop.util.HadoopConf;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat;
@@ -19,21 +21,22 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
+import org.apache.hadoop.util.GenericOptionsParser;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 import org.apache.parquet.example.data.Group;
 import org.apache.parquet.hadoop.ParquetInputFormat;
 import org.apache.parquet.hadoop.example.GroupReadSupport;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
-public class HDFSReadExample {
+public class HdfsReadExp extends Configured implements Tool {
 
-    public static void readText(Configuration conf) throws IOException, InterruptedException {
+    public void readText(Configuration conf, String in_path) throws IOException, InterruptedException {
         // 定义任务上下文
         Job job = Job.getInstance(conf, "readText");
-        org.apache.hadoop.mapreduce.lib.input.FileInputFormat.addInputPath(job, new Path("/user/mw/mr/wordcount/in/*"));
+        org.apache.hadoop.mapreduce.lib.input.FileInputFormat.addInputPath(job, new Path(in_path));
         // 获取文件输入类
         org.apache.hadoop.mapreduce.InputFormat<LongWritable, Text> in = new TextInputFormat();
         // 获取文件的输入分片
@@ -59,10 +62,10 @@ public class HDFSReadExample {
     }
 
     // 老版 InputFormat 读取 Parquet MapredParquetInputFormat
-    public static void read1(Configuration conf) throws IOException {
+    public void read1(Configuration conf, String in_path) throws IOException {
         JobConf jobConf = new JobConf(conf);
         InputFormat<Void, ArrayWritable> in = new MapredParquetInputFormat();
-        FileInputFormat.addInputPath(jobConf, new Path("/user/hive/warehouse/dmd.db/dm_dashboard_bi_report_all_y_output/000000_0"));
+        FileInputFormat.addInputPath(jobConf, new Path(in_path));
         InputSplit[] splits = in.getSplits(jobConf, 1);
         for (InputSplit split : splits) {
             RecordReader reader = in.getRecordReader(split, jobConf, Reporter.NULL);
@@ -71,7 +74,7 @@ public class HDFSReadExample {
             int n = 0;
             while (reader.next(K, V)) {
                 n++;
-                if (n <= 2) {
+                if (n <= 200) {
                     Writable[] vs = ((ArrayWritable) V).get();
                     StringBuilder sb = new StringBuilder();
                     for (Writable v : vs) {
@@ -85,18 +88,19 @@ public class HDFSReadExample {
     }
 
     // 老版 InputFormat 读取 Parquet MapredParquetInputFormat
-    public static void read11(Configuration conf) throws IOException, SerDeException {
-        conf.set("parquet.block.size", "134217728");
+    public void read11(Configuration conf, String in_path) throws IOException, SerDeException {
+        // conf.set("parquet.block.size", "134217728");
         JobConf jobConf = new JobConf(conf);
-        InputFormat<Void, ArrayWritable> in = new MapredParquetInputFormat();
+        // InputFormat<Void, ArrayWritable> in = new MapredParquetInputFormat();
+        MapredParquetInputFormat in = new MapredParquetInputFormat();
         ParquetHiveSerDe serde = new ParquetHiveSerDe();
 
         StringBuilder allColumns = new StringBuilder();
         StringBuilder allColumnTypes = new StringBuilder();
-        for (int i = 0; i <= 150; i++) {
+        for (int i = 0; i <= 7; i++) {
             allColumns.append("col");
             allColumnTypes.append("string");
-            if (i != 150) {
+            if (i != 7) {
                 allColumns.append(",");
                 allColumnTypes.append(":");
             }
@@ -106,9 +110,7 @@ public class HDFSReadExample {
         properties.setProperty("columns.types", allColumnTypes.toString());
         serde.initialize(conf, properties);
         StructObjectInspector inspector = (StructObjectInspector) serde.getObjectInspector();
-        System.out.println("**************** " + conf.get("parquet.task.side.metadata"));
-        System.out.println("**************** " + conf.get("parquet.block.size"));
-        FileInputFormat.addInputPath(jobConf, new Path("/user/hive/warehouse/temp.db/user_tag_new_test/*"));
+        FileInputFormat.addInputPath(jobConf, new Path(in_path));
         InputSplit[] splits = in.getSplits(jobConf, 1);
         for (InputSplit split : splits) {
             // 这里hadoop读取数据，一定要注意hadoop的版本问题， datax里读取parquet，有个小问题困扰了三天
@@ -120,28 +122,28 @@ public class HDFSReadExample {
             Object V = reader.createValue();
             int n = 0;
             List<? extends StructField> fields = inspector.getAllStructFieldRefs();
-            List<String> recordFields;
+            List<String> recordFields = new ArrayList<>();
             while (reader.next(K, V)) {
                 n++;
-                recordFields = new ArrayList<String>();
-                for (int i = 0; i <= 150; i++) {
+                for (int i = 0; i <= 7; i++) {
                     String field = String.valueOf(inspector.getStructFieldData(V, fields.get(i)));
                     recordFields.add(field);
                 }
-                if (n <= 2) {
+                if (n <= 200) {
                     System.out.println(StringUtils.join(recordFields.toArray(), ','));
                 }
                 recordFields.clear();
             }
             System.out.println("======================= " + n);
+            reader.close();
         }
     }
 
     // 新版 InputFormat 读取 Parquet ParquetInputFormat
-    public static void readParquetWithNewAPI(Configuration conf) throws IOException, InterruptedException {
+    public void readParquetWithNewAPI(Configuration conf, String in_path) throws IOException, InterruptedException {
         Job job = Job.getInstance(conf, "readParquetWithNewAPI");
         org.apache.hadoop.mapreduce.InputFormat<Void, Group> in = new ParquetInputFormat<>();
-        ParquetInputFormat.addInputPath(job, new Path("/user/mw/parquet/"));
+        ParquetInputFormat.addInputPath(job, new Path(in_path));
         ParquetInputFormat.setReadSupportClass(job, GroupReadSupport.class);
         List<org.apache.hadoop.mapreduce.InputSplit> splits = in.getSplits(job);
         for (org.apache.hadoop.mapreduce.InputSplit split : splits) {
@@ -168,9 +170,9 @@ public class HDFSReadExample {
      * 按照流读取数据，可以作为读取文件，
      * 但是流是字节的， 如果是文本文件， 可以直接显示内容， 如果是二进制文件（如parquet）， 不可直接显示内容
      */
-    public static void read3(Configuration conf) throws IOException {
+    public void read3(Configuration conf, String in_path) throws IOException {
         FileSystem fs = FileSystem.get(conf);
-        FSDataInputStream in = fs.open(new Path("/tmp/aaa"));
+        FSDataInputStream in = fs.open(new Path(in_path));
         IOUtils.copyBytes(in, System.out, 4096, false);
         // 重定向数据流的指针到开始， seek 很耗资源， 最好不用
         in.seek(0);
@@ -178,9 +180,38 @@ public class HDFSReadExample {
         IOUtils.closeStream(in);
     }
 
+    private Set<String> getAllFileSets(Configuration conf, String in_path) throws IOException {
+        Set<String> fileSets = new HashSet<>();
+        FileSystem hdfs = FileSystem.get(conf);
+        Path p = new Path(in_path);
+        // 路径中是否有通配符
+        if (in_path.contains("*") || in_path.contains("?")) {
+            FileStatus[] fileStatuses = hdfs.globStatus(p);
+            for (FileStatus f : fileStatuses) {
+                if (f.isFile()) {
+                    fileSets.add(f.getPath().toString());
+                }
+            }
+        }else{
+            FileStatus[] fileStatuses=hdfs.listStatus(p);
+        }
+        return fileSets;
+    }
+
     public static void main(String[] args) throws Exception {
-//        Configuration conf = HadoopConf.getHAInstance();
-        Configuration conf = new Configuration();
-        readParquetWithNewAPI(conf);
+
+        Configuration conf = HadoopConf.getHAInstance();
+        int result = ToolRunner.run(conf, new HdfsReadExp(), args);
+        System.exit(result);
+    }
+
+    @Override
+    public int run(String[] args) throws Exception {
+        Configuration conf = getConf();
+        String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
+
+        String in_path = otherArgs[0];
+        read11(conf, in_path);
+        return 0;
     }
 }

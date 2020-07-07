@@ -1,19 +1,14 @@
 package test;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.Scanner;
 
 public class AAA {
 
     public static void main(String[] args) {
 
-
+        Scanner s = new Scanner(System.in);
+        String s1 = s.nextLine();
+        System.out.println(s1);
 
     }
 
