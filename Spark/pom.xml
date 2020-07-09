@@ -88,6 +88,12 @@
             <artifactId>spark-hive_2.11</artifactId>
             <version>${spark.version}</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>hive-exec</artifactId>
+                    <groupId>org.spark-project.hive</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

@@ -37,7 +37,7 @@ public class TestAPI {
         System.out.println(Integer.MAX_VALUE + 1);
         System.out.println(Integer.MIN_VALUE - 1);
 
-
+        System.out.println(0.2f > 0.2);   // 返回true，因为float和double精度的问题
     }
 
     @Test

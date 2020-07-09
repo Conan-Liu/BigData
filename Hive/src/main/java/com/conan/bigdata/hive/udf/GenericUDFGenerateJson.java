@@ -5,6 +5,8 @@ import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector.PrimitiveCategory;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.StringObjectInspector;
 import org.apache.hadoop.io.Text;
@@ -28,6 +30,22 @@ public class GenericUDFGenerateJson extends GenericUDF {
         for (int i = 0; i < objectInspectors.length; i += 2) {
             if (!(objectInspectors[i] instanceof StringObjectInspector) || !ObjectInspector.Category.PRIMITIVE.equals(objectInspectors[i + 1].getCategory()))
                 throw new UDFArgumentException("The K of parameters must be string type, The V of parameters must be primitive type!");
+        }
+
+        // 根据输入的数据类型来确定该函数输出的类型
+        PrimitiveObjectInspector objectInspector=(PrimitiveObjectInspector)objectInspectors[0];
+        PrimitiveCategory primitiveCategory = objectInspector.getPrimitiveCategory();
+        switch (primitiveCategory){
+            case CHAR:
+            case STRING:
+                return PrimitiveObjectInspectorFactory.writableStringObjectInspector;
+            case BYTE:
+            case SHORT:
+            case INT:
+                return PrimitiveObjectInspectorFactory.writableIntObjectInspector;
+            case LONG:
+                return PrimitiveObjectInspectorFactory.writableLongObjectInspector;
+
         }
 
 //        ObjectInspector returnOI = PrimitiveObjectInspectorFactory.getPrimitiveJavaObjectInspector(PrimitiveObjectInspector.PrimitiveCategory.STRING);

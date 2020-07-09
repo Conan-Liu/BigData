@@ -33,6 +33,7 @@ object OnlineBlackListFilter extends StreamingVariable {
         }).print()
 
         ssc.start()
+        ssc.stop()
         ssc.awaitTermination()
     }
 }
