@@ -1,6 +1,5 @@
 package com.conan.bigdata.hbase.mr;
 
-import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -12,22 +11,20 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.UUID;
 
-//public class LoadDataToHbaseMapper extends Mapper<LongWritable,Text,ImmutableBytesWritable,Put>{
-public class LoadDataToHbaseMapper extends Mapper<LongWritable, Text, Text, Text> {
+public class LoadDataToHbaseMapper extends Mapper<LongWritable,Text,ImmutableBytesWritable,Put>{
     //map
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-//        String line = value.toString();
-//        String[] splits = line.split("\\|");
-//            String rowKey = createRowKey(splits);
-//            String familyName = CONSTANT.FAMILY_NAME;
-//
-//            ImmutableBytesWritable hkey = new ImmutableBytesWritable(Bytes.toBytes(rowKey));
-//            Put put = new Put(Bytes.toBytes(rowKey));
-//            put.addColumn(Bytes.toBytes(familyName),Bytes.toBytes(qualifierName),Bytes.toBytes(line));
-//
-//            context.write(hkey,put);
+        String line = value.toString();
+        String[] splits = line.split("\\|");
+            String rowKey = createRowKey(splits);
 
-        context.write(value, value);
+            ImmutableBytesWritable hkey = new ImmutableBytesWritable(Bytes.toBytes(rowKey));
+
+            // 可以使用三种输出的Value类型， Put KeyValue Text，推荐KeyValue
+            Put put = new Put(Bytes.toBytes(rowKey));
+            put.addColumn(Bytes.toBytes("f1"),Bytes.toBytes("c1"),Bytes.toBytes(line));
+            // KeyValue kv=new KeyValue(Bytes.toBytes(rowKey),Bytes.toBytes("f1"),Bytes.toBytes("c1"),Bytes.toBytes(line));
+            context.write(hkey,put);
     }
 
     //create rowkey

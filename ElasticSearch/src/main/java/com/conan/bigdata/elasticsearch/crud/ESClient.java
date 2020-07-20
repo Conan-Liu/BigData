@@ -7,9 +7,6 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-/**
- * Created by Administrator on 2017/5/17.
- */
 public class ESClient {
     private static final String ES_HOST = "localhost";
     private static final int ES_PORT = 9300;

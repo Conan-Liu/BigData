@@ -6,14 +6,14 @@ import org.apache.commons.lang3.time.FastDateFormat
   */
 object DateUtils {
 
-    val IN_TIME_FORMAT=FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss")
-    val OUT_TIME_FORMAT=FastDateFormat.getInstance("yyyyMMddHHmmss")
+    val IN_TIME_FORMAT: FastDateFormat = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss")
+    val OUT_TIME_FORMAT: FastDateFormat = FastDateFormat.getInstance("yyyyMMddHHmmss")
 
-    def getTime(time:String)={
-        IN_TIME_FORMAT.parse(time).getTime
+    def getTime(time: String) = {
+        IN_TIME_FORMAT
     }
 
-    def parseToMinute(time:String)={
+    def parseToMinute(time: String): String = {
         OUT_TIME_FORMAT.format(getTime(time))
     }
 

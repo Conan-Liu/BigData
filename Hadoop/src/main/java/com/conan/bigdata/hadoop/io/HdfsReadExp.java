@@ -113,10 +113,7 @@ public class HdfsReadExp extends Configured implements Tool {
         FileInputFormat.addInputPath(jobConf, new Path(in_path));
         InputSplit[] splits = in.getSplits(jobConf, 1);
         for (InputSplit split : splits) {
-            // 这里hadoop读取数据，一定要注意hadoop的版本问题， datax里读取parquet，有个小问题困扰了三天
-            // 本地代码能正确访问parquet文件，但是datax不能正确访问， 线上是hadoop2.6.0， 而datax是2.7.1， 大版本可能会更新很多代码
-            // 把jar替换成和线上版本一致，及解决问题
-            // TODO 一定要注意和集群的版本一致，不然容易出问题
+            // 一定要注意和集群的版本一致，不然容易出问题
             RecordReader reader = in.getRecordReader(split, jobConf, Reporter.NULL);
             Object K = reader.createKey();
             Object V = reader.createValue();

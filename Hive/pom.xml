@@ -23,11 +23,11 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>com.conan.bigdata</groupId>
-            <artifactId>hadoop</artifactId>
-            <version>${bigdata-project-version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.conan.bigdata</groupId>-->
+            <!--<artifactId>hadoop</artifactId>-->
+            <!--<version>${bigdata-project-version}</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>org.apache.hadoop</groupId>
@@ -42,6 +42,12 @@
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>hive-service</artifactId>
+            <version>${hive.version}</version>
         </dependency>
 
         <dependency>
@@ -74,6 +80,14 @@
             <groupId>org.apache.hive.hcatalog</groupId>
             <artifactId>hive-hcatalog-core</artifactId>
             <version>${hive.version}</version>
+        </dependency>
+
+        <!-- 通过Thrift协议来访问Hive -->
+        <dependency>
+            <groupId>org.apache.thrift</groupId>
+            <artifactId>libthrift</artifactId>
+            <version>0.9.3</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
 
@@ -122,7 +136,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.conan.bigdata.hive.jdbc.Hive2</mainClass>
+                            <mainClass>com.conan.bigdata.hive.thrift.HiveThriftExp</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

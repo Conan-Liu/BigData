@@ -77,6 +77,8 @@ public class ParquetReaderMR extends Configured implements Tool {
         /**
          *  optional  代表可选的值，  required 代表必选的值， 也就是说该字段的值， 可不可以为null
          *  binary    字符串形式
+         *  这里设置readSchema的作用是，使GroupReadSupport读取指定的字段，指定的字段如果不存在则会报错
+         *  如果不设置，那么会使用Parquet文件本身的schema来读取全部字段
          */
         String readSchema = "message example{\n" +
                 "optional int32 cityid;\n" +

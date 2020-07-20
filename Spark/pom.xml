@@ -18,6 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
+        <scalajdbc.version>2.5.0</scalajdbc.version>
     </properties>
 
     <dependencies>
@@ -88,12 +89,6 @@
             <artifactId>spark-hive_2.11</artifactId>
             <version>${spark.version}</version>
             <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>hive-exec</artifactId>
-                    <groupId>org.spark-project.hive</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -141,6 +136,11 @@
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-streaming-kafka-0-10_2.11</artifactId>
             <version>${spark.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>hive-exec</artifactId>
         </dependency>
 
         <dependency>
@@ -232,6 +232,24 @@
         </dependency>
 
         <dependency>
+            <groupId>org.scalikejdbc</groupId>
+            <artifactId>scalikejdbc_2.11</artifactId>
+            <version>${scalajdbc.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scalikejdbc</groupId>
+            <artifactId>scalikejdbc-config_2.11</artifactId>
+            <version>${scalajdbc.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>provided</scope>
@@ -241,23 +259,32 @@
     <build>
         <plugins>
             <!-- 执行jar包的命令：  java -Djava.ext.dirs=./lib -jar hive-1.0-SNAPSHOT.jar -->
+            <!-- java和scala混合打包，解决找不到package的问题，解决找不到符号 -->
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
                 <executions>
                     <execution>
                         <id>scala-compile-first</id>
+                        <phase>process-sources</phase>
                         <goals>
+                            <goal>add-source</goal>
                             <goal>compile</goal>
                         </goals>
                         <configuration>
                             <includes>
+                                <include>**/*.java</include>
                                 <include>**/*.scala</include>
                             </includes>
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <scalaVersion>${scala.version}</scalaVersion>
+                </configuration>
             </plugin>
+
+            <!-- 这种打包方式，仅编译代码，第三方依赖jar包复制到target/lib目录下 -->
             <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -278,6 +305,8 @@
                 </executions>
             </plugin>
             -->
+
+            <!-- 可以把pom指定的jar包，打成一个超级包，里面包含所有类，可以使用provided来排除，这样集群就会分发这些类，而不会报ClassNotFoundException -->
             <!--
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>

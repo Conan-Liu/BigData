@@ -18,16 +18,41 @@ public class TestAPI {
     public void kafkaPartitionId() {
         int i = Math.abs("meimeng_spark_20190102".hashCode()) % 50;
         System.out.println(i);
+
+        JSONObject json=JSON.parseObject("{}");
+        System.out.println(json.toJSONString());
     }
 
     @Test
     public void test1() {
-        System.out.println("aaa");
+        List<String> list = new ArrayList<>(5);
+        list.add("aaa");
+        list.add("bbb");
+        list.add("ccc");
+        list.add("ddd");
+        list.add("eee");
+        list.add("fff");
+        for (String x : list) {
+            System.out.println("1 = " + x);
+        }
+
+        for (String x : list) {
+            System.out.println("2 = " + x);
+        }
+
+
+        List<String> list1=null;
+        // list 为空为NPE
+        for(String l:list1){
+            System.out.println(l);
+        }
     }
 
     @Test
     public void test2() {
         System.out.println("abc".substring(1));
+        System.out.println(15 + (15 >> 1));
+        System.out.println(15 + 15 >> 1);
     }
 
     @Test
@@ -157,8 +182,8 @@ public class TestAPI {
         System.out.println(Runtime.getRuntime().availableProcessors());
         System.out.println(Integer.MAX_VALUE);
         System.out.println((int) (4 / 0.75));
-        Integer i=null;
-        Integer y=i+1;
+        Integer i = null;
+        Integer y = i + 1;
         System.out.println(y);
     }
 
@@ -185,7 +210,7 @@ public class TestAPI {
     }
 
     @Test
-    public void test16() throws Exception{
+    public void test16() throws Exception {
         System.out.println(0.2f == 0.2);
 
         // URL 编码屏蔽特殊字符

@@ -1,6 +1,6 @@
 package com.conan.bigdata.hive.fileformat;
 
-import com.conan.bigdata.hadoop.util.HadoopConf;
+import com.conan.bigdata.hive.util.HadoopConf;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;

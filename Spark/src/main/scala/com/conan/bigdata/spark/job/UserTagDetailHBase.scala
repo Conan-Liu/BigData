@@ -16,6 +16,8 @@ import org.apache.hadoop.io.{ArrayWritable, Writable}
 import org.apache.hadoop.mapreduce.Job
 import org.apache.spark.{SparkConf, SparkContext}
 
+import scala.collection.mutable.ListBuffer
+
 /**
   * 把hive中的parquet数据，导入hbase， row_key在hive中已经生成
   * hive和hbase整合的话， 插入数据会很慢， 所以最好走底层 HFile 的方式
@@ -26,7 +28,7 @@ object UserTagDetailHBase {
     val TABLE_NAME: String = "user_action"
     val FAMILY_NAME: String = "info"
     //    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail/{action_id=1,action_id=2,action_id=3,action_id=4,action_id=5,action_id=6,action_id=7,action_id=8}/*"
-    val IN_PATH: String = "/user/hive/warehouse/dmd.db/user_tag_detail/action_id=8/*"
+    val IN_PATH: String = "/user/hive/wareNhouse/dmd.db/user_tag_detail/action_id=8/*"
     val OUTPUT_PATH: String = "/user/hadoop/hbase/user_action"
     val EXT_LIBS: String = "/user/hadoop/libs"
     val fromDateFormat: FastDateFormat = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss")
@@ -68,6 +70,7 @@ object UserTagDetailHBase {
         job.setMapOutputValueClass(classOf[KeyValue])
 
         val connection = ConnectionFactory.createConnection(hbaseConf)
+        val admin = connection.getAdmin
         val tableName = TableName.valueOf(TABLE_NAME)
         val table = connection.getTable(tableName)
         //        val hbaseAdmin = connection.getAdmin.asInstanceOf[HBaseAdmin]
@@ -100,7 +103,7 @@ object UserTagDetailHBase {
 
         // 这个方法是增量生成HFile文件，往HBase中写数据， 全量增量都可以
         val bulkLoader = new LoadIncrementalHFiles(hbaseConf)
-        bulkLoader.doBulkLoad(new Path(OUTPUT_PATH), table.asInstanceOf[HTable])
+        bulkLoader.doBulkLoad(new Path(OUTPUT_PATH), admin, table, connection.getRegionLocator(tableName))
 
         //        hbaseAdmin.enableTable(tableName)
 
@@ -186,5 +189,19 @@ object UserTagDetailHBase {
             case _ => fullStr = "999999"
         }
         fullStr
+    }
+
+    def hbaseBulkPut(sc: SparkContext): Unit = {
+
+        val job = sc.hadoopFile("", classOf[MapredParquetInputFormat], classOf[Void], classOf[ArrayWritable], 4)
+        job.foreachPartition(p => {
+            val list = new ListBuffer[String]
+            p.foreach(x => {
+                val arr = x._2.get()
+                list += (String.valueOf(arr(0)) + "," + String.valueOf(arr(3)))
+            })
+
+            // bulkPut(list)
+        })
     }
 }
