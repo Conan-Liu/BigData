@@ -65,6 +65,12 @@ public class ThreadPoolExecutorExp extends ThreadPoolExecutor {
 
     private static class RunableExp implements Runnable {
 
+        private String name;
+
+        public RunableExp(String name) {
+            this.name = name;
+        }
+
         @Override
         public void run() {
             System.out.println("Runable");
@@ -104,9 +110,12 @@ public class ThreadPoolExecutorExp extends ThreadPoolExecutor {
         }
 
 
-        // 验证ThreadPoolExecutor的两个钩子方法
-        ThreadPoolExecutorExp exp = new ThreadPoolExecutorExp(3, 6, 4, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(16));
-        exp.submit(new RunableExp());
-        exp.shutdown();
+        // 验证ThreadPoolExecutor的两个钩子方法，验证线程池的拒绝策略，默认AbortPolicy抛弃并报异常
+        ThreadPoolExecutorExp pool = new ThreadPoolExecutorExp(1, 2, 4, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(2));
+        for (int i=0;i<5;i++) {
+            RunableExp e=new RunableExp("t - "+i);
+            pool.execute(e);
+        }
+        pool.shutdown();
     }
 }

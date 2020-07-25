@@ -1,5 +1,7 @@
 package com.conan.bigdata.spark.streaming
 
+import java.io.File
+
 import com.conan.bigdata.spark.streaming.utils.{MyStreamingListener, Tools}
 import org.apache.spark.SparkConf
 import org.apache.spark.storage.StorageLevel
@@ -16,14 +18,12 @@ object NetworkWordCount {
 
     def main(args: Array[String]) {
         //设置日志输出级别，省的控制台全是没用的日志
-        org.apache.log4j.Logger.getLogger("org.apache.spark").setLevel(org.apache.log4j.Level.OFF)
         org.apache.log4j.Logger.getLogger("java.lang").setLevel(org.apache.log4j.Level.OFF)
         org.apache.log4j.Logger.getLogger("org.spark_project").setLevel(org.apache.log4j.Level.OFF)
         org.apache.log4j.Logger.getLogger("io.netty").setLevel(org.apache.log4j.Level.OFF)
         org.apache.log4j.Logger.getLogger("org.apache.hadoop").setLevel(org.apache.log4j.Level.OFF)
 
         val conf = new SparkConf().setAppName("NetworkWordCount").setMaster("local[2]")
-        conf.set("spark.default.parallelism", "2")
         val ssc = new StreamingContext(conf, Seconds(5))
         ssc.addStreamingListener(new MyStreamingListener())
         //    ssc.checkpoint(".")
@@ -53,7 +53,27 @@ object NetworkWordCount {
                 })
             })
         })
+
+
         ssc.start()
-        ssc.awaitTermination()
+        // ssc.awaitTermination()
+
+        // 优雅的关闭sparkstreaming任务
+        var stopFlag: Boolean = false
+        var isStopped: Boolean = false
+
+        while (!isStopped) {
+            // 每10秒检查一次，发现checkShutdownMarker返回true，则优雅关闭程序
+            isStopped = ssc.awaitTerminationOrTimeout(10000)
+            stopFlag = checkShutdownMarker
+            if (!isStopped && stopFlag)
+                ssc.stop(true: Boolean, true: Boolean)
+        }
+
+        // 这里就为了能获取一个boolean值，可以是hdfs路径文件，也可以是其它方式
+        def checkShutdownMarker: Boolean = {
+            val f=new File("/Users/mw/temp/stop")
+            f.exists()
+        }
     }
 }

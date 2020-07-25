@@ -10,6 +10,7 @@ import org.apache.hadoop.hbase.client._
 import org.apache.hadoop.hbase.util.Bytes
 
 import scala.collection.mutable.ListBuffer
+import scala.collection.JavaConverters._
 
 /**
   * create 'wx_user_tag',{NAME => 'f1',COMPRESSION => 'SNAPPY',BLOOMFILTER => 'NONE'},SPLITS => ['5']

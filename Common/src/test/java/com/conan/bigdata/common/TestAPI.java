@@ -21,6 +21,13 @@ public class TestAPI {
 
         JSONObject json=JSON.parseObject("{}");
         System.out.println(json.toJSONString());
+
+        Set<String> s=new HashSet<>();
+        String s1=new String("a");
+        String s2=new String("a");
+        s.add(s1);
+        s.add(s2);
+        System.out.println(s.size());
     }
 
     @Test
@@ -53,6 +60,14 @@ public class TestAPI {
         System.out.println("abc".substring(1));
         System.out.println(15 + (15 >> 1));
         System.out.println(15 + 15 >> 1);
+
+        boolean flag=false;  // 不可以赋值为 null
+
+        System.out.println(-1 >>> 1);
+
+        char aa='中';
+        System.out.println(String.valueOf(aa).getBytes().length);
+        System.out.println("中".getBytes().length);
     }
 
     @Test

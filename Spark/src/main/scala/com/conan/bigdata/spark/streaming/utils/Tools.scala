@@ -10,7 +10,6 @@ object Tools {
 
     def getAccInstance(sc: SparkContext, time: Time): LongAccumulator = {
         if (acc == null) {
-            // TODO ... 这个怎么用啊
             synchronized {
                 if (acc == null) {
                     acc = sc.longAccumulator("timer")

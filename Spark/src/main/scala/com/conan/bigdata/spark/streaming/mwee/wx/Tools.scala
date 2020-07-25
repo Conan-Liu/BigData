@@ -6,6 +6,8 @@ import java.util.{Date, Properties}
 import org.apache.spark.SparkContext
 import org.apache.spark.util.LongAccumulator
 import org.slf4j.{Logger, LoggerFactory}
+import scalikejdbc.config.DBs
+import scala.collection.JavaConverters._
 
 object Tools {
 

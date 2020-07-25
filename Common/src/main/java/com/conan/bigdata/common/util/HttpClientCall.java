@@ -17,7 +17,8 @@ import java.util.Arrays;
  */
 public class HttpClientCall {
 
-    private static final String URL_PATH = "http://api.basic.biz.mwbyd.cn/services/api/city.locationCity";
+    // private static final String URL_PATH = "http://api.basic.biz.mwbyd.cn/services/api/city.locationCity";
+    private static final String URL_PATH = "http://alarm-notify.mwbyd.cn/services/notify/pushAll";
     // 高德 gps -> 城市地里位置
     private static final String GD_PATH = "https://restapi.amap.com/v3/geocode/regeo?key=bcb8922ebe8b072b4a54c7c33e0b8c2f&location=";
 
@@ -45,7 +46,7 @@ public class HttpClientCall {
     }
 
     // jdk 原生的http 请求处理
-    public static void doPost2() {
+    public static void doPost2(String content) {
         try {
             URL restURL = new URL(URL_PATH);
             HttpURLConnection httpConn = (HttpURLConnection) restURL.openConnection();
@@ -55,7 +56,7 @@ public class HttpClientCall {
             httpConn.setAllowUserInteraction(false);
             OutputStream out = httpConn.getOutputStream();
             // 可以使用 BufferedReader 利用缓冲流来处理输入的数据
-            out.write("{\"longitude\":\"113.361862\",\"latitude\":\"22.941324\"}".getBytes());
+            out.write(content.getBytes());
             out.flush();
             // 这里要注意了， 先发送请求， 才能获取服务器的返回， 否则报400 Bad Request的错误
             InputStream in = httpConn.getInputStream();
@@ -123,7 +124,10 @@ public class HttpClientCall {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        doGaoDeRequet();
+        // doGaoDeRequet();
+        String content1="{\"longitude\":\"113.361862\",\"latitude\":\"22.941324\"}";
+        String content2="{\"type\":\"2\",\"receiverMobiles\":\"13852293070\",\"subject\":\"测试 subject\",\"content\":\"logContent\"}";
+        doPost2(content2);
     }
 
 }
