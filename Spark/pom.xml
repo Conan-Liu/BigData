@@ -139,6 +139,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_2.11</artifactId>
+            <version>${kafka.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-exec</artifactId>
         </dependency>

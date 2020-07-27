@@ -30,4 +30,7 @@ public class GetSpecifiedImplClass {
         System.out.println("这是JavaReflect类反射调用的方法");
     }
 
+    public void show1(String flag) {
+        System.out.println("这是JavaReflect类反射调用的方法，带参数");
+    }
 }

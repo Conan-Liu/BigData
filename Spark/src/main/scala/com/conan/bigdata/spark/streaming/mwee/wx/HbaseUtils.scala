@@ -120,6 +120,8 @@ object HbaseUtils {
         for (l <- listArgs) {
             val ss = l.split(",")
             put = new Put(Bytes.toBytes(ss(0)))
+            // 设置WAL的持久化级别，Mutation的子类都可以设置该级别，HLog是WAL的实现
+            put.setDurability(Durability.SKIP_WAL)
             put.addColumn(Bytes.toBytes("f1"), Bytes.toBytes("c1"), Bytes.toBytes(ss(1)))
             list.add(put)
         }

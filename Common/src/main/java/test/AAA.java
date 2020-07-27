@@ -41,6 +41,9 @@ public class AAA {
         Thread t2=new Thread(new T2(),"t2");
         t1.start();
         t2.start();
+
+
+        System.out.println(10^10);
     }
 
 }

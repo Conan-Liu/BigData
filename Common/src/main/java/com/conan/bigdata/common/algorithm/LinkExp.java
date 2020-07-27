@@ -128,6 +128,13 @@ public class LinkExp {
     }
 
     /**
+     * 链表两两反转
+     */
+    private static void doubleReverse(Node node){
+
+    }
+
+    /**
      * 寻找链表的中间节点
      * 1. 遍历得到长度，然后取中间节点
      * 2. 可以使用两个指针，第一个指针一次走两步，第二个一次走一步，等第一个指针走到尾部，第二个刚好在中间

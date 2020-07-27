@@ -2,24 +2,25 @@ package com.conan.bigdata.common.javaapi;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class JavaReflect {
     public static void main(String[] args) throws Exception {
         //demo1.  通过Java反射机制得到类的包名和类名
-        demo1();
-        System.out.println("===============================================");
+//        demo1();
+//        System.out.println("===============================================");
 
         //demo2.  验证所有的类都是Class类的实例对象
-        demo2();
-        System.out.println("===============================================");
+//        demo2();
+//        System.out.println("===============================================");
 
         //demo3.  通过Java反射机制，用Class 创建类对象[这也就是反射存在的意义所在]，无参构造
-        demo3();
-        System.out.println("===============================================");
+//        demo3();
+//        System.out.println("===============================================");
 
         //demo4:  通过Java反射机制得到一个类的构造函数，并实现构造带参实例对象
-        demo4();
-        System.out.println("===============================================");
+//        demo4();
+//        System.out.println("===============================================");
 
         //demo5:  通过Java反射机制操作成员变量, set 和 get
 //        demo5();
@@ -34,8 +35,10 @@ public class JavaReflect {
 //        System.out.println("===============================================");
 //
         //demo8: 通过Java反射机制获得类加载器
-        demo8();
-        System.out.println("===============================================");
+//        demo8();
+//        System.out.println("===============================================");
+
+        demo9();
     }
 
     /**
@@ -108,5 +111,17 @@ public class JavaReflect {
     public static void demo8() throws Exception {
         Class<?> clz1 = Class.forName("com.conan.bigdata.common.javaapi.GetSpecifiedImplClass");
         System.out.println("demo8: 类加载器类名 ======== " + clz1.getClassLoader().getClass().getName());
+    }
+
+    /**
+     * 反射调用类的方法
+     */
+    private static void demo9() throws Exception {
+        Class clz=Class.forName("com.conan.bigdata.common.javaapi.GetSpecifiedImplClass");
+        Object o = clz.newInstance();
+        Method show = clz.getMethod("show");
+        Method show1=clz.getMethod("show1",String.class);
+        show.invoke(o);
+        show1.invoke(o,"flag");
     }
 }
