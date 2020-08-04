@@ -102,7 +102,8 @@
                         <configuration>
                             <outputDirectory>target/lib</outputDirectory>
                             <excludeTransitive>false</excludeTransitive>
-                            <stripVersion>true</stripVersion>
+                            <!-- 保留依赖jar包的版本号 -->
+                            <stripVersion>false</stripVersion>
                         </configuration>
                     </execution>
                 </executions>

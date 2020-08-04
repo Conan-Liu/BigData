@@ -8,7 +8,10 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import java.util.Arrays;
 import java.util.Properties;
 
-public class NewKafkaConsumer {
+/**
+ * Subscribe 订阅模式消费kafka，基于新版的Consumer {@link KafkaConsumer}
+ */
+public class SubscribeConsumer {
     public static void main(String[] args) {
         System.out.println("begin consumer");
         connectionKafka();
@@ -27,6 +30,8 @@ public class NewKafkaConsumer {
         properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 
         KafkaConsumer<Integer, String> consumer = new KafkaConsumer<>(properties);
+
+        // 订阅的模式，是如何确定消费者个数的？
         consumer.subscribe(Arrays.asList(KafkaProperties.TOPIC));
         while (true) {
             ConsumerRecords<Integer, String> records = consumer.poll(100);

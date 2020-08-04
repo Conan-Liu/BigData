@@ -51,7 +51,6 @@ object StateWordCount {
 
         // 常用的是Window算子，可以限定时间段
         val windowWordCount = result.window(Seconds(600), Seconds(20)).reduceByKey(_ + _)
-        result
         windowWordCount.print
 
         ssc.start

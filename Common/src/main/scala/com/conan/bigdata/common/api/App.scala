@@ -1,4 +1,4 @@
-package com.conan.bigdata.comom.api
+package com.conan.bigdata.common.api
 
 import java.util.Properties
 

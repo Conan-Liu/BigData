@@ -43,6 +43,7 @@ public class HBaseUtils {
             hbaseConf.set("mapreduce.reduce.shuffle.parallelcopies", "3");
             hbaseConf.set("mapreduce.map.maxattempts", "2");
             hbaseConf.set("hbase.zookeeper.quorum", "10.1.39.98,10.1.39.99,10.1.39.100");
+            // hbaseConf.set("hbase.zookeeper.quorum", "10.0.24.41,10.0.24.42,10.0.24.52");
             hbaseConf.set("hbase.zookeeper.property.clientPort", "2181");
         }
         return hbaseConf;
@@ -51,6 +52,13 @@ public class HBaseUtils {
     public static Connection getConnection() throws IOException {
         if (connection == null) {
             connection = ConnectionFactory.createConnection(getHBaseConf());
+        }
+        return connection;
+    }
+
+    public static Connection getConnection(Configuration conf) throws IOException {
+        if (connection == null) {
+            connection = ConnectionFactory.createConnection(conf);
         }
         return connection;
     }

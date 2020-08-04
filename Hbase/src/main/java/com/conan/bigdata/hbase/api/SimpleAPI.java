@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.conan.bigdata.hbase.util.HBaseUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.HRegionInfo;
 import org.apache.hadoop.hbase.TableName;
@@ -296,13 +297,22 @@ public class SimpleAPI {
         return fullStr;
     }
 
+    private static void get(){
+        System.out.println();
+    }
+
     public static void main(String[] args) throws IOException {
         long start = System.currentTimeMillis();
-        getResultScan(TableName.valueOf("user_tag_detail"), "31305617");
-//        getResultScan(TableName.valueOf(CONSTANT.TABLE_NAME), new StringBuilder("9453162").reverse().toString());
-        // 162175342
-//        getDataByPageSize(TableName.valueOf(CONSTANT.TABLE_NAME), new StringBuilder(lpadMwid("162175342")).reverse().toString(), 9999, 1, 10);
-//        getRegionInfo(TableName.valueOf(CONSTANT.TABLE_NAME));
+        Configuration conf=HBaseUtils.getHBaseConf();
+        conf.set("hbase.client.retries.number", "1");
+        Connection conn=HBaseUtils.getConnection(conf);
+        Table table = conn.getTable(TableName.valueOf("wx_user_tag"));
+        Get get=new Get(Bytes.toBytes("9318170850_2"));
+        Result result = table.get(get);
+        if (result!=null){
+            System.out.println("true");
+        }
+
         long end = System.currentTimeMillis();
         System.out.println(end - start);
     }

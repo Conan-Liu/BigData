@@ -1,5 +1,4 @@
-package com.conan.bigdata.comom.api
-
+package com.conan.bigdata.common.api
 
 class ConcurrentApi {
 

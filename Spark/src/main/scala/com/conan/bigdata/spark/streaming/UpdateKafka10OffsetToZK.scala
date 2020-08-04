@@ -1,8 +1,5 @@
 package com.conan.bigdata.spark.streaming
 
-import kafka.utils.{ZKGroupTopicDirs, ZkUtils}
-import kafka.zk.KafkaZkClient
-import org.apache.kafka.common.TopicPartition
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.kafka010._
@@ -35,17 +32,17 @@ object UpdateKafka10OffsetToZK {
         val topicArray = Array(topics)
 
         // 在kafka中记录读取偏移量，正常情况下不应该使用Subscribe模式，而需要Assign来自己根据保存的offset自定义消费，避免rebalance
-        val topicPartition = new Array[TopicPartition](new TopicPartition("topic", 0))
-        val offsets = Map[TopicPartition, Long](new TopicPartition("topic", 0) -> 0)
+        // val topicPartition = new Array[TopicPartition](new TopicPartition("topic", 0))
+        // val offsets = Map[TopicPartition, Long](new TopicPartition("topic", 0) -> 0)
 
-        val strategy = ConsumerStrategies.Assign[String, String](topicPartition, kafkaParams, offsets)
+        // val strategy = ConsumerStrategies.Assign[String, String](topicPartition, kafkaParams, offsets)
         val kafkaStream = KafkaUtils.createDirectStream[String, String](
             ssc,
             // 位置策略，（可用的Executor上均匀分布）
             LocationStrategies.PreferConsistent,
             // 消费策略，（订阅的Topic集合）
-            // ConsumerStrategies.Subscribe[String, String](topicArray, kafkaParams)
-            strategy
+            ConsumerStrategies.Subscribe[String, String](topicArray, kafkaParams)
+            // strategy
         )
 
 
@@ -66,7 +63,4 @@ object UpdateKafka10OffsetToZK {
         ssc.awaitTermination()
     }
 
-    def persistOffsets(offsets:Array[OffsetRange],groupId:String,storeEndOffset:Boolean,zkClient:KafkaZkClient): Unit ={
-
-    }
 }

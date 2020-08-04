@@ -30,6 +30,8 @@ public class BitExp {
 
     /**
      * 求一个二进制数中1的个数
+     * 1. 除2余1，则个数加1，最后为0
+     * 2. 与上1，如果等于1，则表示个位为1，加1，然后该数右移一位
      */
     private static void bitCnt(){
         int n=10;

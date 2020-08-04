@@ -13,7 +13,7 @@
     <modules>
         <module>Common</module>
         <module>DataMine</module>
-        <module>ElasticSearch</module>
+        <!--<module>ElasticSearch</module>-->
         <module>Flume</module>
         <module>Hadoop</module>
         <module>Hbase</module>

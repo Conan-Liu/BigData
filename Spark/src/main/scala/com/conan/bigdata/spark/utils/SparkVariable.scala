@@ -15,7 +15,6 @@ trait SparkVariable {
 
     // Spark 使用org.apache.log4j来记录日志
     private val log: Logger = Logger.getLogger("SparkVariable")
-    log.info("llllllllllllllll == ")
 
     // 这个放前面写，SparkContext SparkSession初始化会有很多日志，提前关闭
     // Logger.getLogger("org.apache.spark").setLevel(Level.OFF)
@@ -33,9 +32,9 @@ trait SparkVariable {
         sparkConf.setAppName(getClass.getName)
     if ("".equals(sparkConf.get("spark.master", "")))
         sparkConf.setMaster("local[2]")
-    val sc = SparkContext.getOrCreate(sparkConf)
+    val sc:SparkContext = SparkContext.getOrCreate(sparkConf)
     sc.setLogLevel("WARN")
     // 这里SparkSession的初始化会使用之前定义的SparkContext，不会再重新创建，也就是会先判断上下文有没有SparkContext
-    val spark = SparkSession.builder().getOrCreate()
+    val spark:SparkSession = SparkSession.builder().getOrCreate()
 
 }

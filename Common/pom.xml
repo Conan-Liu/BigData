@@ -52,6 +52,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.15</version>
         </dependency>
 
         <dependency>
@@ -64,6 +65,14 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
+
+        <!-- 数据库连接池 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.1.12</version>
+        </dependency>
+
         <!--
                 <dependency>
                     <groupId>com.cloudera.impala.jdbc</groupId>
@@ -114,6 +123,19 @@
         </dependency>
         <!-- impala jdbc end -->
 
+        <!-- scalikejdbc 操作数据库 -->
+        <dependency>
+            <groupId>org.scalikejdbc</groupId>
+            <artifactId>scalikejdbc_2.11</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scalikejdbc</groupId>
+            <artifactId>scalikejdbc-config_2.11</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.roaringbitmap</groupId>
             <artifactId>RoaringBitmap</artifactId>
@@ -150,6 +172,9 @@
     </dependencies>
 
     <build>
+        <!-- 打包默认jar包名称为name属性+版本号，这里可以直接指定jar包的名称 -->
+        <finalName>bigdata-common</finalName>
+
         <plugins>
             <plugin>
                 <!--
@@ -182,7 +207,8 @@
                         <configuration>
                             <outputDirectory>target/lib</outputDirectory>
                             <excludeTransitive>false</excludeTransitive>
-                            <stripVersion>true</stripVersion>
+                            <!-- 保留依赖jar包的版本号 -->
+                            <stripVersion>false</stripVersion>
                         </configuration>
                     </execution>
                 </executions>
@@ -217,7 +243,7 @@
             <properties>
                 <prop.env>dev</prop.env>
             </properties>
-            <!-- 开发环境，默认激活 -->
+            <!-- 开发环境，默认激活，这样直接在idea中运行时也能加载默认指定的配置文件 -->
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>

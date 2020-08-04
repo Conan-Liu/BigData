@@ -1,6 +1,7 @@
-package com.conan.bigdata.comom.api
+package com.conan.bigdata.common.api
 
 import java.net.{HttpURLConnection, URL}
+import java.util
 
 object Test {
 
@@ -20,7 +21,9 @@ object Test {
     }
 
     def main(args: Array[String]): Unit = {
-        val wxBody = "{\"type\":\"2\",\"receiverMobiles\":\"13852293070\",\"subject\":\"测试 subject\",\"content\":\"aa\"}\"}"
-        doPost("http://alarm-notify.mwbyd.cn/services/notify/pushAll", wxBody)
+        val list=new util.ArrayList[String]()
+        if(list==null||list.size()==0){
+            println("true")
+        }
     }
 }

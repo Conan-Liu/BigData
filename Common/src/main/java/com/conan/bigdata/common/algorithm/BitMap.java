@@ -5,8 +5,9 @@ import java.util.BitSet;
 
 /**
  * bitmap的实现可以用 int 数组(32bit)， 也可以用 byte 数组(8bit)， 仅仅是bit数不同， 逻辑一致
- * <p>
- * 可以衍生出 Bloom Filter 布隆过滤
+ * 1. 可以去重
+ * 2. 对不重复的稠密数值集合，可以排序
+ * 3. 可以衍生出 Bloom Filter 布隆过滤
  */
 public class BitMap {
 
@@ -24,9 +25,14 @@ public class BitMap {
         System.out.println(Integer.toBinaryString(10000000));
         System.out.println(Long.toBinaryString(5000000000L));
 
-        // 二进制转十进制
+        // 打印整数的十六进制
+        System.out.println(Integer.toHexString(10000000));
+        System.out.println(Long.toHexString(5000000000L));
+
+        // 其它进制转十进制，第一个参数是其它进制的表示形式，第二个参数表示第一个参数是什么进制，如下演示二进制转十进制
         System.out.println(Integer.parseInt("100110001001011010000000", 2));
         System.out.println(Long.parseLong("100101010000001011111001000000000", 2));
+        System.out.println(Long.parseLong("12a05f200", 16));
 
         System.out.println("\n************* java.util.BitSet实现 ********************");
         int[] array = new int[]{1, 2, 3, 22, 0, 3, 63};
@@ -73,7 +79,7 @@ public class BitMap {
          * 注意 java是有符号数， 如果这里n = 31的时候， 得到的二进制 1 后面跟31个 0， 这里的1表示负数，该int值是 Integer.MIN_VALUE
          */
         int[] a = new int[1 + N / 32];
-        // 计算数字num在int[]中的位置（num/8和num >> 5一样），也就是说num在int[k]，算这个k是几
+        // 计算数字num在int[]中的位置（num/32和num >> 5一样），也就是说num在int[k]，算这个k是几
         int index = N >> 5;
         // 计算数字num在int[index]中的位置，就是在int[index]的第几位，每个int有32位（num % 32）
         int position = N & 0x1F; // 等同于 n % 32

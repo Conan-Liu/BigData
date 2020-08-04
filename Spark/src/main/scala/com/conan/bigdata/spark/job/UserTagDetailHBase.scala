@@ -6,7 +6,7 @@ import java.util.UUID
 import org.apache.commons.lang3.time.FastDateFormat
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, FsShell, Path}
-import org.apache.hadoop.hbase.client.{ConnectionFactory, HTable}
+import org.apache.hadoop.hbase.client.ConnectionFactory
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.mapreduce.{HFileOutputFormat2, LoadIncrementalHFiles}
 import org.apache.hadoop.hbase.util.Bytes
@@ -15,8 +15,6 @@ import org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
 import org.apache.hadoop.io.{ArrayWritable, Writable}
 import org.apache.hadoop.mapreduce.Job
 import org.apache.spark.{SparkConf, SparkContext}
-
-import scala.collection.mutable.ListBuffer
 
 /**
   * 把hive中的parquet数据，导入hbase， row_key在hive中已经生成
@@ -191,17 +189,4 @@ object UserTagDetailHBase {
         fullStr
     }
 
-    def hbaseBulkPut(sc: SparkContext): Unit = {
-
-        val job = sc.hadoopFile("", classOf[MapredParquetInputFormat], classOf[Void], classOf[ArrayWritable], 4)
-        job.foreachPartition(p => {
-            val list = new ListBuffer[String]
-            p.foreach(x => {
-                val arr = x._2.get()
-                list += (String.valueOf(arr(0)) + "," + String.valueOf(arr(3)))
-            })
-
-            // bulkPut(list)
-        })
-    }
 }

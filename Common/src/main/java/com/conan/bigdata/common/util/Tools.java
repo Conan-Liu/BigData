@@ -76,9 +76,9 @@ public class Tools {
     public static Properties getConfig() {
         Properties properties = new Properties();
         try {
-            // class.getClassLoader().getResourceAsStream("config.properties")  相对路径
-            // class.getResourceAsStream("/config.properties")  绝对路径，要加 /，这个绝对路径是classpath根目录的路径
-            InputStream in = Tools.class.getClassLoader().getResourceAsStream("config.properties");
+            // class.getClassLoader().getResourceAsStream("application.properties")  相对路径
+            // class.getResourceAsStream("/application.properties")  绝对路径，要加 /，这个绝对路径是classpath根目录的路径
+            InputStream in = Tools.class.getClassLoader().getResourceAsStream("application.properties");
             properties.load(in);
             in.close();
             return properties;

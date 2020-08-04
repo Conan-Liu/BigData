@@ -44,6 +44,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-hadoop</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.twitter</groupId>
             <artifactId>parquet-hadoop</artifactId>
         </dependency>
@@ -76,7 +81,8 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.conan.bigdata.hbase.api.GetConfiguration</mainClass>
+                            <!-- 这个主类不可以有，需要注释掉，否则无法执行指定的其它类 -->
+                            <!-- <mainClass>com.conan.bigdata.hbase.api.GetConfiguration</mainClass> -->
                         </manifest>
                     </archive>
                 </configuration>
