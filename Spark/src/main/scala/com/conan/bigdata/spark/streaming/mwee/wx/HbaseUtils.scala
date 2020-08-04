@@ -1,16 +1,14 @@
 package com.conan.bigdata.spark.streaming.mwee.wx
 
 import java.io.IOException
-import java.util.concurrent.{ExecutorService, Executors}
 
 import com.alibaba.fastjson.JSONObject
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.hbase.{HBaseConfiguration, TableName}
 import org.apache.hadoop.hbase.client._
 import org.apache.hadoop.hbase.util.Bytes
+import org.apache.hadoop.hbase.{HBaseConfiguration, TableName}
 
 import scala.collection.mutable.ListBuffer
-import scala.collection.JavaConverters._
 
 /**
   * create 'wx_user_tag',{NAME => 'f1',COMPRESSION => 'SNAPPY',BLOOMFILTER => 'NONE'},SPLITS => ['5']
@@ -70,6 +68,7 @@ object HbaseUtils {
             hbaseConf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem")
             hbaseConf.set("hbase.zookeeper.quorum", properties.getProperty("zookeeper.list"))
             hbaseConf.set("hbase.zookeeper.property.clientPort", properties.getProperty("zookeeper.port"))
+            hbaseConf.set("hbase.client.retries.number", "5")
         }
         hbaseConf
     }
@@ -78,11 +77,11 @@ object HbaseUtils {
 
     def getHbaseConnection: Connection = {
         if (connection == null) {
-            classOf[Connection] synchronized {
+            classOf[Connection].synchronized {
                 if (connection == null) {
                     try {
-                        val executorService: ExecutorService = Executors.newFixedThreadPool(5)
-                        connection = ConnectionFactory.createConnection(getHbaseConf, executorService)
+                        println("HBase Connection init successfullly ...")
+                        connection = ConnectionFactory.createConnection(getHbaseConf)
                     }
                     catch {
                         case e: Exception =>
@@ -94,40 +93,52 @@ object HbaseUtils {
         connection
     }
 
-    def wxGetCity(e: JSONObject, wxFlag: Int): JSONObject = {
-        val conn = getHbaseConnection
-        val table = conn.getTable(TableName.valueOf(Constant.HBASE_TABLE_NAME))
-        val get = new Get(Bytes.toBytes(lpad(String.valueOf(e.getIntValue("userId")), wxFlag)))
-        val result = table.get(get)
-        val list = result.listCells
-        if (list == null) {
-            e.put("city", "")
-            return e
+    @volatile private var table: Table = _
+
+    def getHbaseTable: Table = {
+        if (table == null) {
+            synchronized {
+                if (table == null) {
+                    try {
+                        val conn = getHbaseConnection
+                        println(s"HBase Table ${Constant.HBASE_TABLE_NAME} is choosen ...")
+                        table = conn.getTable(TableName.valueOf(Constant.HBASE_TABLE_NAME))
+                    }
+                    catch {
+                        case e: Exception =>
+                            e.printStackTrace()
+                    }
+                }
+            }
         }
-        for (cell <- list.asScala) {
-            val city = Bytes.toString(cell.getValueArray, cell.getValueOffset, cell.getValueLength)
-            e.put("city", city)
+        table
+    }
+
+    def wxGetCity(table: Table, e: JSONObject, wxFlag: Int): JSONObject = {
+        val rowKey = lpad(String.valueOf(e.getIntValue("userId")), wxFlag)
+        val get = new Get(Bytes.toBytes(rowKey))
+        val result = table.get(get)
+        if (result.size() ==0) {
+            e.put("city", "0")
+        } else {
+            val city = result.getValue(Bytes.toBytes("f1"), Bytes.toBytes("c1"))
+            e.put("city", Bytes.toString(city))
         }
         e
     }
 
-    def bulkPut(listArgs: ListBuffer[String]) {
-        val conn = getHbaseConnection
-        conn.isClosed
-        val table = conn.getTable(TableName.valueOf(Constant.HBASE_TABLE_NAME))
+    def bulkPut(table: Table, listArgs: ListBuffer[String]) {
         val list = new java.util.ArrayList[Put](1024)
         var put: Put = null
         for (l <- listArgs) {
             val ss = l.split(",")
             put = new Put(Bytes.toBytes(ss(0)))
-            // 设置WAL的持久化级别，Mutation的子类都可以设置该级别，HLog是WAL的实现
-            put.setDurability(Durability.SKIP_WAL)
             put.addColumn(Bytes.toBytes("f1"), Bytes.toBytes("c1"), Bytes.toBytes(ss(1)))
             list.add(put)
         }
         table.put(list)
         // 关闭table表链接，这个操作不会关闭hbase connection链接
-        table.close()
+        // table.close()
         // 不要关闭hbase connection链接，这里使用线程池，关闭后就没了
         // conn.close()
     }
@@ -141,5 +152,16 @@ object HbaseUtils {
         admin.majorCompact(TableName.valueOf(Constant.HBASE_TABLE_NAME), Bytes.toBytes("f1"))
         // 不要关闭conn
         // conn.close()
+    }
+
+    def main(args: Array[String]) {
+        val start = System.currentTimeMillis
+        val conn = getHbaseConnection
+        val table = conn.getTable(TableName.valueOf("wx_user_tag"))
+        val get = new Get(Bytes.toBytes("9318170850_2"))
+        val result = table.get(get)
+        if (result != null) println("true")
+        val end = System.currentTimeMillis
+        System.out.println(end - start)
     }
 }

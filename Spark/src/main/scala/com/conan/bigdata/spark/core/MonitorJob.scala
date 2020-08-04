@@ -1,4 +1,4 @@
-package com.conan.bigdata.spark.job
+package com.conan.bigdata.spark.core
 
 /**
   * 监控Spark任务，两种方式

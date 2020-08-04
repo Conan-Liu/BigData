@@ -1,4 +1,4 @@
-package com.conan.bigdata.spark.job
+package com.conan.bigdata.spark.core
 
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.{SparkConf, SparkContext}

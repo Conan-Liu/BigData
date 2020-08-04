@@ -1,14 +1,19 @@
 package com.conan.bigdata.spark.streaming.mwee.wx
 
+import java.net.{HttpURLConnection, URL}
 import java.text.SimpleDateFormat
 import java.util.{Date, Properties}
 
 import org.apache.spark.SparkContext
 import org.apache.spark.util.LongAccumulator
 import org.slf4j.{Logger, LoggerFactory}
-import scalikejdbc.config.DBs
+
 import scala.collection.JavaConverters._
 
+
+/**
+  * 实时程序工具类
+  */
 object Tools {
 
     private val log: Logger = LoggerFactory.getLogger("Tools")
@@ -71,12 +76,24 @@ object Tools {
         instance
     }
 
-    def main(args: Array[String]): Unit = {
-        DBs.setup()
-        DBs.readAsMap().foreach(println)
-        println(getProjectProperties.getProperty("kafka.broker.list"))
-
-        Class.forName("com.mysql.jdbc.Driver")
+    // 处理http请求
+    def doPost(url: String, content: String) {
+        val restURL = new URL(url)
+        val httpConn = restURL.openConnection.asInstanceOf[HttpURLConnection]
+        httpConn.setRequestMethod("POST")
+        httpConn.setRequestProperty("Content-Type", "application/json")
+        httpConn.setDoOutput(true)
+        httpConn.setAllowUserInteraction(false)
+        val out = httpConn.getOutputStream
+        out.write(content.getBytes)
+        out.flush()
+        val in = httpConn.getInputStream
+        out.close()
+        in.close()
     }
 
+    def main(args: Array[String]): Unit = {
+        val wxBody = "{\"type\":\"2\",\"receiverMobiles\":\"13852293070\",\"subject\":\"测试 subject\",\"content\":\"aa\"}\"}"
+        doPost("http://alarm-notify.mwbyd.cn/services/notify/pushAll", wxBody)
+    }
 }

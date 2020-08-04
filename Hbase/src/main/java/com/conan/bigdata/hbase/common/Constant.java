@@ -1,6 +1,6 @@
 package com.conan.bigdata.hbase.common;
 
-public class CONSTANT {
+public class Constant {
 
     public static final String JOB_NAME = "USER_ACTION_TO_HBASE";
 

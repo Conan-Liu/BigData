@@ -1,6 +1,6 @@
 package com.conan.bigdata.hbase.mr;
 
-import com.conan.bigdata.hbase.common.CONSTANT;
+import com.conan.bigdata.hbase.common.Constant;
 import com.conan.bigdata.hbase.util.HBaseUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -30,9 +30,9 @@ public class LoadDataToHbaseDriver extends Configured implements Tool {
         try {
             int isSuccess = ToolRunner.run(HBaseUtils.getHBaseConf(), new LoadDataToHbaseDriver(), args);
             if (isSuccess == 0) {
-                System.out.println(CONSTANT.JOB_NAME + " is successfully completed...");
+                System.out.println(Constant.JOB_NAME + " is successfully completed...");
             } else {
-                System.out.println(CONSTANT.JOB_NAME + " failed...");
+                System.out.println(Constant.JOB_NAME + " failed...");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,15 +49,15 @@ public class LoadDataToHbaseDriver extends Configured implements Tool {
                 "}";
         conf.set(ReadSupport.PARQUET_READ_SCHEMA, readSchema);
 
-        Job job = Job.getInstance(conf, CONSTANT.JOB_NAME);
+        Job job = Job.getInstance(conf, Constant.JOB_NAME);
         job.setJarByClass(LoadDataToHbaseDriver.class);
         // 下面这个命令是把第三方jar包添加到hadoop的任务中，避免ClassNotFoundException, 这个jar包是在hdfs上, 而且必须是指定到某个jar包， 不能文件夹
         // job.addArchiveToClassPath(new Path("/user/hadoop/libs/parquet-hadoop.jar"));
-        // job.addArchiveToClassPath(new Path(CONSTANT.EXT_LIBS));
+        // job.addArchiveToClassPath(new Path(Constant.EXT_LIBS));
         createHadoopClassPath(job);
         System.out.println("temp jars is : " + conf.get("tmpjars"));
 
-        HBaseUtils.deleteDir(CONSTANT.OUTPUT_PATH);
+        HBaseUtils.deleteDir(Constant.OUTPUT_PATH);
 
         job.setMapperClass(LoadDataToHbaseMapper.class);
         job.setMapOutputKeyClass(ImmutableBytesWritable.class);
@@ -67,19 +67,19 @@ public class LoadDataToHbaseDriver extends Configured implements Tool {
         job.setInputFormatClass(ParquetInputFormat.class);
         ParquetInputFormat.setReadSupportClass(job, GroupReadSupport.class);
         //input path
-        Path inPath = new Path(CONSTANT.IN_PATH);
+        Path inPath = new Path(Constant.IN_PATH);
         FileInputFormat.addInputPath(job, inPath);
 
         job.setOutputFormatClass(HFileOutputFormat2.class);
 
         //output path
-        Path outPath = new Path(CONSTANT.OUTPUT_PATH);
+        Path outPath = new Path(Constant.OUTPUT_PATH);
         FileOutputFormat.setOutputPath(job, outPath);
 
 
         Connection connection = ConnectionFactory.createConnection(conf);
         Admin admin = connection.getAdmin();
-        TableName tableName = TableName.valueOf(CONSTANT.TABLE_NAME);
+        TableName tableName = TableName.valueOf(Constant.TABLE_NAME);
         Table table = connection.getTable(tableName);
 
         // 这里相当于配置Reducer，所以该MR任务涉及reduce的配置可以省略
@@ -111,7 +111,7 @@ public class LoadDataToHbaseDriver extends Configured implements Tool {
 
     public static void createHadoopClassPath(Job job) throws IOException {
         FileSystem fs = FileSystem.get(HBaseUtils.getHBaseConf());
-        FileStatus[] listFiles = fs.listStatus(new Path(CONSTANT.EXT_LIBS));
+        FileStatus[] listFiles = fs.listStatus(new Path(Constant.EXT_LIBS));
         StringBuilder sb = new StringBuilder();
         for (FileStatus file : listFiles) {
             job.addArchiveToClassPath(file.getPath());

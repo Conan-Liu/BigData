@@ -1,15 +1,19 @@
 package com.conan.bigdata.hbase.util;
 
+import com.conan.bigdata.hbase.common.Constant;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class HBaseUtils {
 
@@ -58,7 +62,8 @@ public class HBaseUtils {
 
     public static Connection getConnection(Configuration conf) throws IOException {
         if (connection == null) {
-            connection = ConnectionFactory.createConnection(conf);
+            ExecutorService executorService = Executors.newFixedThreadPool(3);
+            connection = ConnectionFactory.createConnection(conf, executorService);
         }
         return connection;
     }
@@ -78,6 +83,18 @@ public class HBaseUtils {
             return true;
         }
         return false;
+    }
+
+    public static void majorCompact(String tableName, String familyName) throws IOException {
+        Connection conn = getConnection();
+        Admin admin = conn.getAdmin();
+        TableName t = TableName.valueOf(tableName);
+        if (familyName == null) {
+            admin.majorCompact(t);
+        } else {
+            admin.majorCompact(TableName.valueOf(tableName), Bytes.toBytes(familyName));
+        }
+        conn.close();
     }
 
     public static void main(String[] args) throws IOException {

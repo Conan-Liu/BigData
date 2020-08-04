@@ -1,4 +1,4 @@
-package com.conan.bigdata.spark.job
+package com.conan.bigdata.spark.core
 
 import java.security.MessageDigest
 import java.util.UUID
