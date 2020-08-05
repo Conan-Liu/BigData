@@ -1,13 +1,9 @@
 package com.conan.bigdata.kafka.consumer;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.common.TopicPartition;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class MyKafkaConsumer {
 
@@ -48,10 +44,24 @@ public class MyKafkaConsumer {
             for (ConsumerRecord<String, String> record : records) {
                 buffer.add(record);
             }
+
+            // 消费一定数量后，提交offset
             if (buffer.size() >= minBatchSize) {
 //                insertIntoDb(buffer);
+                // 同步提交offset，阻塞执行
                 consumer.commitSync();
-                consumer.commitAsync();
+
+                // 异步提交offset，可以提供一个回调方法，用来确认是否提交成功
+                consumer.commitAsync(new OffsetCommitCallback() {
+                    @Override
+                    public void onComplete(Map<TopicPartition, OffsetAndMetadata> offsets, Exception exception) {
+                        if(exception==null){
+                            System.out.println("异步提交成功");
+                        }else{
+                            System.out.println("失败");
+                        }
+                    }
+                });
                 buffer.clear();
             }
         }

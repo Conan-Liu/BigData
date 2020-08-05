@@ -1,10 +1,7 @@
 package com.conan.bigdata.kafka.consumer;
 
-import com.conan.bigdata.kafka.util.KafkaProperties;
-import org.apache.kafka.clients.consumer.ConsumerRebalanceListener;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
+import com.conan.bigdata.kafka.util.Constants;
+import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;
 
 import java.util.*;
@@ -21,12 +18,14 @@ public class SubscribeConsumer {
 
     private static Properties getProperties() {
         Properties properties = new Properties();
-        properties.put("bootstrap.servers", KafkaProperties.BROKER);
-        properties.put("group.id", KafkaProperties.GROUP_ID_1);  // 订阅模式需要提供group.id
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, Constants.BROKER);
+        properties.put("group.id", Constants.GROUP_ID_1);  // Subscribe模式必须提供group.id
         properties.put("enable.auto.commit", "true");
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        properties.put(ConsumerConfig.CLIENT_ID_CONFIG, "client_id"); // 这个是配置client_id，对应着kafka manager上的Consumer Instance Owner前缀
         properties.put("auto.commit.interval.ms", "1000");
         properties.put("session.timeout.ms", "30000");
-        properties.put("max.poll.records", "30000"); // 消费者一次性poll的条数,默认Integer.MAX_VALUE
+        properties.put("max.poll.records", "30000"); // 消费者最大一次性poll的条数,默认Integer.MAX_VALUE
         properties.put("key.deserializer", "org.apache.kafka.common.serialization.IntegerDeserializer");
         properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         return properties;
@@ -40,19 +39,13 @@ public class SubscribeConsumer {
         KafkaConsumer<Integer, String> consumer = new KafkaConsumer<>(properties);
 
         List<String> list = new ArrayList<>(5);
-        list.add(KafkaProperties.TOPIC);
+        list.add(Constants.TOPIC);
         // 订阅的模式，是如何确定消费者个数的？
         consumer.subscribe(list);
         while (true) {
             ConsumerRecords<Integer, String> records = consumer.poll(100);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             for (ConsumerRecord<Integer, String> record : records) {
-                System.out.printf("offset = %d, key = %s, value = %s", record.offset(), record.key(), record.value());
-                System.out.println();
+                System.out.printf("partition = %d, offset = %d, key = %s, value = %s\n", record.partition(), record.offset(), record.key(), record.value());
             }
         }
     }
@@ -65,7 +58,7 @@ public class SubscribeConsumer {
         KafkaConsumer<Integer, String> consumer = new KafkaConsumer<>(properties);
 
         List<String> list = new ArrayList<>(5);
-        list.add(KafkaProperties.TOPIC);
+        list.add(Constants.TOPIC);
         // 订阅的模式，是如何确定消费者个数的？
         consumer.subscribe(list, new ConsumerRebalanceListener() {
             // 消费者rebalance开始之前、消费者停止拉取消息之后被调用(可以提交偏移量以避免数据重复消费)
@@ -79,10 +72,17 @@ public class SubscribeConsumer {
             public void onPartitionsAssigned(Collection<TopicPartition> partitions) {
                 long committedOffset = -1;
                 for (TopicPartition topicPartition : partitions) {
+                    /**
+                     * Kafka提供两种查询偏移量的方法，下面两种只可使用一种，同时用可以但没必要
+                     */
                     // 获取该分区已经消费的偏移量
                     committedOffset = consumer.committed(topicPartition).offset();
                     // 重置偏移量到上一次提交的位置，从下一个消息开始消费
                     consumer.seek(topicPartition, committedOffset + 1);
+
+                    // 返回下一次拉取的位置，与上面一个参数的区别就在于要不要多偏移一位 +1
+                    long position = consumer.position(topicPartition);
+                    consumer.seek(topicPartition, position);
                 }
             }
         });

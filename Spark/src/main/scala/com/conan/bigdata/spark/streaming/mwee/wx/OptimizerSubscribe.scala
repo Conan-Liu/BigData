@@ -2,7 +2,7 @@ package com.conan.bigdata.spark.streaming.mwee.wx
 
 import java.lang.Long
 import java.util.Locale
-import java.{util, lang => jl, util => ju}
+import java.{lang => jl, util => ju}
 
 import org.apache.kafka.clients.consumer._
 import org.apache.kafka.common.TopicPartition

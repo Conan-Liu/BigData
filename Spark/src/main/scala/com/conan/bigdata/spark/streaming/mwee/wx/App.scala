@@ -246,10 +246,4 @@ object App {
         }
     }
 
-    def persistOffsets(offsets: Array[OffsetRange], groupId: String, storeEndOffset: Boolean, zkUtils: ZkUtils): Unit = {
-        offsets.foreach(o => {
-            val zKGroupTopicDirs = new ZKGroupTopicDirs(groupId, o.topic)
-        })
-    }
-
 }
