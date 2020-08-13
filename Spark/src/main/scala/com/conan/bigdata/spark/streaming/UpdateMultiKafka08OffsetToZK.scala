@@ -38,8 +38,10 @@ object UpdateMultiKafka08OffsetToZK {
             "auto.commit.enable" -> "false",
             "auto.offset.reset" -> "smallest" // 设定如果没有offset指定的时候， 从什么地方开始消费，默认最新
         )
+
         val topicSet = topics.split(",").map(_.trim).toSet
-        val zkClient = new ZkClient(zkQuorum, Integer.MAX_VALUE, Integer.MAX_VALUE, ZKStringSerializer)
+        val zkClient = new ZkClient(zkQuorum, Integer.MAX_VALUE, Integer.MAX_VALUE, null)
+        // ZKStringSerializer)
         var fromOffsets: Map[TopicAndPartition, Long] = Map()
         // 多个Topic， 那么遍历它们， 然后获取每个Topic下面每个Partition的offset
         topicSet.foreach(topicName => {
@@ -117,7 +119,9 @@ object UpdateMultiKafka08OffsetToZK {
                 // println(s"END = ${o.topic} - ${o.partition} : ${o.fromOffset} - ${o.untilOffset}")
                 // 注意这里应该是 o.untilOffset.toString， 网上有很多地方写的是 o.fromOffset.toString， 这是错的
                 // 你想想， 消费完了， 肯定要把最后的offset记录下来，而不是开始的那个， 这样会重复消费
-                ZkUtils.updatePersistentPath(zkClient, zkPath, o.untilOffset.toString)
+
+                // 下面代码仍然有效，只是版本冲突，先注释掉
+                // ZkUtils.updatePersistentPath(zkClient, zkPath, o.untilOffset.toString)
             }
         })
 

@@ -1,16 +1,21 @@
 package com.conan.bigdata.kafka.util;
 
+import java.util.Collections;
+import java.util.List;
+
 public class Constants {
 
     public static final String ZOOKEEPER = "localhost:2181/kafka";
 
     public static final String GROUP_ID_1 = "group_id_1";
 
-    public static final String GROUP_ID_2= "group_id_2";
+    public static final String GROUP_ID_2 = "group_id_2";
 
     public static final String TOPIC = "hello";
 
-    public static final String BROKER = "localhost:9092";
+    public static final List<String> TOPIC_LIST = Collections.singletonList(TOPIC);
+
+    public static final String BROKER_LIST = "localhost:9092";
 
     public static final String BROKER_HOST = "localhost";
 
@@ -22,6 +27,6 @@ public class Constants {
 
     public static final int reconnectInterval = 10000;
 
-    public static final  String CLIENT_ID = "SimpleConsumerDemoClient";
+    public static final String CLIENT_ID = "SimpleConsumerDemoClient";
 
 }

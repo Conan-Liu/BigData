@@ -16,7 +16,7 @@ public class NewKafkaProducer {
 
     public static void connectionKafKa(){
         Properties properties = new Properties();
-        properties.put("bootstrap.servers", Constants.BROKER);
+        properties.put("bootstrap.servers", Constants.BROKER_LIST);
         // properties.put("zookeeper.connect", "192.168.56.101:2181"); //老参数
         properties.put("acks", "all");  // all 的安全系数最高，和 -1 等同，表示全部分区有反馈才行
         properties.put("retries", 0);

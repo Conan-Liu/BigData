@@ -86,7 +86,7 @@ object UserTagDetailHBase {
             val rowkey = String.valueOf(v(0))
             val userAction = createValue(v)
             (new ImmutableBytesWritable(Bytes.toBytes(rowkey)), new KeyValue(Bytes.toBytes(rowkey), Bytes.toBytes(FAMILY_NAME), Bytes.toBytes("user_action"), Bytes.toBytes(userAction)))
-        }).sortBy(kv => kv._1, true)
+        }).sortBy(kv => kv._1)
 
         //        val userTagDetail = sc.parallelize(Array((Bytes.toBytes("1000"), Bytes.toBytes(FAMILY_NAME), Bytes.toBytes("test"), Bytes.toBytes("foo1"))))
         //

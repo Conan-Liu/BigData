@@ -1,5 +1,6 @@
 package com.conan.bigdata.kafka.consumer;
 
+import com.conan.bigdata.kafka.util.Constants;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;
 
@@ -69,6 +70,17 @@ public class MyKafkaConsumer {
 
     public static void main(String[] args) {
 
+        Properties properties=SubscribeConsumer.getProperties();
+        List<String> list = new ArrayList<>(3);
+        list.add(Constants.TOPIC);
+        KafkaConsumer<Integer, String> consumer=new KafkaConsumer<>(properties);
+        consumer.subscribe(list);
+        while (true) {
+            ConsumerRecords<Integer, String> records = consumer.poll(100);
+            for (ConsumerRecord<Integer, String> record : records) {
+                System.out.printf("thread [%s] => partition = %d, offset = %d, key = %s, value = %s\n", "aaa", record.partition(), record.offset(), record.key(), record.value());
+            }
+        }
     }
 
 }

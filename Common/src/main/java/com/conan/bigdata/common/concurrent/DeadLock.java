@@ -2,22 +2,21 @@ package com.conan.bigdata.common.concurrent;
 
 import com.conan.bigdata.common.util.Tools;
 
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 死锁演示
- * <p>
  * 死锁场景：t1线程持有A资源，t2线程持有B资源，且两个线程一直占有资源，不支持抢占
  * 那么，如果t1接下来要申请B资源，t2要申请A资源，就会发生死锁
+ * 查看Thread Dump就会发现Found one Java-level deadlock:
  */
 public class DeadLock {
 
     private static class A implements Runnable {
 
-        private Object objA;
-        private Object objB;
+        private final Object objA;
+        private final Object objB;
 
         public A(Object objA, Object objB) {
             this.objA = objA;
@@ -42,8 +41,8 @@ public class DeadLock {
 
     private static class B implements Runnable {
 
-        private Object objA;
-        private Object objB;
+        private final Object objA;
+        private final Object objB;
 
         public B(Object objA, Object objB) {
             this.objA = objA;

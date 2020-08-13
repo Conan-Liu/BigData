@@ -22,7 +22,7 @@ public class MyKafkaProducer extends Thread {
         super(threadName);
         this.topic = topic;
         Map<String, Object> map = new HashMap<>();
-        map.put("bootstrap.servers", Constants.BROKER);
+        map.put("bootstrap.servers", Constants.BROKER_LIST);
         map.put("acks", "1");  // 1 保证有一个成功发送,容错性和速度中等,要求不太严格的可以考虑这个,all 的安全系数最高,和 -1 等同,表示全部分区有反馈才行
         map.put("retries", 0);
         map.put("batch.size", 16384); // 每个Batch要存放batch.size大小的数据后，才可以发送出去。比如说batch.size默认值是16KB，那么里面凑够16KB的数据才会发送

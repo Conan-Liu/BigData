@@ -13,13 +13,14 @@ import org.apache.spark.streaming.{Seconds, StreamingContext, Time}
 
 /**
   * 目前 0.8 的版本是稳定版本， 考虑用这个， spark 2.3 以后0.8的版本已经不推荐使用了
-  *
+  * 不再继续研究这个版本，为了避免依赖冲突，先注释掉，内部如果没有注释的则表示是正常代码，可以作为参考
   * 注意，这中直连方式， 在调用 createDirectStream 的时候， 创建的RDD和Kafka的分区是一一对应的
   * 保证消费， 如果kafka增加了分区（目前不支持减少分区）, 如果生产者产生的数据刚好被分到这个新的分区,
   * 那么这个新的分区的数据是不能被 streaming消费到的, 导致数据丢失
   * 因为RDD不能动态的创建与之对应的分区, 所以需要注意, 初期设定分区的时候，就要考虑清楚
   */
 object UpdateKafka08OffsetToZK {
+    /*
 
     def main(args: Array[String]): Unit = {
         val sparkConf = new SparkConf().setAppName("UpdateKafka08OffsetToZK").setMaster("local[*]")
@@ -119,4 +120,5 @@ object UpdateKafka08OffsetToZK {
         ssc.start()
         ssc.awaitTermination()
     }
+    */
 }

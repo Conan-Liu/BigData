@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
  * -Xint      指定java解释执行代码, 样例： 执行java -Xint -version，可以看到interpreted mode
  * -Xcomp     指定java编译代码， 样例： 执行java -Xcomp -version，可以看到compiled mode
  * -Xmixed    默认混合模式，先编译后执行， 执行java -version， 可以看到mixed mode
- * <p>
  * -XX 参数
  * 以这个开头的参数是非稳定参数，随时可能被修改或者移除
  * 格式： -XX:+ 或者 -XX:-  (+ 表示开启， - 表示关闭)
@@ -116,7 +115,7 @@ public class GCResearch {
 
     /**
      * 方法区内存溢出(存放类，静态变量，静态方法，常量，成员方法，被所有线程共享, 数据不是线程安全的)
-     * jdk1.7以后方法区位于堆，就是永久代Permanent
+     * jdk1.7以后方法区位于堆，就是永久代Permanent，jdk1.8后方法区位于元空间，本地存储
      * JVM参数
      * -verbose:gc -Xms10m -Xmx10m -XX:+PrintGCDetails
      * 错误格式
@@ -134,7 +133,6 @@ public class GCResearch {
 
     /**
      * 非JVM内存溢出
-     * <p>
      * 错误格式
      * java.lang.OutOfMemoryError: Java heap space
      */

@@ -23,7 +23,7 @@ public class AssignConsumer {
 
     private static Properties getProperties() {
         Properties properties = new Properties();
-        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, Constants.BROKER);
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, Constants.BROKER_LIST);
         properties.put("enable.auto.commit", "false");
         properties.put("group.id", Constants.GROUP_ID_2);  // Assign模式可选的group.id，方便更新offset到zookeeper
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
@@ -38,10 +38,10 @@ public class AssignConsumer {
 
     public static void main(String[] args) {
         /**
-         * 获取Topic的partition对应的offset
+         * 获取Topic的Partition对应的Offset
          * Kafka已经不在推荐老版本{@link ZkUtils}，
          * 推荐使用{@link KafkaZkClient}来替代，注意这个类的主构造是私有构造函数，只能通过其伴生对象的apply方法调用，
-         * java调用scala方法时，scala方法的默认值不起作用，最后两个参数是默认值，自己手动传入才行
+         * Java调用Scala方法时，Scala方法的默认值不起作用，最后两个参数是默认值，自己手动传入才行
          */
         KafkaZkClient zkClient = KafkaZkClient.apply(Constants.ZOOKEEPER, false, 1000, 1000, 10, Time.SYSTEM, "kafka.server", "SessionExpireListener");
 
@@ -54,6 +54,8 @@ public class AssignConsumer {
         KafkaConsumer<Integer, String> consumer = new KafkaConsumer<>(p);
 
         Map<TopicPartition, Long> partitionOffsets = getPartitionOffsets(zkClient, Constants.TOPIC);
+        TopicPartition tp = new TopicPartition(Constants.TOPIC, 2);
+        // partitionOffsets.remove(tp);
 
         // 手动分配消费者，如何确定消费者的数量呢 streaming如何使消费者和kafka分区数一致的？
         consumer.assign(partitionOffsets.keySet());
@@ -152,5 +154,12 @@ public class AssignConsumer {
         for (Map.Entry<TopicPartition, Long> map : topicPartitionLongMap.entrySet()) {
             zkClient.setOrCreateConsumerOffset(Constants.GROUP_ID_2, map.getKey(), map.getValue());
         }
+    }
+
+    /**
+     * 手动分配Topic的Partition给指定的消费者线程处理
+     */
+    private static void assignPartitionToConsumer(){
+
     }
 }

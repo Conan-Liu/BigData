@@ -12,7 +12,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 多线程环境下wait和notify的演示
- * <p>
  * 一。超时机制演示，两种方式实现
  * 1. 需要使用 wait(long timeout)方法
  * 2. 使用Condition 条件变量

@@ -60,7 +60,6 @@ public class SingletonExp {
      * 因为synchronized不保证临界区的代码有序性，所以三个步骤很可能执行顺序为 1 -> 3 -> 2
      * 这样就意味着可能存在一种场景：构造函数还没有执行完毕，对象还没有完整的初始化，但是共享变量已经不为 null
      * 由于可见性的问题，其它线程执行到第一个if条件时，发现不为null，直接返回INSTANCE，实际上它还没有完全初始化完毕，可能造成程序出错
-     * <p>
      * 解决方法： volatile 可以禁止指令重排序
      */
     public static SingletonExp getInstance3() {

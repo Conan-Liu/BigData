@@ -133,11 +133,17 @@ public class KafkaAdminClientExp {
 
     /**
      * 消费者组信息
-     *
-     * 新版的貌似没有该API
+     * 不过现在的版本（目前最新1.1.0）并没有提供类似describeConsumerGroup和listGroupOffsets的方法实现
      * 可以直接使用 kafka-consumer-groups.sh 查看
      */
-    public static void consumerGroup(){
+    public static void consumerGroup() {
+        AdminClient adminClient = getAdminClient();
+    }
 
+    /**
+     * 获取消费者组成员信息
+     */
+    public static void consumerMember() {
+        AdminClient adminClient = getAdminClient();
     }
 }
