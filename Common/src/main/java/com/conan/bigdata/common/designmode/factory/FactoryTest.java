@@ -1,4 +1,4 @@
-package com.conan.bigdata.common.factory;
+package com.conan.bigdata.common.designmode.factory;
 
 /**
  * 简单点说工厂模式就是: 你想要什么产品,就用对应的产品工厂去生产
@@ -16,10 +16,10 @@ package com.conan.bigdata.common.factory;
  * 同时做一个工厂类，实现IVehicleFactory接口，就OK了，
  * 无需去改动现成的代码。这样做，拓展性较好！
  */
-public class TestFactory {
+public class FactoryTest {
 
     public static void main(String[] args) {
-        IVehicleFactory factory = null;
+        IVehicleFactory factory;
 
         factory = new BusVehicleFactory();
         IVehicle bus = factory.getVehicle();

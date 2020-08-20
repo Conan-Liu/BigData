@@ -1,29 +1,36 @@
 package com.conan.bigdata.spark.streaming.mwee.wx
 
+import org.apache.spark.internal.Logging
 import org.apache.spark.streaming.scheduler.{StreamingListener, StreamingListenerBatchCompleted}
-import org.slf4j.{Logger, LoggerFactory}
 
-class WxAppListener(private val appName: String) extends StreamingListener {
+class WxAppListener(private val appName: String) extends StreamingListener with Logging {
 
-    private val log: Logger = LoggerFactory.getLogger("WxAppListener")
+    @volatile private var count = 0
 
     override def onBatchCompleted(batchCompleted: StreamingListenerBatchCompleted): Unit = {
 
         val batchInfo = batchCompleted.batchInfo
         val batchTime = batchInfo.batchTime.milliseconds
         val processingStartTime = batchInfo.processingStartTime
+        // 任务是否延迟执行
+        val schedulingDelay = batchInfo.schedulingDelay.getOrElse(0L)
         val processingEndTime = batchInfo.processingEndTime
         val numRecords = batchInfo.numRecords
         val processingDelay = batchInfo.processingDelay
         val totalDelay = batchInfo.totalDelay
 
 
-        if (numRecords > 0) {
-            val logContent = s"App[${appName}]: batchTime -> ${batchTime}, numRecords -> ${numRecords}, processingDelay -> ${processingDelay}, "
-            log.warn(logContent)
-            // 启用微信告警，需要考虑一个好的方案来启用，否则告警会很频繁
-            val wxBody = "{\"type\":\"2\",\"receiverMobiles\":\"13852293070\",\"subject\":\"测试 subject\",\"content\":\"" + logContent + "\"}\"}"
-            Tools.doPost("http://alarm-notify.mwbyd.cn/services/notify/pushAll", wxBody)
+        //val logContent = s"App[${appName}]: batchTime -> ${batchTime}, numRecords -> ${numRecords}, processingDelay -> ${processingDelay}, "
+        var wxBody: String = null
+        if (numRecords <= 0) {
+            count = count + 1
+            if (count >= 3) {
+                wxBody = "{\"type\":\"2\",\"receiverMobiles\":\"13852293070\",\"subject\":\"测试 subject\",\"content\":\"已经三个batch没有获取数据，请检查数据源\"}\"}"
+                count = 0
+            }
+        } else {
+            // 监控batch积压
         }
+        Tools.doPost("http://alarm-notify.mwbyd.cn/services/notify/pushAll", wxBody)
     }
 }

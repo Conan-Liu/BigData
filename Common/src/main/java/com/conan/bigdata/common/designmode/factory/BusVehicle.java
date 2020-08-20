@@ -1,4 +1,4 @@
-package com.conan.bigdata.common.factory;
+package com.conan.bigdata.common.designmode.factory;
 
 public class BusVehicle implements IVehicle {
 
