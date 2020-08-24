@@ -87,7 +87,7 @@ object App {
         var isFirstStart = true
         // 定时器
         sourceStream.foreachRDD((rdd, time) => {
-            // 每天5点开始
+            // 每天9点开始
             if ("09".equals(Tools.getSchedulerHour(time.milliseconds))) {
                 val acc = Tools.getAccInstance(rdd.sparkContext)
                 if (isFirstStart || (time.milliseconds - acc.value) >= Constant.SCHEDULER_TIME) {

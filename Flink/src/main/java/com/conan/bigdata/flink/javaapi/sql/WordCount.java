@@ -1,4 +1,4 @@
-package com.conan.bigdata.flink.sql;
+package com.conan.bigdata.flink.javaapi.sql;
 
 /**
  * Flink

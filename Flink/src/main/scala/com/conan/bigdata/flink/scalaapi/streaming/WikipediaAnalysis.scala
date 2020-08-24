@@ -1,4 +1,4 @@
-package com.conan.bigdata.flink.execise.streaming
+package com.conan.bigdata.flink.scalaapi.streaming
 
 import org.apache.flink.api.common.functions.{AggregateFunction, FoldFunction}
 import org.apache.flink.api.common.typeinfo.TypeInformation

@@ -1,4 +1,4 @@
-package com.conan.bigdata.flink;
+package com.conan.bigdata.flink.javaapi;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

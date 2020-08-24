@@ -1,4 +1,4 @@
-package com.conan.bigdata.flink.streaming;
+package com.conan.bigdata.flink.javaapi.streaming;
 
 import org.apache.flink.api.common.functions.FoldFunction;
 import org.apache.flink.api.java.functions.KeySelector;
@@ -10,9 +10,6 @@ import org.apache.flink.streaming.api.functions.source.RichParallelSourceFunctio
 
 import java.util.HashMap;
 import java.util.Random;
-import java.util.function.Function;
-import java.util.function.ToIntFunction;
-import java.util.stream.IntStream;
 
 /**
  */

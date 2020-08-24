@@ -1,4 +1,4 @@
-package com.conan.bigdata.flink.execise.streaming
+package com.conan.bigdata.flink.scalaapi.streaming
 
 import org.apache.flink.streaming.api.functions.ProcessFunction
 import org.apache.flink.streaming.api.scala._

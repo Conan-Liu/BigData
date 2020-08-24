@@ -1,4 +1,4 @@
-package com.conan.bigdata.flink.source;
+package com.conan.bigdata.flink.javaapi.source;
 
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.datastream.DataStream;

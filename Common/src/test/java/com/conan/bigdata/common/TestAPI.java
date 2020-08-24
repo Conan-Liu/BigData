@@ -245,4 +245,11 @@ public class TestAPI {
 
         System.out.println(100 / 200 / 365);  // 0
     }
+
+    @Test
+    public void test17(){
+        char[] cs={'a','b','c','d','.'};
+        String s=new String(cs,0,cs.length);
+        System.out.println(s);
+    }
 }
