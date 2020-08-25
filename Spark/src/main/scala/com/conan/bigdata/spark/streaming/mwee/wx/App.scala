@@ -1,7 +1,6 @@
 package com.conan.bigdata.spark.streaming.mwee.wx
 
 import com.alibaba.fastjson.{JSON, JSONObject}
-import kafka.utils.ZKGroupTopicDirs
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.TopicPartition
@@ -44,7 +43,7 @@ object App {
         // 目前是每个批次执行的结果往mysql中写，mysql将会是性能瓶颈
         sparkConf.set("spark.streaming.kafka.maxRatePerPartition", "20")
         sparkConf.set("spark.dynamicAllocation.enabled", "false")
-        // sparkConf.registerKryoClasses(Array(classOf[JSONObject]))
+        sparkConf.registerKryoClasses(Array(classOf[JSONObject]))
         val sc = new SparkContext(sparkConf)
         sc.setLogLevel("WARN")
         val ssc = new StreamingContext(sc, batchDuration)
@@ -78,23 +77,25 @@ object App {
                 new java.util.ArrayList(topics.asJavaCollection),
                 new java.util.HashMap[String, Object](kafkaParams.asJava),
                 java.util.Collections.emptyMap[TopicPartition, java.lang.Long]())
-//            assign
+            //            assign
         )
 
-        hbaseBulkPut(sc)
+        // 第一次启动，全量加载一次数据到hbase，如果数据产生了差异，可以重启程序全量同步一次，9点启动，当天就会全量加载，其它时间需要第二天
+        hbaseBulkPut(sc, "2999-12-31", true: Boolean)
 
-        // 首次启动，时间间隔可能没有一天，需要特殊处理
-        var isFirstStart = true
+        var isFirstStart: Boolean = true
         // 定时器
         sourceStream.foreachRDD((rdd, time) => {
-            // 每天9点开始
-            if ("09".equals(Tools.getSchedulerHour(time.milliseconds))) {
+            // 每天8点开始
+            if ("08".equals(Tools.getSchedulerHour(time.milliseconds))) {
+                val targetDay = Tools.getSchedulerDay(time.milliseconds - Constant.SCHEDULER_TIME)
                 val acc = Tools.getAccInstance(rdd.sparkContext)
                 if (isFirstStart || (time.milliseconds - acc.value) >= Constant.SCHEDULER_TIME) {
-                    isFirstStart = false
-                    hbaseBulkPut(rdd.sparkContext)
+                    // 日常增量调度
+                    hbaseBulkPut(rdd.sparkContext, targetDay)
                     acc.reset()
                     acc.add(time.milliseconds)
+                    isFirstStart = false
                 }
             }
         }
@@ -203,8 +204,12 @@ object App {
 
     }
 
-    def hbaseBulkPut(sc: SparkContext): Unit = {
-        val path = "/user/hive/warehouse/dw.db/{assoc_wx_user_track_tmp1,assoc_user_tag_new_tmp1}/000000_0"
+    def hbaseBulkPut(sc: SparkContext, targetDay: String, isFull: Boolean = false): Unit = {
+        var path: String = null
+        if (isFull)
+            path = "/user/hive/warehouse/dw.db/assoc_wx_user_track/"
+        else
+            path = s"/user/hive/warehouse/dw.db/assoc_user_tag_new_tmp1/${targetDay}/000000_0"
         val conf = HbaseUtils.getHbaseConf
         val exits = FileSystem.get(conf).exists(new Path(path))
         if (exits) {
@@ -240,9 +245,10 @@ object App {
                 list.clear()
             })
             HbaseUtils.majorCompact()
-            log.warn("Hbase Table [{}] update successfully !!!", Constant.HBASE_TABLE_NAME)
+            // 注意scala不支持可变长参数
+            log.warn(s"Target Day [${targetDay}], Hbase Table [${Constant.HBASE_TABLE_NAME}] update successfully !!!")
         } else {
-            log.warn("Hbase Table [{}] update error !!!, because of no file in path", Constant.HBASE_TABLE_NAME)
+            log.warn(s"Target Day [${targetDay}], Hbase Table [${Constant.HBASE_TABLE_NAME}] update error !!!, because of no file in path")
         }
     }
 

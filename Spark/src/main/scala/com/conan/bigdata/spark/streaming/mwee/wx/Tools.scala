@@ -54,11 +54,17 @@ object Tools {
     }
 
 
-    private val dateFormat = new SimpleDateFormat("HH")
+    private val dateFormat1 = new SimpleDateFormat("HH")
+    private val dateFormat2 = new SimpleDateFormat("yyyy-MM-dd")
 
     def getSchedulerHour(time: Long): String = {
         val date = new Date(time)
-        dateFormat.format(date)
+        dateFormat1.format(date)
+    }
+
+    def getSchedulerDay(time: Long): String = {
+        val date = new Date(time)
+        dateFormat2.format(date)
     }
 
     // scala 实现volatile

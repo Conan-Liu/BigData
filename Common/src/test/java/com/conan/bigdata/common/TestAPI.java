@@ -19,12 +19,12 @@ public class TestAPI {
         int i = Math.abs("meimeng_spark_20190102".hashCode()) % 50;
         System.out.println(i);
 
-        JSONObject json=JSON.parseObject("{}");
+        JSONObject json = JSON.parseObject("{}");
         System.out.println(json.toJSONString());
 
-        Set<String> s=new HashSet<>();
-        String s1=new String("a");
-        String s2=new String("a");
+        Set<String> s = new HashSet<>();
+        String s1 = new String("a");
+        String s2 = new String("a");
         s.add(s1);
         s.add(s2);
         System.out.println(s.size());
@@ -48,9 +48,9 @@ public class TestAPI {
         }
 
 
-        List<String> list1=null;
+        List<String> list1 = null;
         // list 为空为NPE
-        for(String l:list1){
+        for (String l : list1) {
             System.out.println(l);
         }
     }
@@ -61,11 +61,11 @@ public class TestAPI {
         System.out.println(15 + (15 >> 1));
         System.out.println(15 + 15 >> 1);
 
-        boolean flag=false;  // 不可以赋值为 null
+        boolean flag = false;  // 不可以赋值为 null
 
         System.out.println(-1 >>> 1);
 
-        char aa='中';
+        char aa = '中';
         System.out.println(String.valueOf(aa).getBytes().length);
         System.out.println("中".getBytes().length);
     }
@@ -247,9 +247,24 @@ public class TestAPI {
     }
 
     @Test
-    public void test17(){
-        char[] cs={'a','b','c','d','.'};
-        String s=new String(cs,0,cs.length);
+    public void test17() {
+        char[] cs = {'a', 'b', 'c', 'd', '.'};
+        String s = new String(cs, 0, cs.length);
         System.out.println(s);
+    }
+
+    @Test
+    public void test18() {
+        // 多维数组，二维数组的长度可以不一样
+        int[][] arr = new int[3][];
+        for (int i = 0; i < arr.length; i++) {
+            System.out.println(Arrays.toString(arr[i]));
+        }
+        arr[0] = new int[2];
+        arr[1] = new int[3];
+        arr[2] = new int[4];
+        for (int i = 0; i < arr.length; i++) {
+            System.out.println(Arrays.toString(arr[i]));
+        }
     }
 }

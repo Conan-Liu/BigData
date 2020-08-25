@@ -2,6 +2,7 @@ package com.conan.bigdata.flink.scalaapi.streaming
 
 import org.apache.flink.api.java.tuple.Tuple
 import org.apache.flink.api.java.utils.ParameterTool
+import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
@@ -24,8 +25,13 @@ object NetworkWordCount {
         val tool = ParameterTool.fromArgs(args)
         val host = tool.get("host", "localhost")
         val port = tool.getInt("port", 9999)
+
         // 流处理程序，需要创建StreamExecutionEnvironment来处理，相当于Context
         val env:StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
+        //env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
+        //env.enableCheckpointing(2000)
+        //env.getCheckpointConfig.setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE)
+
         val text:DataStream[String] = env.socketTextStream(host, port)
         // 字符串转换
         val wordsDS = text.flatMap(_.toLowerCase.split("\\s+")).map((_, 1))

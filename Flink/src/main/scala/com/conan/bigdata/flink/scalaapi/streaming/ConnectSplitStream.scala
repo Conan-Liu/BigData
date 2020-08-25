@@ -13,7 +13,7 @@ object ConnectSplitStream {
         val data2 = env.fromCollection(Seq[(Long, String)]((1, "hadoop"), (2, "spark"), (3, "flink"), (4, "hive"), (5, "hbase")))
 
         println("*****************connect************************")
-        // 注意ConnectedStreams类除了map flatmap keyby几乎不包含其它方法，所以connect后面一定会跟map或flatmap
+        // 注意ConnectedStreams类除了map flatMap keyBy几乎不包含其它方法，所以connect后面一定会跟map或flatMap
         // connect方法可以连接两个不同类型的DataStream
         val connectStream = data1.connect(data2).map(x1 => (x1, "liu"), x2 => x2)
         // 下面这个执行不通过
