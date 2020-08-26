@@ -59,7 +59,7 @@ public class Code0201 {
     }
 
     public static void main(String[] args) {
-        LeetNode head = Tools.createLink();
+        LeetNode head = Tools.createLink(10);
         Tools.show(head);
         remove1(head);
         Tools.show(head);

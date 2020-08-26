@@ -45,10 +45,15 @@ object UpdateKafka10OffsetToZK {
             // strategy
         )
 
+        var offsetRanges = Array[OffsetRange]()
+        val filterStream = kafkaStream.transform(rdd => {
+            offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
+            rdd
+        })
 
-        kafkaStream.foreachRDD(rdd => {
-            // 获取该RDD对应的偏移量
-            val offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
+        filterStream.foreachRDD(rdd => {
+            // 获取该RDD对应的偏移量，因为这里kafkaStream没有转换还保持着原来的分区情况，所以可以获取偏移量，如果有任何转换，这里都不能获取，会报错，推荐使用transform来获取offset，如上
+            val offsetRangesTest = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
             // 拿出对应的数据
             rdd.foreachPartition(partition => {
                 partition.foreach(record => {

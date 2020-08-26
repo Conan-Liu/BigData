@@ -16,12 +16,12 @@ public class Tools {
     }
 
     // 0201 创建链表
-    public static LeetNode createLink(){
+    public static LeetNode createLink(int n){
         LeetNode head=null;
         LeetNode p;
         Random r=new Random();
-        for(int i=0;i<10;i++){
-            p=new LeetNode(r.nextInt(4));
+        for(int i=0;i<n;i++){
+            p=new LeetNode(r.nextInt(8));
             if(head==null){
                 head=p;
             }else{
@@ -43,7 +43,7 @@ public class Tools {
     }
 
     public static void main(String[] args) {
-        LeetNode node=createLink();
+        LeetNode node=createLink(10);
         show(node);
     }
 }
