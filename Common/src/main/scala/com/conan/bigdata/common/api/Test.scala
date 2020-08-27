@@ -1,22 +1,13 @@
 package com.conan.bigdata.common.api
 
-import java.util.Properties
-
 object Test {
 
-    lazy val properties:Properties=init
-
-    def init(): Properties ={
-        println("=================")
-        val p=new Properties()
-        p.put("a","aa")
-        p
+    case class Stu(sno:Int,name:String,sex:Int,createTime:Long){
+        override def toString: String = {
+            s"${sno}|${name}|${sex}|${createTime}"
+        }
     }
-
     def main(args: Array[String]): Unit = {
-        println("1")
-        println(properties.getProperty("a"))
-        println("2")
-        println(properties.getProperty("a"))
+        println(Stu(1,"hahah",1,1234567890))
     }
 }

@@ -24,12 +24,12 @@ public class LinkExp {
 
     // 链表存储的数据可以使用泛型，更灵活
     @Data
-    private static class Node1<E>{
+    private static class Node1<E> {
         private E data;
         public Node1<E> next;
 
-        public Node1(E data){
-            this.data=data;
+        public Node1(E data) {
+            this.data = data;
         }
     }
 
@@ -43,7 +43,7 @@ public class LinkExp {
 
 //         show(reverse(create()));
 
-         printReverse(create());
+        printReverse(create());
 
 //        searchMid(create());
 
@@ -131,7 +131,7 @@ public class LinkExp {
     /**
      * 链表两两反转
      */
-    private static void doubleReverse(Node node){
+    private static void doubleReverse(Node node) {
 
     }
 
@@ -153,13 +153,15 @@ public class LinkExp {
     /**
      * 检测链表是否有环
      * 定义两个指针，第一个指针一次走两步，第二个一次走一步，如果两个指针最后重合了就代表有环，如果第一个指针先到达尾部Null，则无环
+     * 设相遇点为node1，相遇点与环路起点的距离k = head与环路起点的距离k。
+     * 用一个指针指向 head，另一个指针指点 node，以同样的速度移动k步之后，两者会指向环路起点。
      */
     private static void isLoop(Node node) {
-        // node作为第一个指针，p1作为第二个
-        Node p1 = node;
-        while (node != null && node.next != null) {
-            node = node.next.next;
-            p1 = p1.next;
+        // p1作为快指针，p2为慢指针
+        Node p1 = node, p2 = node;
+        while (p1 != null && p1.next != null) {
+            p1 = p1.next.next;
+            p2 = p2.next;
             if (node == p1) {
                 System.out.println("isLoop");
                 break;
@@ -167,6 +169,12 @@ public class LinkExp {
         }
         if (node == null || node.next == null)
             System.out.println("noLoop");
+
+        Node slow = node;
+        while (slow != p2) {
+            slow = slow.next;
+            p2 = p2.next;
+        }
     }
 
     /**
@@ -187,20 +195,75 @@ public class LinkExp {
 
     /**
      * 判断两个链表是否相交，并找到相交的节点
-     * 第一步：两个链表如果有相同的尾节点，那他们是必然相交的
+     * 第一步：两个链表如果相交，那么必然有共同的尾节点
      * 第二部：在确定相交的同时记录下每个链表的长度，可以计算两个链表的长度差diff，这样长的那个链表先遍历diff后，两个链表同步遍历，遇到两个引用相同时，该节点就是相交点
      */
-    private static void isIntersect(Node node1, Node node2) {
+    private static boolean isIntersect(Node node1, Node node2) {
+        if (node1 == null || node2 == null) {
+            return false;
+        }
+        int len1 = 1, len2 = 1;
+        Node head1 = node1, head2 = node2;
+        // 相交
         while (node1.next != null) {
+            len1++;
             node1 = node1.next;
         }
         while (node2.next != null) {
+            len2++;
             node2 = node2.next;
         }
-        if (node1 == node2) {
-            System.out.println("true");
-        } else {
-            System.out.println("false");
+        if (node1 != node2) {
+            return false;
         }
+
+        int diff = 0;
+        if (len1 >= len2) {
+            diff = len1 - len2;
+            while (diff > 0) {
+                head1 = head1.next;
+                diff--;
+            }
+
+        } else {
+            diff = len2 - len1;
+            while (diff > 0) {
+                head2 = head2.next;
+                diff--;
+            }
+        }
+
+        while (head1 != null && head2 != null) {
+            if (head1 == head2)
+                return true;
+            head1 = head1.next;
+            head2 = head2.next;
+        }
+        return false;
+    }
+
+    /**
+     * 相交给上第二种解法
+     * 设链表A的长度为a，链表B的长度为b，A到相交结点的距离为c,B到相交节点的距离为d，
+     * 显然可以得到两者相交链表的长度：a - c = b - d， 变换一下式子得到:a + d = b + c
+     * 我们用一个指针从链表A出发，到末尾后就从B出发，用另一个指针从B出发，到末尾后从A出发，
+     * 由于上面的公式，当前一个指针走了a+d步数时，后一个指针走了b+c,两步数相等，即走到了相交节点。
+     * 相交：则t1 == t2退出循环
+     * 不相交：t1和t2都到达链表末尾，都为null，相等退出
+     */
+    public Node getIntersectionNode(Node node1, Node node2) {
+        Node t1 = node1;
+        Node t2 = node2;
+        while (t1 != t2) {
+            if (t1 != null)
+                t1 = t1.next;
+            else
+                t1 = node2;
+            if (t2 != null)
+                t2 = t2.next;
+            else
+                t2 = node1;
+        }
+        return t2;
     }
 }
