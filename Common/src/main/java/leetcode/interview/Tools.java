@@ -16,16 +16,6 @@ public class Tools {
         }
     }
 
-    public static class TreeNode {
-        public int data;
-        public TreeNode left;
-        public TreeNode right;
-
-        public TreeNode(int i) {
-            this.data = i;
-        }
-    }
-
     // 0201 创建链表
     public static LeetNode createLink(int n) {
         LeetNode head = null;
