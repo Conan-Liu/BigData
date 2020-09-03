@@ -12,7 +12,7 @@ package com.conan.bigdata.common.algorithm;
  * BST 二叉查找树，二叉搜索树套路编程
  * 下面举例子
  */
-public class BST {
+public class BinaryTreeExp {
 
     private class TreeNode {
         int data;
@@ -107,5 +107,22 @@ public class BST {
 
         // 这里的return无意义，因为代码永远不会到执行这里，只是为了语法正确
         return false;
+    }
+
+    /**
+     * 在BST中插入一个数
+     */
+    public TreeNode insertIntoBST(TreeNode root, int val) {
+        // 找到空位置，插入新节点
+        if (root == null) {
+            return new TreeNode(val);
+        }
+        if (root.data < val) {
+            root.right = insertIntoBST(root.right, val);
+        }
+        if (root.data > val) {
+            root.left = insertIntoBST(root.left, val);
+        }
+        return root;
     }
 }

@@ -9,5 +9,7 @@ object Test {
     }
     def main(args: Array[String]): Unit = {
         println(Stu(1,"hahah",1,1234567890))
+
+        val set=Set[Int](1,2,3,4)
     }
 }

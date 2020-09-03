@@ -1,4 +1,4 @@
-package com.conan.bigdata.flink.scalaapi.state.keyed
+package com.conan.bigdata.flink.scalaapi.state.keyedstate
 
 import org.apache.flink.api.common.functions.RichMapFunction
 import org.apache.flink.api.common.state.{MapState, MapStateDescriptor}
