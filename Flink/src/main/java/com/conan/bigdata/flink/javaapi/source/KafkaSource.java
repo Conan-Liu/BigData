@@ -19,6 +19,8 @@ public class KafkaSource {
         Properties properties = new Properties();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, "flink-test");
+        // 如果使用了两阶段提交，引入了事务，那么需要设置消费者的隔离级别，默认读取未提交数据
+        properties.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG,"read_committed");
         FlinkKafkaConsumer<String> consumer = new FlinkKafkaConsumer<>("flink", new SimpleStringSchema(), properties);
         consumer.setStartFromEarliest();
         DataStream<String> streamSource = env.addSource(consumer);

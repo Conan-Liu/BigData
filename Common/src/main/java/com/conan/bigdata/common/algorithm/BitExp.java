@@ -1,5 +1,7 @@
 package com.conan.bigdata.common.algorithm;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * 位运算
  */
@@ -33,19 +35,19 @@ public class BitExp {
      * 1. 除2余1，则个数加1，最后为0
      * 2. 与上1，如果等于1，则表示个位为1，加1，然后该数右移一位
      */
-    private static void bitCnt(){
-        int n=10;
+    private static void bitCnt() throws InterruptedException {
+        int n=-10;
         int cnt=0;
-        while (n>0){
+        while (n!=0){
             if((n&1)==1){
                 cnt++;
             }
-            n>>=1;
+            n>>>=1;
         }
         System.out.println(cnt);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         // bit2n();
         bitCnt();
     }

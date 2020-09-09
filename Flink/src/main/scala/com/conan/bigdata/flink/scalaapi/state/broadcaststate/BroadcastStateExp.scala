@@ -8,7 +8,7 @@ import org.apache.flink.api.common.state.{BroadcastState, MapStateDescriptor, Re
 import org.apache.flink.streaming.api.datastream.BroadcastStream
 import org.apache.flink.streaming.api.functions.ProcessFunction
 import org.apache.flink.streaming.api.functions.co.BroadcastProcessFunction
-import org.apache.flink.streaming.api.scala.{BroadcastConnectedStream, DataStream, StreamExecutionEnvironment}
+import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer
 import org.apache.flink.util.Collector
 import org.apache.kafka.clients.consumer.ConsumerConfig
@@ -53,11 +53,8 @@ class BroadcastStateExp {
 
         val connect: BroadcastConnectedStream[(String, String, String, Int), String] = tupleDS.connect(broadcast)
 
-        val process: Any = connect.process(new MyProcessFunction)
+        // val process: Any = connect.process(new MyProcessFunction)
 
-        collection.process(
-            new BroadcastProcessFunction[] {}
-        )
     }
 }
 
@@ -65,7 +62,7 @@ class BroadcastStateExp {
 class MyProcessFunction extends BroadcastProcessFunction[(String,String,String,Int),(String,(String,Int)),(String,String,String,Int,String,Int)]{
 
     // 定义broadcastState的描述器
-    val descriptor = new MapStateDescriptor[(String,(String,Int))]("state",classOf[String],classOf[(String,Int)])
+    val descriptor = new MapStateDescriptor[String,(String,Int)]("state",classOf[String],classOf[(String,Int)])
 
     // 处理广播流的方法
     // 事件流的数据获取广播流中的数据，需要借助于state，在该方法中把广播流数据存入到state中，在processElement方法中获取数据

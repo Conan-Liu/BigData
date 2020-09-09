@@ -57,5 +57,7 @@ public class Test {
         BigDecimal bd2=new BigDecimal(s2);
 
         System.out.println(bd1.add(bd2));
+        System.out.println(bd1.multiply(bd1));
+        System.out.println(bd1.pow(2));
     }
 }

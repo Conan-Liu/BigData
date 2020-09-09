@@ -2,37 +2,35 @@ package com.conan.bigdata.flink.scalaapi.checkpoint
 
 import java.util.concurrent.TimeUnit
 
+import org.apache.flink.api.common.restartstrategy.RestartStrategies
+import org.apache.flink.api.common.time.Time
 import org.apache.flink.runtime.state.filesystem.FsStateBackend
 import org.apache.flink.streaming.api.CheckpointingMode
 import org.apache.flink.streaming.api.environment.CheckpointConfig
+import org.apache.flink.streaming.api.environment.CheckpointConfig.ExternalizedCheckpointCleanup
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction
 import org.apache.flink.streaming.api.functions.source.SourceFunction.SourceContext
 import org.apache.flink.streaming.api.scala._
 
 /**
-  * 演示Checkpoint
+  * Flink Restart重启策略演示
   */
-object CheckpointExp {
+object RestartExp {
 
     def main(args: Array[String]): Unit = {
         val env = StreamExecutionEnvironment.getExecutionEnvironment
+        // 全局取消operator chain机制
+        env.disableOperatorChaining()
         // 设置checkpoint属性
         env.setStateBackend(new FsStateBackend("file:///Users/mw/temp/flink/checkpoint/checkpointexp"))
         // 设置checkpoint的时间周期，默认没有开启，需要手动指定
         env.enableCheckpointing(1000)
         val ckConfig: CheckpointConfig = env.getCheckpointConfig
-        // 设置checkpoint的执行语义，选择精确一次
-        ckConfig.setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE)
-        // 设置两次checkpoint的最小间隔，因为checkpoint可能会花费一点时间，前面设置1000ms，假设执行了800ms，如果不设置最小时间间隔，那么过200ms后又会执行，浪费性能
-        ckConfig.setMinPauseBetweenCheckpoints(500)
-        // 设置checkpoint超时时间，超过设置时间，认为本次执行失败，继续下一次即可
-        ckConfig.setCheckpointTimeout(60000)
-        // 设置checkpoint出现问题的话，是否让程序报错还是继续执行下一个checkpoint，true报错，false继续下次checkpoint
-        ckConfig.setFailOnCheckpointingErrors(false)
-        // 设置任务取消时是否保留检查点，retain则保存检查点数据，delete则删除checkpoint作业数据
-        ckConfig.enableExternalizedCheckpoints(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION)
-        // 设置程序中同时允许几个checkpoint任务进行
-        ckConfig.setMaxConcurrentCheckpoints(1)
+        ckConfig.enableExternalizedCheckpoints(ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION)
+        // 固定重启策略，重启3次，重启间隔5秒
+        env.setRestartStrategy(RestartStrategies.fixedDelayRestart(3,Time.of(5,TimeUnit.SECONDS)))
+
+        env.createInput()
 
         // 自定义Source
         val source = env.addSource(
