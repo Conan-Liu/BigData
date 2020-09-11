@@ -1,4 +1,4 @@
-package com.conan.bigdata.spark.sparksql.project
+package com.conan.bigdata.spark.sql.project
 
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.sql.SparkSession

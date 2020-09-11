@@ -26,11 +26,19 @@
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-clients_2.11</artifactId>
             <version>${flink.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-streaming-scala_2.11</artifactId>
+            <version>${flink.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-planner_2.11</artifactId>
             <version>${flink.version}</version>
         </dependency>
 
@@ -38,6 +46,7 @@
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-scala_2.11</artifactId>
             <version>${flink.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -60,6 +69,7 @@
         </dependency>
 
         <!-- 本地运行调试 -->
+        <!-- Flink需要使用Hadoop的依赖，可以不在pom中手动指定以来，任务提交时通过 export HADOOP_CLASSPATH=$(hadoop classpath)来指定 -->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>

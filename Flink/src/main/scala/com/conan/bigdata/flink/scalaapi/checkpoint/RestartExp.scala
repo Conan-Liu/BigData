@@ -30,8 +30,6 @@ object RestartExp {
         // 固定重启策略，重启3次，重启间隔5秒
         env.setRestartStrategy(RestartStrategies.fixedDelayRestart(3,Time.of(5,TimeUnit.SECONDS)))
 
-        env.createInput()
-
         // 自定义Source
         val source = env.addSource(
             new RichSourceFunction[String] {

@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * 矩阵的相关操作
  */
-public class Matrix {
+public class MatrixExp {
 
     // 矩阵
     private static int[][] matrix = new int[][]{

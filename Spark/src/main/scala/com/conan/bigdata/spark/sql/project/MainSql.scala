@@ -1,4 +1,4 @@
-package com.conan.bigdata.spark.sparksql.project
+package com.conan.bigdata.spark.sql.project
 
 import java.text.SimpleDateFormat
 import java.util.Date

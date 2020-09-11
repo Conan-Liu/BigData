@@ -1,4 +1,4 @@
-package com.conan.bigdata.spark.sparksql
+package com.conan.bigdata.spark.sql
 
 import java.util.Properties
 

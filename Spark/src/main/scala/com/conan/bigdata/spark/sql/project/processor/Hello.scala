@@ -1,6 +1,6 @@
-package com.conan.bigdata.spark.sparksql.project.processor
+package com.conan.bigdata.spark.sql.project.processor
 
-import com.conan.bigdata.spark.sparksql.project.Processor
+import com.conan.bigdata.spark.sql.project.Processor
 
 class Hello extends Processor {
 

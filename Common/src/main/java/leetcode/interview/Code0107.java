@@ -1,6 +1,6 @@
 package leetcode.interview;
 
-import com.conan.bigdata.common.algorithm.Matrix;
+import com.conan.bigdata.common.algorithm.MatrixExp;
 
 import java.util.Arrays;
 
@@ -56,7 +56,7 @@ public class Code0107 {
 
     private static void rotate1(int[][] matrix) {
         /**
-         * 直接定义一个新数组，参考{@link Matrix#rotate90()}
+         * 直接定义一个新数组，参考{@link MatrixExp#rotate90()}
          */
     }
 

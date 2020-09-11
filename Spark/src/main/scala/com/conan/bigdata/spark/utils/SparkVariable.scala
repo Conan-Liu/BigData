@@ -9,7 +9,7 @@ import org.apache.spark.{SparkConf, SparkContext}
   * 实际上它比接口还功能强大，与接口不同的是，它还可以定义属性和方法的实现，更像抽象类，却又比类可以多继承，有点强
   * 用关键字extend继承
   *
-  * 可参考[[com.conan.bigdata.spark.sparksql.project.Processor]]
+  * 可参考[[com.conan.bigdata.spark.sql.project.Processor]]
   */
 trait SparkVariable {
 

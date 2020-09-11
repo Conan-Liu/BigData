@@ -1,4 +1,4 @@
-package com.conan.bigdata.spark.sparksql
+package com.conan.bigdata.spark.sql
 
 import org.apache.spark.sql.{Row, SaveMode, SparkSession}
 

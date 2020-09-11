@@ -9,7 +9,7 @@ import org.apache.flink.streaming.api.CheckpointingMode
 import org.apache.flink.streaming.api.environment.CheckpointConfig
 import org.apache.flink.streaming.api.functions.sink.SinkFunction.Context
 import org.apache.flink.streaming.api.functions.sink.TwoPhaseCommitSinkFunction
-import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
+import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer
 import org.apache.kafka.clients.consumer.ConsumerConfig
 
@@ -51,53 +51,53 @@ object MysqlTwoPhaseExp {
         kafkaDS.print("kafka数据>> ")
 
         val sum = kafkaDS.flatMap(_.split("\\s+")).map((_,1)).keyBy(0).sum(1)
-        sum.addSink(new MysqlTwoPhaseCommit)
+        // sum.addSink(new MysqlTwoPhaseCommit)
         env.execute("MysqlTwoPhaseExp")
     }
 }
 
 // 泛型是输入的数据格式，事务格式，context
-class MysqlTwoPhaseCommit extends TwoPhaseCommitSinkFunction[(String,Int),MysqlTransactionState,Void]{
-
-    // 开启事务
-    override def beginTransaction(): MysqlTransactionState = {
-        // 获取连接
-        val connection: Connection = DriverManager.getConnection("","","")
-        // 关闭事务默认提交，改为手动提交，checkpoint成功时flink自动提交
-        connection.setAutoCommit(false)
-        new MysqlTransactionState(connection)
-    }
-
-    // 执行动作
-    override def invoke(transaction: MysqlTransactionState, value: (String, Int), context: Context[_]): Unit = {
-        val conn=transaction.conn
-        var sql="insert into t_wordcount(word,count) values(?,?) on duplicate key update count = ?"
-        val prepareStatement = conn.prepareStatement(sql)
-        prepareStatement.setString(1,value._1)
-        prepareStatement.setInt(2,value._2)
-        prepareStatement.setInt(3,value._2)
-        prepareStatement.executeUpdate()
-        prepareStatement.close()
-    }
-
-    override def preCommit(transaction: MysqlTransactionState): Unit = {
-        // invoke中已完成，这里无须在操作
-    }
-
-    // 正常checkpoint后提交任务
-    override def commit(transaction: MysqlTransactionState): Unit = {
-        val conn=transaction.conn
-        conn.commit()
-        conn.close()
-    }
-
-    // 出现问题则回滚
-    override def abort(transaction: MysqlTransactionState): Unit = {
-        val conn=transaction.conn
-        conn.rollback()
-        conn.close()
-    }
-}
-
-// 指定不给序列化
-class MysqlTransactionState(@transient val conn:Connection)
+//class MysqlTwoPhaseCommit extends TwoPhaseCommitSinkFunction[(String,Int),MysqlTransactionState,Void]{
+//
+//    // 开启事务
+//    override def beginTransaction(): MysqlTransactionState = {
+//        // 获取连接
+//        val connection: Connection = DriverManager.getConnection("","","")
+//        // 关闭事务默认提交，改为手动提交，checkpoint成功时flink自动提交
+//        connection.setAutoCommit(false)
+//        new MysqlTransactionState(connection)
+//    }
+//
+//    // 执行动作
+//    override def invoke(transaction: MysqlTransactionState, value: (String, Int), context: Context[_]): Unit = {
+//        val conn=transaction.conn
+//        var sql="insert into t_wordcount(word,count) values(?,?) on duplicate key update count = ?"
+//        val prepareStatement = conn.prepareStatement(sql)
+//        prepareStatement.setString(1,value._1)
+//        prepareStatement.setInt(2,value._2)
+//        prepareStatement.setInt(3,value._2)
+//        prepareStatement.executeUpdate()
+//        prepareStatement.close()
+//    }
+//
+//    override def preCommit(transaction: MysqlTransactionState): Unit = {
+//        // invoke中已完成，这里无须在操作
+//    }
+//
+//    // 正常checkpoint后提交任务
+//    override def commit(transaction: MysqlTransactionState): Unit = {
+//        val conn=transaction.conn
+//        conn.commit()
+//        conn.close()
+//    }
+//
+//    // 出现问题则回滚
+//    override def abort(transaction: MysqlTransactionState): Unit = {
+//        val conn=transaction.conn
+//        conn.rollback()
+//        conn.close()
+//    }
+//}
+//
+//// 指定不给序列化
+//class MysqlTransactionState(@transient val conn:Connection)
