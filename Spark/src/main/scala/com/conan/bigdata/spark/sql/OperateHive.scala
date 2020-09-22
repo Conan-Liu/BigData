@@ -35,8 +35,12 @@ object OperateHive {
 
         // 创建表, 正常情况下，都是在hive侧创建好了表，直接往里面写数据或读数据
         spark.sql("CREATE TABLE hive_records(key int, value string) STORED AS PARQUET")
+        // 如果表被hive或外部其它工具更新，需要刷新元数据
+        spark.catalog.refreshTable("hive_records")
         // 读取表
         val tableDF = spark.table("ods.resta_citytable")
+        // cache表
+        tableDF.cache()
         tableDF.printSchema()
         tableDF.select("cityid","name").show()
         // 写表

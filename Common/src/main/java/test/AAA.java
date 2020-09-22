@@ -1,6 +1,8 @@
 package test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class AAA {
@@ -39,13 +41,7 @@ public class AAA {
 
     public static void main(String[] args) throws IOException {
 
-        Thread t1 = new Thread(new T1(), "t1");
-        Thread t2 = new Thread(new T2(), "t2");
-        t1.start();
-        t2.start();
-
-
-        System.out.println(10 ^ 10);
+        System.out.println(Math.pow(3,0));
     }
 
 }

@@ -5,8 +5,9 @@ import org.apache.spark.sql.expressions.{MutableAggregationBuffer, UserDefinedAg
 import org.apache.spark.sql.types._
 
 /**
+  * 非强类型的DataFrame UDAF
   */
-object MyAverageUDAF extends UserDefinedAggregateFunction {
+object MyDFAverageUDAF extends UserDefinedAggregateFunction {
 
     // 输入数据的类型
     def inputSchema: StructType = StructType(StructField("inputColumn", LongType) :: Nil)
