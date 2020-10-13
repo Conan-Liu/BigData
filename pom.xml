@@ -100,7 +100,7 @@
         <zookeeper.version>3.4.5-cdh5.10.0</zookeeper.version>
         <kafka.version>1.1.0</kafka.version>
         <parquet.version>1.5.0-cdh5.10.0</parquet.version>
-        <junit.test>4.12</junit.test>
+        <junit.test>4.13.1</junit.test>
         <self.scope>compile</self.scope>
         <scala.version>2.11.12</scala.version>
     </properties>
