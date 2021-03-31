@@ -63,17 +63,6 @@
             </snapshots>
         </repository>
         <repository>
-            <id>mwbyd</id>
-            <name>mwbyd</name>
-            <url>http://nexus.mwbyd.cn/nexus/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
             <id>clojars</id>
             <name>clojars</name>
             <url>https://clojars.org/repo/</url>

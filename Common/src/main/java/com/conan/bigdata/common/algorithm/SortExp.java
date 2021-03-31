@@ -38,6 +38,24 @@ public class SortExp {
         show();
     }
 
+    // 小花旦版冒泡排序
+    public static void bubbleSortLOVE() {
+        String[] ss = new String[]{"4很", "3旦", "7哟", "6亮", "2花", "1小", "5漂"};
+        String tmp;
+        for (int i = 0; i < ss.length; i++) {
+            System.out.print("第" + i + "次冒泡：");
+            for (int j = 0; j < ss.length - i - 1; j++) {
+                if (ss[j].compareTo(ss[j + 1]) > 0) {
+                    tmp = ss[j];
+                    ss[j] = ss[j + 1];
+                    ss[j + 1] = tmp;
+                }
+            }
+            Arrays.stream(ss).map(x -> x.substring(1) + " ").forEach(System.out::print);
+            System.out.println();
+        }
+    }
+
     /**
      * 选择排序
      * 每一轮选择一个最小或最大的数来和其实位置交换，也可以是末尾位置，每一轮确定一个数，多轮后，排序完成
