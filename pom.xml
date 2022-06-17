@@ -219,7 +219,7 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
-                <version>1.2.58</version>
+                <version>1.2.83</version>
             </dependency>
 
             <!-- 这个是对应5.0版本的mysql， 如果是8.0版本的，需要升级驱动才行， 使用新的驱动类， 但是以前的代码也可以不用修改， 是兼容的 -->
